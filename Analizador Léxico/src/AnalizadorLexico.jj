@@ -9,7 +9,7 @@ public class analizadorLexico{  public static void main(String args []) throws
    "*/" : DEFAULT | <~[]>
 }
 
-TOKEN : /* OPERADORES */
+TOKEN : /* OPERADORES ARITMÉTICOS */
 {
   < ADD : "+" >
 | < SUB : "-" >
@@ -17,11 +17,15 @@ TOKEN : /* OPERADORES */
 | < DIV : "/" >
 | < POT : "**" >
 | < MOD : "%" >
-| < ATRIB : "=" >
 | < CONCAT : "++" >
 }
 
-TOKEN : /* OPERADORES LOGICOS */
+TOKEN : /* OPERADOR DE STRING */
+{
+ < CONCAT : "++" >
+}
+
+TOKEN : /* OPERADORES LOGICOS E RELACIONAIS */
 {
   < MAIOR : ">" >
 | < MENOR : "<" >
@@ -34,7 +38,7 @@ TOKEN : /* OPERADORES LOGICOS */
 | < ANDS : "EE" >
 }
 
-TOKEN : /* IDENTIFICADORES */
+TOKEN : /* DIVERSOS */
 {
   < IF : "SE" >
 | < ELSE : "SENAO" >
@@ -45,32 +49,36 @@ TOKEN : /* IDENTIFICADORES */
 | < FP : ")" >
 | < ACH : "{" >
 | < FCH : "}" >
-| < IN : "PRINTA" >
-| < OUT : "PEGA" >
+| < IN : "PEGA" >
+| < OUT : "PRINTA" >
 | < TEST : "TESTE" >
 | < COMENT : "//"(~["\n"])*"\n" >
+| < BREAK : "SAIDA" >
+| < OTHERWISE : "OUTRO CASO" >
+| < ATRIB : "=" >
+| < FORMULTIPLE : "LACOMULTIPLO" >
+| < TO : "A" >
+| < STEP : "PASSO" >
 }
 
-TOKEN : /* IDENTIFICADORES DAS VARIAVEIS */
+TOKEN : /* TIPOS */
 {
   < TYPENUM : "FLUT" >
-| < TYPESTR : "BOOL" >
-| < TYPEBOOL : "STRING" >
+| < TYPESTR : "STRING" >
+| < TYPEBOOL : "BOOL" >
 }
 
-TOKEN : /* POSSIVEIS VALORES PARA AS VARIAVEIS */
+TOKEN : /* CONSTANTES */
 {
   < NUMERO : ([ "0"-"9" ])*(".")?([ "0"-"9" ])+ >
 | < STRING : "\""(~["\""])*"\"" >
 | < BOOL : "true" | "false" >
 }
 
-TOKEN : /* TOKENS ADICIONAIS */
+TOKEN : /* VARIAVEL */
 {
-  < BREAK : "SAIDA" >
-| < OTHERWISE : " OUTROCASO" >
-| < VAR : "(['a'-'z'])+((['0'-'9'])|(['a'-'z']))*" >
+  < VAR : (["a"-"z"])+ >
 }
-int one_line() :{}{  sum() ";"  {    return 0;  }| ";"  {    return 1;  }}void sum() :{}{  term()  (    (      < ADD >    | < SUB >    )    term()  )*}void term() :{}{  unary()  (    (      < MULT >    | < DIV >    )    unary()  )*}void unary() :{}{  < SUB > element()| element()}void element() :{}{  < NUMERO >| "(" sum() ")"}
+void comandoSe() : {}{  < IF >< AP > expLogica < FP >< ACH >< COMENT > listaComandos() < FCH >(< ELSE > comandoSe() | < ELSE >< ACH > listaComandos() < FCH >)*}
 
 
