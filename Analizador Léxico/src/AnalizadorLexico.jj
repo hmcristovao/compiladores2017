@@ -88,4 +88,7 @@ TOKEN : /* VARIAVEL */
   < VAR : (["a"-"z"])+ >
 }
 
-
+void comandoSe() : {}
+{  
+	< IF >< AP > expLogica() < FP >< ACH >< COMENT > listaComandos() < FCH >(< ELSE >< ACH >< COMENT > listaComandos() < FCH >)?
+}
