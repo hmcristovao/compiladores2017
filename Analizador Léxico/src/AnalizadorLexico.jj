@@ -1,7 +1,15 @@
 /**
  * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
  */options{  static = true;}PARSER_BEGIN(analizadorLexico)
-public class analizadorLexico{  public static void main(String args []) throws ParseException  {    analizadorLexico parser = new analizadorLexico(System.in);    while (true)    {      System.out.println("Reading from standard input...");      System.out.print("Enter an expression like \"1+(2+3)*4;\" :");      try      {        switch (analizadorLexico.one_line())        {          case 0 :           System.out.println("OK.");          break;          case 1 :           System.out.println("Goodbye.");          break;          default :           break;        }      }      catch (Exception e)      {        System.out.println("NOK.");        System.out.println(e.getMessage());        analizadorLexico.ReInit(System.in);      }      catch (Error e)      {        System.out.println("Oops.");        System.out.println(e.getMessage());        break;      }    }  }}PARSER_END(analizadorLexico)SKIP : {
+public class analizadorLexico{  public static void main(String args []) throws ParseException  {    analizadorLexico parser = new analizadorLexico(System.in);    while (true)    {      System.out.println("Reading from standard input...");      System.out.print("Enter an expression like \"1+(2+3)*4;\" :");      try      {        switch (analizadorLexico.one_line())        {          case 0 :           System.out.println("OK.");          break;          case 1 :           System.out.println("Goodbye.");          break;          default :           break;        }      }      catch (Exception e)      {        System.out.println("NOK.");        System.out.println(e.getMessage());        analizadorLexico.ReInit(System.in);      }      catch (Error e)      {        System.out.println("Oops.");        System.out.println(e.getMessage());        break;      }    }  }}PARSER_END(analizadorLexico)
+SKIP :
+{
+  " "
+| "\r"
+| "\t"
+| "\n"
+}
+SKIP : {
    "/*" : comentario
 }
 
@@ -54,7 +62,7 @@ TOKEN : /* DIVERSOS */
 | < TEST : "TESTE" >
 | < COMENT : "//"(~["\n"])*"\n" >
 | < BREAK : "SAIDA" >
-| < OTHERWISE : "OUTRO CASO" >
+| < OTHERWISE : "OUTROCASO" >
 | < ATRIB : "=" >
 | < FORMULTIPLE : "LACOMULTIPLO" >
 | < TO : "A" >
@@ -79,6 +87,5 @@ TOKEN : /* VARIAVEL */
 {
   < VAR : (["a"-"z"])+ >
 }
-void comandoSe() : {}{  < IF >< AP > expLogica < FP >< ACH >< COMENT > listaComandos() < FCH >(< ELSE > comandoSe() | < ELSE >< ACH > listaComandos() < FCH >)*}
 
 
