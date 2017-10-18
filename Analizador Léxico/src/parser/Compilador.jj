@@ -1,0 +1,504 @@
+/* Compilador Hell */
+options {
+   DEBUG_PARSER = false;
+   DEBUG_TOKEN_MANAGER = false;
+}
+
+PARSER_BEGIN(CompiladorHell)
+package parser;
+import java.io.*;
+public class CompiladorHell {
+   public static void main(String args[]) throws ParseException {
+      CompiladorHell analisador = null;
+      try {
+         analisador = new CompiladorHell(new FileInputStream("prog_fonte01.lek"));
+         CompiladorHell.inicio();
+         System.out.println("Análise léxica e sintática sem erros!");
+      }
+      catch(FileNotFoundException e) {
+         System.out.println("Erro: arquivo não encontrado");
+      }
+      catch(TokenMgrError e) {
+         System.out.println("Erro léxico\n" + e.getMessage());
+      }
+      catch(ParseException e) {
+         System.out.println("Erro sintático\n" + e.getMessage());
+      }
+   }
+}
+PARSER_END(CompiladorHell)
+
+SKIP :
+{
+  " "
+| "\r"
+| "\t"
+| "\n"
+}
+
+SKIP : {
+   "/*" : comentario
+}
+
+<comentario> SKIP: {
+   "*/" : DEFAULT | <~[]>
+}
+
+TOKEN : /* OPERADORES ARITMÉTICOS */
+{
+  < ADD : "+" >
+| < SUB : "-" >
+| < MULT : "*" >
+| < DIV : "/" >
+| < POT : "**" >
+| < MOD : "%" >
+}
+
+TOKEN : /* OPERADOR DE STRING */
+{
+ < CONCAT : "++" >
+}
+
+TOKEN : /* OPERADORES LOGICOS E RELACIONAIS */
+{
+  < MAIOR : ">" >
+| < MENOR : "<" >
+| < MAIOR_I : ">=" >
+| < MENOR_I : "<=" >
+| < IGUAL : "==" >
+| < DIF : "!=" >
+| < AND : "E" >
+| < OR : "O" >
+| < NOT : "N" >
+| < ANDS : "EE" >
+}
+
+TOKEN : /* PALAVRAS RESERVADAS */
+{
+  < IF : "SE" >
+| < ELSE : "SENAO" >
+| < FOR : "LACO" >
+| < IN : "PEGA" >
+| < OUT : "PRINTA" >
+| < TEST : "TESTE" >
+| < BREAK : "SAIDA" >
+| < OTHERWISE : "OUTROCASO" >
+| < FORMULTIPLE : "LACOMULTIPLO" >
+| < FORMATRIX : "LACOMATRIX" >
+| < TO : "A" >
+| < STEP : "PASSO" >
+}
+
+TOKEN : /* SIMBOLOS */
+{
+  < VIRG : "," >
+| < PT_VIRG : ";" >
+| < AP : "(" >
+| < FP : ")" >
+| < ACH : "{" >
+| < FCH : "}" >
+|  < ATRIB : "=" >
+}
+
+TOKEN : /* TIPOS */
+{
+  < TYPENUM : "FLUT" >
+| < TYPESTR : "STRING" >
+| < TYPEBOOL : "BOOL" >
+}
+
+TOKEN : /* CONSTANTES */
+{
+  < NUM : ([ "0"-"9" ])*(".")?([ "0"-"9" ])+ >
+| < STRING : "\""(~["\""])*"\"" >
+| < BOOL : "true" | "false" >
+}
+
+TOKEN : /* VARIAVEL */
+{
+  < VAR : (["a"-"z"])+ >
+}
+
+TOKEN : /* COMENTARIO */
+{
+  < COMENT : "//"(~["\n"])*"\n" >
+}
+
+/*
+inicio        -> listaComandos() <EOF>
+listaComandos -> (comando())* 
+comando       -> 
+	|comandoDeclaracoVariavel()
+	|comandoAtribuicao()
+	|comandoEntrada()
+	|comandoPrinta()
+	|comandoSe()
+	|comandoTeste()
+	|comandoLaco()
+	|comandoLacoMultiplo()
+	|comandoLacoMatrix()
+*/
+void inicio() : {} {
+	listaComandos() <EOF>
+}
+void listaComandos() : {} {
+	(comando())* 
+}
+void comando() : {} {
+	  comandoDeclaracaoVariavel()
+    |
+      comandoAtribuicao()
+    |
+      comandoPrinta()
+    |
+      comandoPega()
+	|
+	  comandoSe()
+	|
+	  comandoTeste()
+	|
+	  comandoLaco()
+	|
+	  comandoLacoMultiplo()
+	|
+	  comandoLacoMatrix()
+}
+
+/*
+comandoDeclaracaoVariavel ->
+    (
+      <TYPENUM> <VAR> (<ATRIB> <NUM>)?
+     ( <VIRG> <VAR> (<ATRIB> <NUM>)? )*
+    | 
+    <TYPESTR> <VAR> (<ATRIB> <STRING>)?
+     ( <VIRG> <VAR> (<ATRIB> <STRING>)? )*
+    | 
+    <TYPEBOOL> <VAR> (<ATRIB> <BOOL>)?
+     ( <VIRG>  <VAR> (<ATRIB> <BOOL>)? )*
+    )
+    <COMENT>	
+*/
+
+void comandoDeclaracaoVariavel() : {}
+{
+   (
+     <TYPENUM> <VAR> (<ATRIB> <NUM>)?
+     ( <VIRG> <VAR> (<ATRIB> <NUM>)? )*
+   | 
+     <TYPESTR> <VAR> (<ATRIB> <STRING>)?
+     ( <VIRG> <VAR> (<ATRIB> <STRING>)? )*
+   | 
+     <TYPEBOOL> <VAR> (<ATRIB> <BOOL>)?
+     ( <VIRG>  <VAR> (<ATRIB> <BOOL>)? )*
+   )
+   <COMENT>	
+}
+
+/*
+comandoAtribuição ->  <VAR><ATRIB> exp <COMENT>
+exp               ->  expLogica | expAritmetica | expString
+*/
+void comandoAtribuicao() : { }
+{
+    <VAR> <ATRIB>
+    exp()
+    <COMENT>
+}
+void exp() : {}
+{
+     expLogica()
+   |
+     expAritmetica()
+   |
+     expString()
+}
+
+/*
+comandoPrinta -> <OUT> <AP> exp ((<VIRG>|<PT_VIRG>) exp)* <FP> <COMENT>
+*/
+void comandoPrinta ():{}
+{
+	<OUT> <AP> exp()
+	(
+		(
+		  <VIRG> | <PT_VIRG>
+		)
+		exp()
+	)*
+    <FP>
+	<COMENT>
+}
+
+/*
+comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
+*/
+void comandoPega (): {}
+{
+	<IN><AP><VAR>
+	(
+	  <VIRG><VAR>
+	)*
+	<FP><COMENT>	
+}
+
+/*
+comandoSe -> <IF><AP> expLogica <FP>
+             <ACH><COMENT>
+             listaComandos <FCH>
+             (<ELSE><ACH><COMENT>
+             listaComandos <FCH>)?
+*/
+void comandoSe() : {}
+{  
+	<IF><AP> expLogica() <FP><ACH><COMENT>
+	listaComandos() <FCH>
+	(
+	  <ELSE><ACH><COMENT>
+	  listaComandos()
+	  <FCH>
+	)?
+}
+
+/*
+comandoTeste() -> <TEST><ACH> (	blocoCondicional )+
+            	  ( <OTHERWISE><ACH>
+			        listaComandos()
+			        <FCH> <COMENT>
+		          )? <FCH>
+
+blocoCondicional -> <AP> expLogica <FP>
+                    <ACH> listaComandos()
+	                <FCH> (<BREAK>)? <COMENT>
+*/
+void comandoTeste(): {}{
+	<TEST><ACH>
+	(
+		blocoCondicional()
+	)+
+
+	(
+		<OTHERWISE><ACH>
+	    listaComandos()
+	    <FCH> <COMENT>
+	)?
+	<FCH>
+}
+
+void blocoCondicional():{}
+{
+	<AP> expLogica() <FP> <ACH> 
+    listaComandos()
+	<FCH>
+	(<BREAK>)? <COMENT>
+}
+
+
+/*
+comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
+               expAritmetica <PT_VIRG>
+               expLogica <PT_VIRG>
+               comandoAtribuicao <FP>
+               <ACH> <COMENT> listaComandos <FCH>
+*/
+void comandoLaco () : {}
+{
+    <FOR> <AP>
+    (
+      <TYPENUM>
+    )?
+    <VAR><ATRIB> expAritmetica() <PT_VIRG>
+    expLogica()
+    <PT_VIRG> 
+    comandoAtribuicao()
+    <FP>
+    <ACH> <COMENT>
+    listaComandos() <FCH>
+}
+
+
+/*
+comandoLacoMultiplo -> <FOR_MULTIPLE> <AP> inicioLaco <FP>
+                <ACH> <COMENT> listaComandos <FCH>
+inicioLaco   -> <VAR> contLaco faixa
+contLaco     -> <VIRG> <VAR> contLaco faixa <VIRG>
+               | <PT_VIRG>
+faixa -> expAritmetica <TO> expAritmetica
+        (<STEP> expAritmetica)?
+*/
+void comandoLacoMultiplo() : {}
+{
+	<FORMULTIPLE> <AP>
+	inicioLaco()
+	<FP>
+	<ACH> <COMENT>
+	listaComandos()
+	<FCH>
+}
+void inicioLaco() : {}
+{
+	<VAR> contLaco() faixa()
+}
+void contLaco() : {}
+{
+	<VIRG> <VAR> contLaco() faixa() <VIRG> 
+	|
+	<PT_VIRG>
+}
+void faixa() : {}
+{
+	expAritmetica()
+	<TO>
+	expAritmetica()
+	(
+	    <STEP> expAritmetica()
+	)?
+}
+
+/*
+comandoLacoMatrix -> <FORMATRIX> <AP> <VAR>
+                    (<VIR> <VAR>)*
+	                <PT_VIRG> faixa <FP>
+	                <ACH> <COMENT>
+	                listaComandos <FCH>	
+faixa -> expAritmetica <TO> expAritmetica
+        (<STEP> expAritmetica)?
+*/
+void comandoLacoMatrix() : {} 
+{
+      <FORMATRIX> <AP> <VAR>
+      (
+        <VIRG> <VAR>
+      )*
+      <PT_VIRG>
+      faixa()
+      <FP>
+      <ACH> <COMENT>
+      listaComandos()
+      <FCH>
+}
+
+/*
+expAritmetica  -> expArit1 (<ADD> expArit1 | <SUB> expArit1)*
+expArit1 -> expArit2 (<MUL> expArit2 | <DIV> expArit2)*
+expArit2 -> expArit3 (<POT> expArit2)?
+expArit3 -> <AP> expAritmetica <FP>
+           | <NUM>
+           | <ADD><NUM>
+           | <SUB><NUM>
+           | <VAR>
+*/
+void expAritmetica() : {}
+{
+	expArit1()
+	(
+	  <ADD> expArit1()
+	  |
+	  <SUB> expArit1()
+	 )*
+}  
+void expArit1() : {}
+{
+	expArit2()
+	(
+	   <MULT> expArit2()
+	 |
+	   <DIV> expArit2()
+	)*
+}
+void expArit3() :{}
+{
+	<AP> expAritmetica() <FP>
+    |
+    <NUM>
+    |
+    <ADD><NUM>
+    |
+    <SUB><NUM>
+    |
+    <VAR> 
+}
+void expArit2() : {}
+{
+	expArit3()
+	(
+	  <POT> expArit2()
+	)?
+}
+
+/*
+expLogica -> expLogica1 (<OR> expLogica1)*
+
+expLogica1 -> expLogica2 (<AND> expLogica2)*
+
+expLogica2 -> (<NOT>)* expLogica3
+
+expLogica3 -> expLogica4
+    ( <MAIOR>   expLogica4 
+	| <MENOR>   expLogica4 
+	| <MAIOR_I> expLogica4 
+	| <MENOR_I> expLogica4 
+	| <IGUAL> expLogica4
+	| <DIF>     expLogica4)*
+
+expLogica4 -> <AP> expLogica <FP> 
+	        | <AP> expAritmetica <FP>
+	        | expAritmetica 
+	        | <BOOL> 
+*/
+void expLogica() : {}
+{
+    expLogica1()
+    (
+      <OR> expLogica1()
+    )*
+}
+void expLogica1() : {}
+{
+        expLogica2()
+        (
+          <AND> expLogica2()
+        )*
+}
+void expLogica2() : {}
+{
+        (
+          <NOT>
+        )*
+        expLogica3()
+}
+void expLogica3() : {}
+{
+	expLogica4()
+	(
+		  <MAIOR> expLogica4() 
+		|
+		  <MENOR> expLogica4()
+		|
+		  <MAIOR_I> expLogica4()
+		|
+		  <MENOR_I> expLogica4()
+		|
+		  <IGUAL> expLogica4()
+		|
+		  <DIF> expLogica4()
+    )*
+}
+void expLogica4() : {}
+{
+	<AP> expLogica() <FP>
+	|
+	<AP> expAritmetica() <FP>
+	|
+	expAritmetica()
+	|
+	<BOOL> 
+}
+
+/*
+expString - > ???
+*/
+void expString() : {}
+{
+	<STRING> // fake
+}
+  
