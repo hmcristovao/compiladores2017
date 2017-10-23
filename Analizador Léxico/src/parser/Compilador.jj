@@ -1,7 +1,7 @@
 /* Compilador Hell */
 options {
-   DEBUG_PARSER = false;
-   DEBUG_TOKEN_MANAGER = false;
+   DEBUG_PARSER = true;
+   DEBUG_TOKEN_MANAGER = true;
 }
 
 PARSER_BEGIN(CompiladorHell)
@@ -28,21 +28,14 @@ public class CompiladorHell {
 }
 PARSER_END(CompiladorHell)
 
+
 SKIP :
 {
-  " "
-| "\r"
-| "\t"
-| "\n"
+  " " | "\r" | "\t" | "\n"
 }
 
-SKIP : {
-   "/*" : comentario
-}
-
-<comentario> SKIP: {
-   "*/" : DEFAULT | <~[]>
-}
+SKIP : { "/*" : comentarioGeral }
+<comentarioGeral> SKIP: { "*/" : DEFAULT | <~[]> }
 
 TOKEN : /* OPERADORES ARITMÉTICOS */
 {
@@ -119,9 +112,9 @@ TOKEN : /* VARIAVEL */
   < VAR : (["a"-"z"])+ >
 }
 
-TOKEN : /* COMENTARIO */
+TOKEN : /* COMENTARIO OBRIGATÓRIO */
 {
-  < COMENT : "//"(~["\n"])*"\n" >
+  < COMENT : "//" (~[])* "." >
 }
 
 /*
@@ -204,17 +197,11 @@ void comandoAtribuicao() : { }
     exp()
     <COMENT>
 }
-void exp() : {}
-{
-     expLogica()
-   |
-     expAritmetica()
-   |
-     expString()
-}
 
 /*
-comandoPrinta -> <OUT> <AP> exp ((<VIRG>|<PT_VIRG>) exp)* <FP> <COMENT>
+comandoPrinta -> <OUT> <AP>
+                 exp ((<VIRG>|<PT_VIRG>) exp)*
+                 <FP> <COMENT>
 */
 void comandoPrinta ():{}
 {
@@ -242,7 +229,7 @@ void comandoPega (): {}
 }
 
 /*
-comandoSe -> <IF><AP> expLogica <FP>
+comandoSe -> <IF><AP> exp <FP>
              <ACH><COMENT>
              listaComandos <FCH>
              (<ELSE><ACH><COMENT>
@@ -250,7 +237,7 @@ comandoSe -> <IF><AP> expLogica <FP>
 */
 void comandoSe() : {}
 {  
-	<IF><AP> expLogica() <FP><ACH><COMENT>
+	<IF><AP> exp() <FP><ACH><COMENT>
 	listaComandos() <FCH>
 	(
 	  <ELSE><ACH><COMENT>
@@ -266,7 +253,7 @@ comandoTeste() -> <TEST><ACH> (	blocoCondicional )+
 			        <FCH> <COMENT>
 		          )? <FCH>
 
-blocoCondicional -> <AP> expLogica <FP>
+blocoCondicional -> <AP> exp <FP>
                     <ACH> listaComandos()
 	                <FCH> (<BREAK>)? <COMENT>
 */
@@ -286,7 +273,7 @@ void comandoTeste(): {}{
 
 void blocoCondicional():{}
 {
-	<AP> expLogica() <FP> <ACH> 
+	<AP> exp() <FP> <ACH> 
     listaComandos()
 	<FCH>
 	(<BREAK>)? <COMENT>
@@ -295,8 +282,8 @@ void blocoCondicional():{}
 
 /*
 comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
-               expAritmetica <PT_VIRG>
-               expLogica <PT_VIRG>
+               exp <PT_VIRG>
+               exp <PT_VIRG>
                comandoAtribuicao <FP>
                <ACH> <COMENT> listaComandos <FCH>
 */
@@ -306,8 +293,8 @@ void comandoLaco () : {}
     (
       <TYPENUM>
     )?
-    <VAR><ATRIB> expAritmetica() <PT_VIRG>
-    expLogica()
+    <VAR><ATRIB> exp() <PT_VIRG>
+    exp()
     <PT_VIRG> 
     comandoAtribuicao()
     <FP>
@@ -322,8 +309,8 @@ comandoLacoMultiplo -> <FOR_MULTIPLE> <AP> inicioLaco <FP>
 inicioLaco   -> <VAR> contLaco faixa
 contLaco     -> <VIRG> <VAR> contLaco faixa <VIRG>
                | <PT_VIRG>
-faixa -> expAritmetica <TO> expAritmetica
-        (<STEP> expAritmetica)?
+faixa -> exp <TO> exp
+        (<STEP> exp)?
 */
 void comandoLacoMultiplo() : {}
 {
@@ -346,11 +333,11 @@ void contLaco() : {}
 }
 void faixa() : {}
 {
-	expAritmetica()
+	exp()
 	<TO>
-	expAritmetica()
+	exp()
 	(
-	    <STEP> expAritmetica()
+	    <STEP> exp()
 	)?
 }
 
@@ -378,127 +365,99 @@ void comandoLacoMatrix() : {}
 }
 
 /*
-expAritmetica  -> expArit1 (<ADD> expArit1 | <SUB> expArit1)*
-expArit1 -> expArit2 (<MUL> expArit2 | <DIV> expArit2)*
-expArit2 -> expArit3 (<POT> expArit2)?
-expArit3 -> <AP> expAritmetica <FP>
-           | <NUM>
-           | <ADD><NUM>
-           | <SUB><NUM>
-           | <VAR>
+exp           -> expAnd   ( <OR>  expAnd )*
+expAnd        -> expNot   ( <AND> expNot )*
+expNot        -> ( <NOT> )* expRelacional
+expRelacional -> expAdit  ( <MAIOR>   expAdit | <MENOR>   expAdit 
+                          | <MAIOR_I> expAdit | <MENOR_I> expAdit |
+                          | <IGUAL>   expAdit | <DIF>     expAdit )*
+expAdit       -> expMult  ( <ADD>  expMult | <SUB> expMult  )*
+expMult       -> expPot   ( <MULT> expPot  | <DIV> expPot )*
+expPot        -> expToken ( <POT> expPot )?
+expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING> 
+                 | <AP> exp <FP>
 */
-void expAritmetica() : {}
+void exp() : {}
 {
-	expArit1()
+    expAnd()
+    (
+      <OR> expAnd()
+    )*
+}
+void expAnd() : {}
+{
+    expNot()
+    (
+       <AND> expNot()
+    )*
+}
+void expNot() : {}
+{
+    (
+       <NOT>
+    )*
+    expRelacional()
+}
+void expRelacional() : {}
+{
+   expAdit()
+   (
+       <MAIOR>   expAdit()
+       
+     |
+       <MENOR>   expAdit()
+       
+     |
+       <MAIOR_I> expAdit()
+       
+     |
+       <MENOR_I> expAdit()
+       
+     |
+       <IGUAL>   expAdit()
+       
+     |
+       <DIF>     expAdit()  
+   )*
+}
+void expAdit() : {}
+{
+	expMult()
 	(
-	  <ADD> expArit1()
+	  <ADD> expMult()
 	  |
-	  <SUB> expArit1()
+	  <SUB> expMult()
 	 )*
 }  
-void expArit1() : {}
+void expMult() : {}
 {
-	expArit2()
+	expPot()
 	(
-	   <MULT> expArit2()
+	   <MULT> expPot()
 	 |
-	   <DIV> expArit2()
+	   <DIV>  expPot()
 	)*
 }
-void expArit3() :{}
+void expPot() : {}
 {
-	<AP> expAritmetica() <FP>
-    |
-    <NUM>
-    |
-    <ADD><NUM>
-    |
-    <SUB><NUM>
-    |
-    <VAR> 
-}
-void expArit2() : {}
-{
-	expArit3()
+	expToken()
 	(
-	  <POT> expArit2()
+	  <POT> expPot()
 	)?
 }
-
-/*
-expLogica -> expLogica1 (<OR> expLogica1)*
-
-expLogica1 -> expLogica2 (<AND> expLogica2)*
-
-expLogica2 -> (<NOT>)* expLogica3
-
-expLogica3 -> expLogica4
-    ( <MAIOR>   expLogica4 
-	| <MENOR>   expLogica4 
-	| <MAIOR_I> expLogica4 
-	| <MENOR_I> expLogica4 
-	| <IGUAL> expLogica4
-	| <DIF>     expLogica4)*
-
-expLogica4 -> <AP> expLogica <FP> 
-	        | <AP> expAritmetica <FP>
-	        | expAritmetica 
-	        | <BOOL> 
-*/
-void expLogica() : {}
+void expToken() :{}
 {
-    expLogica1()
-    (
-      <OR> expLogica1()
-    )*
+      <NUM>
+    |
+      <ADD><NUM>
+    |
+      <SUB><NUM>
+    |
+      <VAR>
+    |
+      <BOOL> 
+    |
+      <STRING> 
+    |
+      <AP> exp() <FP>
 }
-void expLogica1() : {}
-{
-        expLogica2()
-        (
-          <AND> expLogica2()
-        )*
-}
-void expLogica2() : {}
-{
-        (
-          <NOT>
-        )*
-        expLogica3()
-}
-void expLogica3() : {}
-{
-	expLogica4()
-	(
-		  <MAIOR> expLogica4() 
-		|
-		  <MENOR> expLogica4()
-		|
-		  <MAIOR_I> expLogica4()
-		|
-		  <MENOR_I> expLogica4()
-		|
-		  <IGUAL> expLogica4()
-		|
-		  <DIF> expLogica4()
-    )*
-}
-void expLogica4() : {}
-{
-	<AP> expLogica() <FP>
-	|
-	<AP> expAritmetica() <FP>
-	|
-	expAritmetica()
-	|
-	<BOOL> 
-}
-
-/*
-expString - > ???
-*/
-void expString() : {}
-{
-	<STRING> // fake
-}
-  
