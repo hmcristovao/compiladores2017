@@ -1,0 +1,23 @@
+STRING nome, teste //Declaração de Variável
+
+PRINTA(“DIGITE UM NOME: “)//.
+PEGA(nome)//.
+
+SE(nome==”sair”)
+{//.
+	PRINTA(“TEM CERTEZA DISSO (sim ou não)? “)//.
+	PEGA(teste)//.
+	SE(teste==”sim”)
+	{//.
+		PRINTA(“SAIU”)//.
+	}
+	SENAO
+	{//.
+		PRINTA(“NAO SAIU”)//.
+	}
+}
+SENAO
+{//.
+	PRINTA(“NAO SAIU”)//.
+}
+

@@ -1,0 +1,8 @@
+FLUT numeroum //Declaração de Variável.
+FLUT numerodois //Declaração de Variável.
+
+numeroum = ((10+50*100)/2)**2 //Atribuição com Expressão Numérica.
+PRINTA(numeroum) //Impressão.
+
+numerodois = (numeroum%2)-10 //Atribuição com Expressão Numérica.
+PRINTA(numerodois) //Impressão.

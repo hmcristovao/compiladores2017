@@ -1,0 +1,14 @@
+BOOL  flag //Declaração de Variável.
+
+PRINTA("DIGITE true ou false: ")//.
+PEGA(flag)//.
+
+SE(flag== true)
+{//.
+    PRINTA("Verdadeiro")//.
+}
+SENAO
+{//.
+    PRINTA("Falso")//.
+}
+

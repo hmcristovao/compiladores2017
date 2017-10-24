@@ -1,0 +1,8 @@
+FLUT numero //Declaração de Variável.
+
+LACOMULTIPLO(FLUT i,j,k; 1 A (10*3)**2  PASSO (10/5),1 A 5 PASSO 1,2 A 100 PASSO 2**2)
+{//.
+	numero = ((numero*i)/j)-k//.
+}
+PRINTA(numero)//.
+

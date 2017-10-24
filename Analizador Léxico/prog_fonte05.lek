@@ -1,0 +1,15 @@
+BOOL portageral, portaum, portadois, portatres, portaquatro  //Atribuição Lógico.
+
+portaum = true //.
+portadois = true //.
+portatres = false //.
+portaquatro = true //.
+
+portageral = portaum E portadois //.
+printa(portageral) //Impressão.
+
+portageral = portageral O portatres //.
+PRINTA(portageral) //Impressão.
+
+portageral = N portaum E portatres O portaquatro ANDS portadois //.
+PRINTA(portageral) //Impressão.

@@ -1,0 +1,10 @@
+FLUT numeroum, numerodois, numerotres //Declaração de Variável.
+
+LACOMATRIX(FLUT i,j,k; 1 A (10*3)**2  PASSO (10/5))
+{//.
+	numeroum = (i+j)-(i+k)//.
+	numerodois = (numeroum*k)//.
+	numerotres = (numeroum*numerodois)//.
+}
+PRINTA(numeroum,numerodois,numerotres)//.
+
