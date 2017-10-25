@@ -1,7 +1,7 @@
 /* Compilador Hell */
 options {
    DEBUG_PARSER = true;
-   DEBUG_TOKEN_MANAGER = true;
+   DEBUG_TOKEN_MANAGER = false;
 }
 
 PARSER_BEGIN(CompiladorHell)
@@ -11,18 +11,18 @@ public class CompiladorHell {
    public static void main(String args[]) throws ParseException {
       CompiladorHell analisador = null;
       try {
-         analisador = new CompiladorHell(new FileInputStream("prog_fonte01.lek"));
+         analisador = new CompiladorHell(new FileInputStream("prog_fonte09.lek"));
          CompiladorHell.inicio();
-         System.out.println("Análise léxica e sintática sem erros!");
+         System.out.println("Anï¿½lise lï¿½xica e sintï¿½tica sem erros!");
       }
       catch(FileNotFoundException e) {
-         System.out.println("Erro: arquivo não encontrado");
+         System.out.println("Erro: arquivo nï¿½o encontrado");
       }
       catch(TokenMgrError e) {
-         System.out.println("Erro léxico\n" + e.getMessage());
+         System.out.println("Erro lï¿½xico\n" + e.getMessage());
       }
       catch(ParseException e) {
-         System.out.println("Erro sintático\n" + e.getMessage());
+         System.out.println("Erro sintï¿½tico\n" + e.getMessage());
       }
    }
 }
@@ -37,7 +37,7 @@ SKIP :
 SKIP : { "/*" : comentarioGeral }
 <comentarioGeral> SKIP: { "*/" : DEFAULT | <~[]> }
 
-TOKEN : /* OPERADORES ARITMÉTICOS */
+TOKEN : /* OPERADORES ARITMï¿½TICOS */
 {
   < ADD : "+" >
 | < SUB : "-" >
@@ -112,9 +112,9 @@ TOKEN : /* VARIAVEL */
   < VAR : (["a"-"z"])+ >
 }
 
-TOKEN : /* COMENTARIO OBRIGATÓRIO */
+TOKEN : /* COMENTARIO OBRIGATï¿½RIO */
 {
-  < COMENT : "//" (~[])* "." >
+  < COMENT : "//" (~["."])* "." >
 }
 
 /*
@@ -188,7 +188,7 @@ void comandoDeclaracaoVariavel() : {}
 }
 
 /*
-comandoAtribuição ->  <VAR><ATRIB> exp <COMENT>
+comandoAtribuiï¿½ï¿½o ->  <VAR><ATRIB> exp <COMENT>
 exp               ->  expLogica | expAritmetica | expString
 */
 void comandoAtribuicao() : { }
@@ -264,19 +264,19 @@ void comandoTeste(): {}{
 	)+
 
 	(
-		<OTHERWISE><ACH>
+		<OTHERWISE><ACH> <COMENT>
 	    listaComandos()
-	    <FCH> <COMENT>
+	    <FCH> 
 	)?
 	<FCH>
 }
 
 void blocoCondicional():{}
 {
-	<AP> exp() <FP> <ACH> 
+	<AP> exp() <FP> <ACH> <COMENT>
     listaComandos()
 	<FCH>
-	(<BREAK>)? <COMENT>
+	(<BREAK>)? 
 }
 
 
@@ -296,7 +296,7 @@ void comandoLaco () : {}
     <VAR><ATRIB> exp() <PT_VIRG>
     exp()
     <PT_VIRG> 
-    comandoAtribuicao()
+    <VAR><ATRIB> exp()
     <FP>
     <ACH> <COMENT>
     listaComandos() <FCH>
@@ -315,6 +315,9 @@ faixa -> exp <TO> exp
 void comandoLacoMultiplo() : {}
 {
 	<FORMULTIPLE> <AP>
+	(
+      <TYPENUM>
+    )?
 	inicioLaco()
 	<FP>
 	<ACH> <COMENT>
@@ -352,7 +355,11 @@ faixa -> expAritmetica <TO> expAritmetica
 */
 void comandoLacoMatrix() : {} 
 {
-      <FORMATRIX> <AP> <VAR>
+      <FORMATRIX> <AP>
+      (
+      <TYPENUM>
+      )?	
+      <VAR>
       (
         <VIRG> <VAR>
       )*
@@ -365,7 +372,8 @@ void comandoLacoMatrix() : {}
 }
 
 /*
-exp           -> expAnd   ( <OR>  expAnd )*
+exp           -> expOr   ( <CONCAT>  expOr )*
+expOr         -> expAnd   ( <OR>  expAnd )*
 expAnd        -> expNot   ( <AND> expNot )*
 expNot        -> ( <NOT> )* expRelacional
 expRelacional -> expAdit  ( <MAIOR>   expAdit | <MENOR>   expAdit 
@@ -378,6 +386,13 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
                  | <AP> exp <FP>
 */
 void exp() : {}
+{
+    expOr()
+    (
+      <CONCAT> expOr()
+    )*
+}
+void expOr() : {}
 {
     expAnd()
     (

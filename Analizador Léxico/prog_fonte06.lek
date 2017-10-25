@@ -2,7 +2,7 @@ FLUT numero //Declaração de Variável.
 STRING nome //Declaração de Variável.
 BOOL logico //Declaração de Variável.
 
-PRINTA("DIGITE UM NUMERO: ")//.
+PRINTA("DIGITE UM NUMERO: ")//Qualquer coisa.
 PRINTA("DIGITE UM NOME: ")//.
 PRINTA("DEFINA O LOGICO: ")//.
 PEGA(numero,nome,logico)//.

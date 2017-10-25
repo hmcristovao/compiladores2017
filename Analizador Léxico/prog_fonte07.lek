@@ -1,13 +1,13 @@
 FLUT numero //Declaração de Variável.
 
-PRINTA("DIGITE UM NUMERO: ")//.
-PEGA(numero)//.
+PRINTA("DIGITE UM NUMERO: ") //.
+PEGA(numero) //.
 
 SE(numero == 1)
-{//.
-	PRINTA("ACERTOU O NUMERO!!")//.
+{ //.
+	PRINTA("ACERTOU O NUMERO!!") //.
 }
 SENAO
-{//.
-	PRINTA("ERRRRRROU!!")//.
+{ //.
+	PRINTA("ERRRRRROU!!") //.
 }

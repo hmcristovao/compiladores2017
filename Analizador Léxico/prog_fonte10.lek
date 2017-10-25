@@ -1,7 +1,7 @@
 BOOL  flag //Declaração de Variável.
 STRING nome //Declaração de Variável
 FLUT numero, calculo //Declaração de Variável.
-PRINTA(“Digite um numero: “)//.
+PRINTA("DIGITE UM NUMERO: ")//.
 PEGA(numero)//.
 flag=false//.
 calculo = 100-((numero*10)/2)+(5**2)//.
@@ -12,7 +12,7 @@ SE(calculo >= 120)
 	SE(numero==0)
 	{//.
 		flag=false//.
-		PRINTA(“Numero=0, necessario encerrar!”)//.
+		PRINTA("Numero=0, necessario encerrar!")//.
 	    
 	}
 	SENAO
@@ -28,11 +28,9 @@ SENAO
 }
 SE(flag==true)
 {//.
-	PRINTA(“Resultado: ”++calculo++” resposta ”++nome)//.
+	PRINTA("Resultado: " ++ calculo ++ " resposta " ++ nome)//.
 }
 SENAO
 {//.
-	PRINTA(“CONCLUSAO INTERROMPIDA!!”)//.
+	PRINTA("CONCLUSAO INTERROMPIDA!!")//.
 }    
-
-

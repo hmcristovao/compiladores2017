@@ -6,13 +6,13 @@ PEGA(numero) //.
 TESTE
 {
 	(numero > 10){
-		PRINTA(“Entrada é maior que 10”) //.
+		PRINTA("Entrada é maior que 10") //.
 	} //.
 	(numero < 10){
-		PRINTA(“Entrada é menor que 10”) //.
+		PRINTA("Entrada é menor que 10") //.
 	}//.
 	(numero == 10){
-		PRINTA(“Entrada é igual a 10”) //.
+		PRINTA("Entrada é igual a 10") //.
 	} //.
 }
 
