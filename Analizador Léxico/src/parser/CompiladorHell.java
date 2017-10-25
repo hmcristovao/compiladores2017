@@ -376,14 +376,14 @@ comandoSe -> <IF><AP> exp <FP>
 
 /*
 comandoTeste() -> <TEST><ACH> (	blocoCondicional )+
-            	  ( <OTHERWISE><ACH>
+            	  ( <OTHERWISE><ACH> <COMENT>
 			        listaComandos()
-			        <FCH> <COMENT>
+			        <FCH> 
 		          )? <FCH>
 
-blocoCondicional -> <AP> exp <FP>
+blocoCondicional -> <AP> exp <FP> <COMENT>
                     <ACH> listaComandos()
-	                <FCH> (<BREAK>)? <COMENT>
+	                <FCH> (<BREAK>)? 
 */
   static final public void comandoTeste() throws ParseException {
     trace_call("comandoTeste");
@@ -483,7 +483,7 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
   }
 
 /*
-comandoLacoMultiplo -> <FOR_MULTIPLE> <AP> inicioLaco <FP>
+comandoLacoMultiplo -> <FOR_MULTIPLE> <AP> (TYPENUM)inicioLaco <FP>
                 <ACH> <COMENT> listaComandos <FCH>
 inicioLaco   -> <VAR> contLaco faixa
 contLaco     -> <VIRG> <VAR> contLaco faixa <VIRG>

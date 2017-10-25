@@ -248,14 +248,14 @@ void comandoSe() : {}
 
 /*
 comandoTeste() -> <TEST><ACH> (	blocoCondicional )+
-            	  ( <OTHERWISE><ACH>
+            	  ( <OTHERWISE><ACH> <COMENT>
 			        listaComandos()
-			        <FCH> <COMENT>
+			        <FCH> 
 		          )? <FCH>
 
-blocoCondicional -> <AP> exp <FP>
+blocoCondicional -> <AP> exp <FP> <COMENT>
                     <ACH> listaComandos()
-	                <FCH> (<BREAK>)? <COMENT>
+	                <FCH> (<BREAK>)? 
 */
 void comandoTeste(): {}{
 	<TEST><ACH>
@@ -304,7 +304,7 @@ void comandoLaco () : {}
 
 
 /*
-comandoLacoMultiplo -> <FOR_MULTIPLE> <AP> inicioLaco <FP>
+comandoLacoMultiplo -> <FOR_MULTIPLE> <AP> (TYPENUM)inicioLaco <FP>
                 <ACH> <COMENT> listaComandos <FCH>
 inicioLaco   -> <VAR> contLaco faixa
 contLaco     -> <VIRG> <VAR> contLaco faixa <VIRG>
