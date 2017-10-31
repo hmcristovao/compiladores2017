@@ -1,33 +1,37 @@
 /* Compilador Hell */
+
 options {
-   DEBUG_PARSER = true;
+   DEBUG_PARSER        = false;
    DEBUG_TOKEN_MANAGER = false;
 }
 
 PARSER_BEGIN(CompiladorHell)
 package parser;
+
 import java.io.*;
+import apoio.*;
+
 public class CompiladorHell {
    public static void main(String args[]) throws ParseException {
       CompiladorHell analisador = null;
       try {
-         analisador = new CompiladorHell(new FileInputStream("prog_fonte09.lek"));
+         analisador = new CompiladorHell(new FileInputStream(Config.nomeArquivoFonte));
          CompiladorHell.inicio();
-         System.out.println("An�lise l�xica e sint�tica sem erros!");
+         System.out.println("Analise lexica e sintatica sem erros!");
       }
       catch(FileNotFoundException e) {
-         System.out.println("Erro: arquivo n�o encontrado");
+         System.out.println("Erro: arquivo nao encontrado");
       }
       catch(TokenMgrError e) {
-         System.out.println("Erro l�xico\n" + e.getMessage());
+         System.out.println("Erro lexico\n" + e.getMessage());
       }
       catch(ParseException e) {
-         System.out.println("Erro sint�tico\n" + e.getMessage());
+         System.out.println("Erro sintatico\n" + e.getMessage());
       }
    }
 }
-PARSER_END(CompiladorHell)
 
+PARSER_END(CompiladorHell)
 
 SKIP :
 {
@@ -205,14 +209,28 @@ comandoPrinta -> <OUT> <AP>
 */
 void comandoPrinta ():{}
 {
-	<OUT> <AP> exp()
+	<OUT>
+	try {
+		<AP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
+		return;
+	}
+	exp()
 	(
-		(
-		  <VIRG> | <PT_VIRG>
+	  	(
+			<VIRG> | <PT_VIRG>
 		)
 		exp()
 	)*
-    <FP>
+	try {
+		<FP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
+		return;
+    }
 	<COMENT>
 }
 
@@ -221,11 +239,26 @@ comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
 */
 void comandoPega (): {}
 {
-	<IN><AP><VAR>
+	<IN>
+	try {
+		<AP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
+		return;
+	}
+	<VAR>
 	(
 	  <VIRG><VAR>
 	)*
-	<FP><COMENT>	
+	try {
+		<FP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
+		return;
+	}
+	<COMENT>	
 }
 
 /*
@@ -237,7 +270,8 @@ comandoSe -> <IF><AP> exp <FP>
 */
 void comandoSe() : {}
 {  
-	<IF><AP> exp() <FP><ACH><COMENT>
+	<IF> <AP> exp() <FP>
+	<ACH><COMENT>
 	listaComandos() <FCH>
 	(
 	  <ELSE><ACH><COMENT>
@@ -273,7 +307,8 @@ void comandoTeste(): {}{
 
 void blocoCondicional():{}
 {
-	<AP> exp() <FP> <ACH> <COMENT>
+	<AP>exp()<FP>
+	<ACH> <COMENT>
     listaComandos()
 	<FCH>
 	(<BREAK>)? 
@@ -289,7 +324,14 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
 */
 void comandoLaco () : {}
 {
-    <FOR> <AP>
+    <FOR>
+    try {
+		<AP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "abre parenteses");
+		return;	
+	}
     (
       <TYPENUM>
     )?
@@ -297,11 +339,16 @@ void comandoLaco () : {}
     exp()
     <PT_VIRG> 
     <VAR><ATRIB> exp()
-    <FP>
+    try {
+		<FP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
+        return;		                                   
+	}
     <ACH> <COMENT>
     listaComandos() <FCH>
 }
-
 
 /*
 comandoLacoMultiplo -> <FOR_MULTIPLE> <AP> (TYPENUM)inicioLaco <FP>
@@ -314,12 +361,25 @@ faixa -> exp <TO> exp
 */
 void comandoLacoMultiplo() : {}
 {
-	<FORMULTIPLE> <AP>
+	<FORMULTIPLE>
+	try {
+		<AP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
+        return;	
+	}
 	(
       <TYPENUM>
     )?
 	inicioLaco()
-	<FP>
+	try {
+		<FP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
+        return;	
+	}
 	<ACH> <COMENT>
 	listaComandos()
 	<FCH>
@@ -355,7 +415,14 @@ faixa -> expAritmetica <TO> expAritmetica
 */
 void comandoLacoMatrix() : {} 
 {
-      <FORMATRIX> <AP>
+      <FORMATRIX>
+      try {
+		<AP>
+	  }
+	  catch(ParseException e) {
+		   RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
+        return;	
+	  }
       (
       <TYPENUM>
       )?	
@@ -365,7 +432,13 @@ void comandoLacoMatrix() : {}
       )*
       <PT_VIRG>
       faixa()
-      <FP>
+      try {
+		<FP>
+	  }
+	  catch(ParseException e) {
+		  RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
+        return;	
+	  }
       <ACH> <COMENT>
       listaComandos()
       <FCH>
@@ -417,20 +490,16 @@ void expRelacional() : {}
 {
    expAdit()
    (
-       <MAIOR>   expAdit()
-       
+       <MAIOR>   expAdit()     
      |
-       <MENOR>   expAdit()
-       
+       <MENOR>   expAdit()     
      |
        <MAIOR_I> expAdit()
        
      |
-       <MENOR_I> expAdit()
-       
+       <MENOR_I> expAdit()    
      |
-       <IGUAL>   expAdit()
-       
+       <IGUAL>   expAdit()     
      |
        <DIF>     expAdit()  
    )*
@@ -474,5 +543,5 @@ void expToken() :{}
     |
       <STRING> 
     |
-      <AP> exp() <FP>
+    <AP> exp()<FP>
 }

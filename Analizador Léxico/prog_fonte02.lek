@@ -1,4 +1,4 @@
-FLUT numero = 10 //Atribuição Numerico.
+FLUT numero = 10 //Atribuicao Numerico.
 BOOL logico = true //Atribuicao Logico.
 STRING nome = "Compilador" //Atribuicao String.
 
