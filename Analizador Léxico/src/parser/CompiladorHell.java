@@ -10,7 +10,7 @@ public class CompiladorHell implements CompiladorHellConstants {
       try {
          analisador = new CompiladorHell(new FileInputStream(Config.nomeArquivoFonte));
          CompiladorHell.inicio();
-         System.out.println("Analise lexica e sintatica sem erros!");
+          System.out.println("Analise lexica e sintatica sem erros!");
       }
       catch(FileNotFoundException e) {
          System.out.println("Erro: arquivo nao encontrado");
