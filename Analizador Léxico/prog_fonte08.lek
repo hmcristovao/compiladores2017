@@ -5,7 +5,7 @@ PEGA(flag)//.
 
 SE(flag == true)
 {//.
-    PRINTA("Verdadeiro")//.
+    PRINTA("Verdadeiro"//.
 }
 SENAO
 {//.
