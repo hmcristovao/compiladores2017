@@ -8,7 +8,7 @@ public class RecuperacaoErro {
 		  System.out.println("\nErro sintatico (linha "+t.beginLine+") Encontrou \'"
 		                     + t.image + "\', era esperado: " + esperado);
 
-		  while(t.kind != tokenSincronismo && t.kind != 0) {
+		  while(t.kind != tokenSincronismo && t.kind != CompiladorHell.EOF) {
 		     CompiladorHell.getNextToken();
 		     t = CompiladorHell.getToken(1);
 		  }
