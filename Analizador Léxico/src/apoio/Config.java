@@ -4,5 +4,5 @@ import parser.*;
 
 public interface Config {
 	
-	 String nomeArquivoFonte   = "prog_fonte08.lek"; 
+	 String nomeArquivoFonte   = "prog_fonte03.lek"; 
 }

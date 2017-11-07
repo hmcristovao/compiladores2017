@@ -176,17 +176,101 @@ comandoDeclaracaoVariavel ->
     <COMENT>	
 */
 
-void comandoDeclaracaoVariavel() : {}
+void comandoDeclaracaoVariavel() : {Simbolo simb; Token t;}
 {
    (
-     <TYPENUM> <VAR> (<ATRIB> <NUM>)?
-     ( <VIRG> <VAR> (<ATRIB> <NUM>)? )*
+     <TYPENUM>
+     t=<VAR>
+     {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+	 }
+     (
+       <ATRIB>
+       t=<NUM>
+       {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+	   }
+     )?
+     (
+       <VIRG>
+       t=<VAR>
+       {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+	   }
+       (
+         <ATRIB>
+         t=<NUM>
+         {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+	   	 }
+       )?
+      )*
    | 
-     <TYPESTR> <VAR> (<ATRIB> <STRING>)?
-     ( <VIRG> <VAR> (<ATRIB> <STRING>)? )*
+     <TYPESTR>
+     t=<VAR>
+     {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+	 }
+     (
+       <ATRIB>
+       t=<STRING>
+       {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+	   }
+     )?
+     (
+       <VIRG>
+       t=<VAR>
+       {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+	   }
+       (
+         <ATRIB>
+         t=<STRING>
+         {
+			  simb = new Simbolo(t.image);
+		      tabela.inclui(simb);
+	     }
+       )?
+     )*
    | 
-     <TYPEBOOL> <VAR> (<ATRIB> <BOOL>)?
-     ( <VIRG>  <VAR> (<ATRIB> <BOOL>)? )*
+     <TYPEBOOL>
+     t=<VAR>
+     {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+	 }
+     (
+       <ATRIB>
+       t=<BOOL>
+       {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+	   }
+     )?
+     (
+       <VIRG>
+       t=<VAR>
+       {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+	   }
+       (
+         <ATRIB>
+         t=<BOOL>
+         {
+			  simb = new Simbolo(t.image);
+		      tabela.inclui(simb);
+	     }
+       )?
+     )*
    )
    <COMENT>	
 }
@@ -195,9 +279,14 @@ void comandoDeclaracaoVariavel() : {}
 comandoAtribui��o ->  <VAR><ATRIB> exp <COMENT>
 exp               ->  expLogica | expAritmetica | expString
 */
-void comandoAtribuicao() : { }
+void comandoAtribuicao() : {Simbolo simb; Token t;}
 {
-    <VAR> <ATRIB>
+    t=<VAR>
+	{
+	  simb = new Simbolo(t.image);
+      tabela.inclui(simb);
+    }
+    <ATRIB>
     exp()
     <COMENT>
 }
@@ -237,7 +326,7 @@ void comandoPrinta ():{}
 /*
 comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
 */
-void comandoPega (): {}
+void comandoPega (): {Simbolo simb; Token t;}
 {
 	<IN>
 	try {
@@ -247,7 +336,11 @@ void comandoPega (): {}
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
 		return;
 	}
-	<VAR>
+	t=<VAR>
+	{
+	  simb = new Simbolo(t.image);
+      tabela.inclui(simb);
+    }
 	(
 	  <VIRG><VAR>
 	)*
@@ -322,7 +415,7 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
                comandoAtribuicao <FP>
                <ACH> <COMENT> listaComandos <FCH>
 */
-void comandoLaco () : {}
+void comandoLaco () : {Simbolo sim; Token t;}
 {
     <FOR>
     try {
@@ -335,10 +428,20 @@ void comandoLaco () : {}
     (
       <TYPENUM>
     )?
-    <VAR><ATRIB> exp() <PT_VIRG>
+    t=<VAR>
+    {
+	  simb = new Simbolo(t.image);
+      tabela.inclui(simb);
+    }
+    <ATRIB> exp() <PT_VIRG>
     exp()
     <PT_VIRG> 
-    <VAR><ATRIB> exp()
+    t=<VAR>
+    {
+	  simb = new Simbolo(t.image);
+      tabela.inclui(simb);
+    }
+    <ATRIB> exp()
     try {
 		<FP>
 	}
@@ -384,13 +487,24 @@ void comandoLacoMultiplo() : {}
 	listaComandos()
 	<FCH>
 }
-void inicioLaco() : {}
+void inicioLaco() : {Simbolo simb; Token t;}
 {
-	<VAR> contLaco() faixa()
+	t=<VAR>
+	{
+	  simb = new Simbolo(t.image);
+      tabela.inclui(simb);
+    }
+	contLaco() faixa()
 }
-void contLaco() : {}
+void contLaco() : {Simbolo simb; Token t;}
 {
-	<VIRG> <VAR> contLaco() faixa() <VIRG> 
+	<VIRG>
+	t=<VAR>
+	{
+	  simb = new Simbolo(t.image);
+      tabela.inclui(simb);
+    }
+	contLaco() faixa() <VIRG> 
 	|
 	<PT_VIRG>
 }
@@ -413,7 +527,7 @@ comandoLacoMatrix -> <FORMATRIX> <AP> <VAR>
 faixa -> expAritmetica <TO> expAritmetica
         (<STEP> expAritmetica)?
 */
-void comandoLacoMatrix() : {} 
+void comandoLacoMatrix() : {Simbolo simb; Token t;} 
 {
       <FORMATRIX>
       try {
@@ -426,9 +540,18 @@ void comandoLacoMatrix() : {}
       (
       <TYPENUM>
       )?	
-      <VAR>
+      t=<VAR>
+      {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+      }
       (
-        <VIRG> <VAR>
+        <VIRG>
+        t=<VAR>
+        {
+			  simb = new Simbolo(t.image);
+		      tabela.inclui(simb);
+    	}
       )*
       <PT_VIRG>
       faixa()
@@ -529,19 +652,45 @@ void expPot() : {}
 	  <POT> expPot()
 	)?
 }
-void expToken() :{}
+void expToken() :{Simbolo simb; Token t;}
 {
-      <NUM>
+    t=<NUM>
+    {
+      simb = new Simbolo(t.image);
+      tabela.inclui(simb);
+    }
     |
-      <ADD><NUM>
+      <ADD>
+      t=<NUM>
+      {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+      }
     |
-      <SUB><NUM>
+      <SUB>
+      t=<NUM>
+      {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+      }
     |
-      <VAR>
+      t=<VAR>
+      {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+      }
     |
-      <BOOL> 
+      t=<BOOL>
+      {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+      } 
     |
-      <STRING> 
+      t=<STRING>
+      {
+		  simb = new Simbolo(t.image);
+	      tabela.inclui(simb);
+      } 
     |
     <AP> exp()<FP>
 }
