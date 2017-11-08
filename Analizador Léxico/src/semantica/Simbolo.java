@@ -1,4 +1,4 @@
-package parser;
+package semantica;
 
 public class Simbolo {
     private String nome;      // nome da variável

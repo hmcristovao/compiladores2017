@@ -1,4 +1,4 @@
-package parser;
+package semantica;
 import java.util.HashMap;
 
 public class Tabela {
