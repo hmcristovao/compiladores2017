@@ -134,8 +134,7 @@ comandoDeclaracaoVariavel ->
       case ATRIB:
         jj_consume_token(ATRIB);
         t = jj_consume_token(NUM);
-                  simb = new Simbolo(t.image);
-              tabela.inclui(simb);
+         
         break;
       default:
         jj_la1[2] = jj_gen;
@@ -159,8 +158,7 @@ comandoDeclaracaoVariavel ->
         case ATRIB:
           jj_consume_token(ATRIB);
           t = jj_consume_token(NUM);
-                  simb = new Simbolo(t.image);
-              tabela.inclui(simb);
+                  
           break;
         default:
           jj_la1[4] = jj_gen;
@@ -177,8 +175,7 @@ comandoDeclaracaoVariavel ->
       case ATRIB:
         jj_consume_token(ATRIB);
         t = jj_consume_token(STRING);
-                  simb = new Simbolo(t.image);
-              tabela.inclui(simb);
+                  
         break;
       default:
         jj_la1[5] = jj_gen;
@@ -202,8 +199,7 @@ comandoDeclaracaoVariavel ->
         case ATRIB:
           jj_consume_token(ATRIB);
           t = jj_consume_token(STRING);
-                          simb = new Simbolo(t.image);
-                      tabela.inclui(simb);
+                          
           break;
         default:
           jj_la1[7] = jj_gen;
@@ -220,8 +216,7 @@ comandoDeclaracaoVariavel ->
       case ATRIB:
         jj_consume_token(ATRIB);
         t = jj_consume_token(BOOL);
-                  simb = new Simbolo(t.image);
-              tabela.inclui(simb);
+                  
         break;
       default:
         jj_la1[8] = jj_gen;
@@ -245,8 +240,7 @@ comandoDeclaracaoVariavel ->
         case ATRIB:
           jj_consume_token(ATRIB);
           t = jj_consume_token(BOOL);
-                          simb = new Simbolo(t.image);
-                      tabela.inclui(simb);
+                         
           break;
         default:
           jj_la1[10] = jj_gen;
@@ -850,20 +844,17 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NUM:
       t = jj_consume_token(NUM);
-      simb = new Simbolo(t.image);
-      tabela.inclui(simb);
+      
       break;
     case ADD:
       jj_consume_token(ADD);
       t = jj_consume_token(NUM);
-                  simb = new Simbolo(t.image);
-              tabela.inclui(simb);
+                  
       break;
     case SUB:
       jj_consume_token(SUB);
       t = jj_consume_token(NUM);
-                  simb = new Simbolo(t.image);
-              tabela.inclui(simb);
+                  
       break;
     case VAR:
       t = jj_consume_token(VAR);
@@ -872,13 +863,11 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       break;
     case BOOL:
       t = jj_consume_token(BOOL);
-                  simb = new Simbolo(t.image);
-              tabela.inclui(simb);
+                  
       break;
     case STRING:
       t = jj_consume_token(STRING);
-                  simb = new Simbolo(t.image);
-              tabela.inclui(simb);
+                  
       break;
     case AP:
       jj_consume_token(AP);
