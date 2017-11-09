@@ -1,14 +1,16 @@
 package semantica;
 
 public class Simbolo {
-    private String nome;      // nome da variável
-    private int referencia;   // referência usada na geração do código destino
-    private static int marcador = 1; // armazena a última referência incluída na tabela
-
-    public Simbolo(String _nome) {
+    private String nome;      // nome da variï¿½vel
+    private int referencia;   // referï¿½ncia usada na geraï¿½ï¿½o do cï¿½digo destino
+    private static int marcador = 1; // armazena a ï¿½ltima referï¿½ncia incluï¿½da na tabela
+    private String tipo;
+    
+    public Simbolo(String _nome, String _tipo) {
           this.nome = _nome;
+          this.tipo = _tipo;
           this.referencia = Simbolo.marcador;
-          Simbolo.marcador += 2;
+          Simbolo.marcador += 2;         
     }
     public String getNome() {
           return this.nome;
@@ -16,7 +18,10 @@ public class Simbolo {
     public int getReferencia() {
           return this.referencia;
     }
+    public String getTipo() {
+		return this.tipo;
+	}
     public String toString() {
-          return "Nome:"+this.getNome() + " / " + "Referência:"+this.getReferencia() + "\n";
+          return "Tipo:"+this.getTipo() + " / " + "Nome:"+this.getNome() + " / " + "Referï¿½ncia:"+this.getReferencia() + "\n";
     }
 }

@@ -2,19 +2,21 @@
 package parser;
 
 import java.io.*;
-
-import semantica.*;
 import apoio.*;
+import semantica.*;
 
 public class CompiladorHell implements CompiladorHellConstants {
-	public static Tabela tabela = new Tabela();
+	static Tabela tabela = new Tabela();
 	public static void main(String args[]) throws ParseException {
+
 		CompiladorHell analisador = null;
 		try {
 			analisador = new CompiladorHell(new FileInputStream(Config.nomeArquivoFonte));
 			CompiladorHell.inicio();
-			System.out.println(tabela.toString());
 			System.out.println("Analise lexica e sintatica sem erros!");
+
+			System.out.println(tabela.toString());
+
 		}
 		catch(FileNotFoundException e) {
 			System.out.println("Erro: arquivo nao encontrado");
@@ -124,18 +126,17 @@ comandoDeclaracaoVariavel ->
     <COMENT>	
 	 */
 	static final public void comandoDeclaracaoVariavel() throws ParseException {
-		Simbolo simb; Token t;
+		Simbolo simb; Token var; Token tipo;
 		switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
 		case TYPENUM:
-			jj_consume_token(TYPENUM);
-			t = jj_consume_token(VAR);
-			simb = new Simbolo(t.image);
+			tipo = jj_consume_token(TYPENUM);
+			var = jj_consume_token(VAR);
+			simb = new Simbolo(var.image, tipo.image);
 			tabela.inclui(simb);
 			switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
 			case ATRIB:
 				jj_consume_token(ATRIB);
-				t = jj_consume_token(NUM);
-
+				jj_consume_token(NUM);
 				break;
 			default:
 				jj_la1[2] = jj_gen;
@@ -152,14 +153,13 @@ comandoDeclaracaoVariavel ->
 						break label_2;
 					}
 					jj_consume_token(VIRG);
-					t = jj_consume_token(VAR);
-					simb = new Simbolo(t.image);
+					var = jj_consume_token(VAR);
+					simb = new Simbolo(var.image, tipo.image);
 					tabela.inclui(simb);
 					switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
 					case ATRIB:
 						jj_consume_token(ATRIB);
-						t = jj_consume_token(NUM);
-
+						jj_consume_token(NUM);
 						break;
 					default:
 						jj_la1[4] = jj_gen;
@@ -168,15 +168,14 @@ comandoDeclaracaoVariavel ->
 				}
 			break;
 		case TYPESTR:
-			jj_consume_token(TYPESTR);
-			t = jj_consume_token(VAR);
-			simb = new Simbolo(t.image);
+			tipo = jj_consume_token(TYPESTR);
+			var = jj_consume_token(VAR);
+			simb = new Simbolo(var.image, tipo.image);
 			tabela.inclui(simb);
 			switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
 			case ATRIB:
 				jj_consume_token(ATRIB);
-				t = jj_consume_token(STRING);
-
+				jj_consume_token(STRING);
 				break;
 			default:
 				jj_la1[5] = jj_gen;
@@ -193,14 +192,13 @@ comandoDeclaracaoVariavel ->
 						break label_3;
 					}
 					jj_consume_token(VIRG);
-					t = jj_consume_token(VAR);
-					simb = new Simbolo(t.image);
+					var = jj_consume_token(VAR);
+					simb = new Simbolo(var.image, tipo.image);
 					tabela.inclui(simb);
 					switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
 					case ATRIB:
 						jj_consume_token(ATRIB);
-						t = jj_consume_token(STRING);
-
+						jj_consume_token(STRING);
 						break;
 					default:
 						jj_la1[7] = jj_gen;
@@ -209,15 +207,14 @@ comandoDeclaracaoVariavel ->
 				}
 			break;
 		case TYPEBOOL:
-			jj_consume_token(TYPEBOOL);
-			t = jj_consume_token(VAR);
-			simb = new Simbolo(t.image);
+			tipo = jj_consume_token(TYPEBOOL);
+			var = jj_consume_token(VAR);
+			simb = new Simbolo(var.image, tipo.image);
 			tabela.inclui(simb);
 			switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
 			case ATRIB:
 				jj_consume_token(ATRIB);
-				t = jj_consume_token(BOOL);
-
+				jj_consume_token(BOOL);
 				break;
 			default:
 				jj_la1[8] = jj_gen;
@@ -234,14 +231,13 @@ comandoDeclaracaoVariavel ->
 						break label_4;
 					}
 					jj_consume_token(VIRG);
-					t = jj_consume_token(VAR);
-					simb = new Simbolo(t.image);
+					var = jj_consume_token(VAR);
+					simb = new Simbolo(var.image, tipo.image);
 					tabela.inclui(simb);
 					switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
 					case ATRIB:
 						jj_consume_token(ATRIB);
-						t = jj_consume_token(BOOL);
-
+						jj_consume_token(BOOL);
 						break;
 					default:
 						jj_la1[10] = jj_gen;
@@ -262,10 +258,7 @@ comandoAtribui��o ->  <VAR><ATRIB> exp <COMENT>
 exp               ->  expLogica | expAritmetica | expString
 	 */
 	static final public void comandoAtribuicao() throws ParseException {
-		Simbolo simb; Token t;
-		t = jj_consume_token(VAR);
-		simb = new Simbolo(t.image);
-		tabela.inclui(simb);
+		jj_consume_token(VAR);
 		jj_consume_token(ATRIB);
 		exp();
 		jj_consume_token(COMENT);
@@ -323,7 +316,6 @@ comandoPrinta -> <OUT> <AP>
 comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
 	 */
 	static final public void comandoPega() throws ParseException {
-		Simbolo simb; Token t;
 		jj_consume_token(IN);
 		try {
 			jj_consume_token(AP);
@@ -331,9 +323,7 @@ comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
 			RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
 			{if (true) return;}
 		}
-		t = jj_consume_token(VAR);
-		simb = new Simbolo(t.image);
-		tabela.inclui(simb);
+		jj_consume_token(VAR);
 		label_6:
 			while (true) {
 				switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -453,7 +443,7 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
                <ACH> <COMENT> listaComandos <FCH>
 	 */
 	static final public void comandoLaco() throws ParseException {
-		Simbolo simb; Token t;
+		Simbolo simb; Token var; Token tipo = null;
 		jj_consume_token(FOR);
 		try {
 			jj_consume_token(AP);
@@ -463,23 +453,24 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
 		}
 		switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
 		case TYPENUM:
-			jj_consume_token(TYPENUM);
+			tipo = jj_consume_token(TYPENUM);
 			break;
 		default:
 			jj_la1[19] = jj_gen;
 			;
 		}
-		t = jj_consume_token(VAR);
-		simb = new Simbolo(t.image);
-		tabela.inclui(simb);
+		var = jj_consume_token(VAR);
+		if(tipo != null)
+		{
+			simb = new Simbolo(var.image, tipo.image);
+			tabela.inclui(simb);
+		}
 		jj_consume_token(ATRIB);
 		exp();
 		jj_consume_token(PT_VIRG);
 		exp();
 		jj_consume_token(PT_VIRG);
-		t = jj_consume_token(VAR);
-		simb = new Simbolo(t.image);
-		tabela.inclui(simb);
+		jj_consume_token(VAR);
 		jj_consume_token(ATRIB);
 		exp();
 		try {
@@ -504,6 +495,7 @@ faixa -> exp <TO> exp
         (<STEP> exp)?
 	 */
 	static final public void comandoLacoMultiplo() throws ParseException {
+		Token tipo = null;
 		jj_consume_token(FORMULTIPLE);
 		try {
 			jj_consume_token(AP);
@@ -513,13 +505,13 @@ faixa -> exp <TO> exp
 		}
 		switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
 		case TYPENUM:
-			jj_consume_token(TYPENUM);
+			tipo = jj_consume_token(TYPENUM);
 			break;
 		default:
 			jj_la1[20] = jj_gen;
 			;
 		}
-		inicioLaco();
+		inicioLaco(tipo);
 		try {
 			jj_consume_token(FP);
 		} catch (ParseException e) {
@@ -532,24 +524,30 @@ faixa -> exp <TO> exp
 		jj_consume_token(FCH);
 	}
 
-	static final public void inicioLaco() throws ParseException {
-		Simbolo simb; Token t;
-		t = jj_consume_token(VAR);
-		simb = new Simbolo(t.image);
-		tabela.inclui(simb);
-		contLaco();
+	static final public void inicioLaco(Token tipo) throws ParseException {
+		Simbolo simb; Token var;
+		var = jj_consume_token(VAR);
+		if(tipo!=null)
+		{
+			simb = new Simbolo(var.image,tipo.image);
+			tabela.inclui(simb);
+		}
+		contLaco(tipo);
 		faixa();
 	}
 
-	static final public void contLaco() throws ParseException {
-		Simbolo simb; Token t;
+	static final public void contLaco(Token tipo) throws ParseException {
+		Simbolo simb; Token var;
 		switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
 		case VIRG:
 			jj_consume_token(VIRG);
-			t = jj_consume_token(VAR);
-			simb = new Simbolo(t.image);
-			tabela.inclui(simb);
-			contLaco();
+			var = jj_consume_token(VAR);
+			if(tipo!=null)
+			{
+				simb = new Simbolo(var.image,tipo.image);
+				tabela.inclui(simb);
+			}
+			contLaco(tipo);
 			faixa();
 			jj_consume_token(VIRG);
 			break;
@@ -588,7 +586,7 @@ faixa -> expAritmetica <TO> expAritmetica
         (<STEP> expAritmetica)?
 	 */
 	static final public void comandoLacoMatrix() throws ParseException {
-		Simbolo simb; Token t;
+		Simbolo simb; Token var; Token tipo = null;
 		jj_consume_token(FORMATRIX);
 		try {
 			jj_consume_token(AP);
@@ -598,15 +596,18 @@ faixa -> expAritmetica <TO> expAritmetica
 		}
 		switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
 		case TYPENUM:
-			jj_consume_token(TYPENUM);
+			tipo = jj_consume_token(TYPENUM);
 			break;
 		default:
 			jj_la1[23] = jj_gen;
 			;
 		}
-		t = jj_consume_token(VAR);
-		simb = new Simbolo(t.image);
-		tabela.inclui(simb);
+		var = jj_consume_token(VAR);
+		if(tipo!=null)
+		{
+			simb = new Simbolo(var.image,tipo.image);
+			tabela.inclui(simb);
+		}
 		label_8:
 			while (true) {
 				switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -618,9 +619,12 @@ faixa -> expAritmetica <TO> expAritmetica
 					break label_8;
 				}
 				jj_consume_token(VIRG);
-				t = jj_consume_token(VAR);
-				simb = new Simbolo(t.image);
-				tabela.inclui(simb);
+				var = jj_consume_token(VAR);
+				if(tipo!=null)
+				{
+					simb = new Simbolo(var.image,tipo.image);
+					tabela.inclui(simb);
+				}
 			}
 		jj_consume_token(PT_VIRG);
 		faixa();
@@ -844,31 +848,24 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
 		Simbolo simb; Token t;
 		switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
 		case NUM:
-			t = jj_consume_token(NUM);
-
+			jj_consume_token(NUM);
 			break;
 		case ADD:
 			jj_consume_token(ADD);
-			t = jj_consume_token(NUM);
-
+			jj_consume_token(NUM);
 			break;
 		case SUB:
 			jj_consume_token(SUB);
-			t = jj_consume_token(NUM);
-
+			jj_consume_token(NUM);
 			break;
 		case VAR:
-			t = jj_consume_token(VAR);
-			simb = new Simbolo(t.image);
-			tabela.inclui(simb);
+			jj_consume_token(VAR);
 			break;
 		case BOOL:
-			t = jj_consume_token(BOOL);
-
+			jj_consume_token(BOOL);
 			break;
 		case STRING:
-			t = jj_consume_token(STRING);
-
+			jj_consume_token(STRING);
 			break;
 		case AP:
 			jj_consume_token(AP);

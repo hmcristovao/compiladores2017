@@ -10,14 +10,19 @@ package parser;
 
 import java.io.*;
 import apoio.*;
+import semantica.*;
 
 public class CompiladorHell {
    public static void main(String args[]) throws ParseException {
+      public static Tabela tabelaSimbolos = new Tabela();
       CompiladorHell analisador = null;
       try {
          analisador = new CompiladorHell(new FileInputStream(Config.nomeArquivoFonte));
          CompiladorHell.inicio();
           System.out.println("Analise lexica e sintatica sem erros!");
+
+		  System.out.println(tabelaSimbolos());
+          
       }
       catch(FileNotFoundException e) {
          System.out.println("Erro: arquivo nao encontrado");
@@ -176,99 +181,75 @@ comandoDeclaracaoVariavel ->
     <COMENT>	
 */
 
-void comandoDeclaracaoVariavel() : {Simbolo simb; Token t;}
+void comandoDeclaracaoVariavel() : {Simbolo simb; Token var; Token tipo;}
 {
    (
-     <TYPENUM>
-     t=<VAR>
+     tipo=<TYPENUM>
+     var=<VAR>
      {
-		  simb = new Simbolo(t.image);
+		  simb = new Simbolo(var.image, tipo.image);
 	      tabela.inclui(simb);
 	 }
      (
        <ATRIB>
-       t=<NUM>
-       {
-		  simb = new Simbolo(t.image);
-	      tabela.inclui(simb);
-	   }
+       <NUM>
      )?
      (
        <VIRG>
-       t=<VAR>
+       var=<VAR>
        {
-		  simb = new Simbolo(t.image);
+		  simb = new Simbolo(var.image, tipo.image);
 	      tabela.inclui(simb);
 	   }
        (
          <ATRIB>
-         t=<NUM>
-         {
-		  simb = new Simbolo(t.image);
-	      tabela.inclui(simb);
-	   	 }
+         <NUM>
        )?
       )*
    | 
-     <TYPESTR>
-     t=<VAR>
+     tipo=<TYPESTR>
+     var=<VAR>
      {
-		  simb = new Simbolo(t.image);
+		  simb = new Simbolo(var.image, tipo.image);
 	      tabela.inclui(simb);
 	 }
      (
        <ATRIB>
-       t=<STRING>
-       {
-		  simb = new Simbolo(t.image);
-	      tabela.inclui(simb);
-	   }
+       <STRING>
      )?
      (
        <VIRG>
-       t=<VAR>
+       var=<VAR>
        {
-		  simb = new Simbolo(t.image);
+		  simb = new Simbolo(var.image, tipo.image);
 	      tabela.inclui(simb);
 	   }
        (
          <ATRIB>
-         t=<STRING>
-         {
-			  simb = new Simbolo(t.image);
-		      tabela.inclui(simb);
-	     }
+         <STRING>
        )?
      )*
    | 
-     <TYPEBOOL>
-     t=<VAR>
+     tipo=<TYPEBOOL>
+     var=<VAR>
      {
-		  simb = new Simbolo(t.image);
+		  simb = new Simbolo(var.image, tipo.image);
 	      tabela.inclui(simb);
 	 }
      (
        <ATRIB>
-       t=<BOOL>
-       {
-		  simb = new Simbolo(t.image);
-	      tabela.inclui(simb);
-	   }
+       <BOOL>
      )?
      (
        <VIRG>
-       t=<VAR>
+       var=<VAR>
        {
-		  simb = new Simbolo(t.image);
+		  simb = new Simbolo(var.image, tipo.image);
 	      tabela.inclui(simb);
 	   }
        (
          <ATRIB>
-         t=<BOOL>
-         {
-			  simb = new Simbolo(t.image);
-		      tabela.inclui(simb);
-	     }
+         <BOOL>
        )?
      )*
    )
@@ -279,13 +260,9 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token t;}
 comandoAtribui��o ->  <VAR><ATRIB> exp <COMENT>
 exp               ->  expLogica | expAritmetica | expString
 */
-void comandoAtribuicao() : {Simbolo simb; Token t;}
+void comandoAtribuicao() : {}
 {
-    t=<VAR>
-	{
-	  simb = new Simbolo(t.image);
-      tabela.inclui(simb);
-    }
+    <VAR>
     <ATRIB>
     exp()
     <COMENT>
@@ -326,7 +303,7 @@ void comandoPrinta ():{}
 /*
 comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
 */
-void comandoPega (): {Simbolo simb; Token t;}
+void comandoPega (): {}
 {
 	<IN>
 	try {
@@ -336,11 +313,7 @@ void comandoPega (): {Simbolo simb; Token t;}
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
 		return;
 	}
-	t=<VAR>
-	{
-	  simb = new Simbolo(t.image);
-      tabela.inclui(simb);
-    }
+	<VAR>
 	(
 	  <VIRG><VAR>
 	)*
@@ -415,7 +388,7 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
                comandoAtribuicao <FP>
                <ACH> <COMENT> listaComandos <FCH>
 */
-void comandoLaco () : {Simbolo sim; Token t;}
+void comandoLaco () : {Simbolo simb; Token var; Token tipo = null;}
 {
     <FOR>
     try {
@@ -426,21 +399,20 @@ void comandoLaco () : {Simbolo sim; Token t;}
 		return;	
 	}
     (
-      <TYPENUM>
+      tipo = <TYPENUM>
     )?
-    t=<VAR>
+    var=<VAR>
     {
-	  simb = new Simbolo(t.image);
-      tabela.inclui(simb);
+	  if(tipo != null)
+	  {
+	     simb = new Simbolo(var.image, tipo.image);
+	     tabela.inclui(simb);
+      }
     }
     <ATRIB> exp() <PT_VIRG>
     exp()
     <PT_VIRG> 
-    t=<VAR>
-    {
-	  simb = new Simbolo(t.image);
-      tabela.inclui(simb);
-    }
+    <VAR>
     <ATRIB> exp()
     try {
 		<FP>
@@ -462,7 +434,7 @@ contLaco     -> <VIRG> <VAR> contLaco faixa <VIRG>
 faixa -> exp <TO> exp
         (<STEP> exp)?
 */
-void comandoLacoMultiplo() : {}
+void comandoLacoMultiplo() : {Token tipo = null;}
 {
 	<FORMULTIPLE>
 	try {
@@ -473,9 +445,9 @@ void comandoLacoMultiplo() : {}
         return;	
 	}
 	(
-      <TYPENUM>
+      tipo = <TYPENUM>
     )?
-	inicioLaco()
+	inicioLaco(tipo)
 	try {
 		<FP>
 	}
@@ -487,24 +459,30 @@ void comandoLacoMultiplo() : {}
 	listaComandos()
 	<FCH>
 }
-void inicioLaco() : {Simbolo simb; Token t;}
+void inicioLaco(Token tipo) : {Simbolo simb; Token var;}
 {
-	t=<VAR>
+	var=<VAR>
 	{
-	  simb = new Simbolo(t.image);
-      tabela.inclui(simb);
+	  if(tipo!=null)
+	  { 
+		  simb = new Simbolo(var.image,tipo.image);
+	      tabela.inclui(simb);
+      }
     }
-	contLaco() faixa()
+	contLaco(tipo) faixa()
 }
-void contLaco() : {Simbolo simb; Token t;}
+void contLaco(Token tipo) : {Simbolo simb; Token var;}
 {
 	<VIRG>
-	t=<VAR>
+	var=<VAR>
 	{
-	  simb = new Simbolo(t.image);
-      tabela.inclui(simb);
+	  if(tipo!=null)
+	  { 
+		  simb = new Simbolo(var.image,tipo.image);
+	      tabela.inclui(simb);
+      }
     }
-	contLaco() faixa() <VIRG> 
+	contLaco(tipo) faixa() <VIRG> 
 	|
 	<PT_VIRG>
 }
@@ -527,7 +505,7 @@ comandoLacoMatrix -> <FORMATRIX> <AP> <VAR>
 faixa -> expAritmetica <TO> expAritmetica
         (<STEP> expAritmetica)?
 */
-void comandoLacoMatrix() : {Simbolo simb; Token t;} 
+void comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;} 
 {
       <FORMATRIX>
       try {
@@ -538,19 +516,25 @@ void comandoLacoMatrix() : {Simbolo simb; Token t;}
         return;	
 	  }
       (
-      <TYPENUM>
+      tipo = <TYPENUM>
       )?	
-      t=<VAR>
+      var=<VAR>
       {
-		  simb = new Simbolo(t.image);
-	      tabela.inclui(simb);
+		  if(tipo!=null)
+		  {
+		    simb = new Simbolo(var.image,tipo.image);
+	      	tabela.inclui(simb);
+		  }
       }
       (
         <VIRG>
-        t=<VAR>
+       	var=<VAR>
         {
-			  simb = new Simbolo(t.image);
-		      tabela.inclui(simb);
+			if(tipo!=null)
+			{
+			  simb = new Simbolo(var.image,tipo.image);
+	      	  tabela.inclui(simb);
+			}
     	}
       )*
       <PT_VIRG>
@@ -654,43 +638,19 @@ void expPot() : {}
 }
 void expToken() :{Simbolo simb; Token t;}
 {
-    t=<NUM>
-    {
-      simb = new Simbolo(t.image);
-      tabela.inclui(simb);
-    }
+    <NUM>
     |
       <ADD>
-      t=<NUM>
-      {
-		  simb = new Simbolo(t.image);
-	      tabela.inclui(simb);
-      }
+      <NUM>
     |
       <SUB>
-      t=<NUM>
-      {
-		  simb = new Simbolo(t.image);
-	      tabela.inclui(simb);
-      }
+      <NUM>
     |
-      t=<VAR>
-      {
-		  simb = new Simbolo(t.image);
-	      tabela.inclui(simb);
-      }
+      <VAR>
     |
-      t=<BOOL>
-      {
-		  simb = new Simbolo(t.image);
-	      tabela.inclui(simb);
-      } 
+      <BOOL>
     |
-      t=<STRING>
-      {
-		  simb = new Simbolo(t.image);
-	      tabela.inclui(simb);
-      } 
+      <STRING>
     |
     <AP> exp()<FP>
 }
