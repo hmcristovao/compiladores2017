@@ -13,8 +13,9 @@ import apoio.*;
 import semantica.*;
 
 public class CompiladorHell {
+ public static Tabela tabelaSimbolos = new Tabela();
    public static void main(String args[]) throws ParseException {
-      public static Tabela tabelaSimbolos = new Tabela();
+      
       CompiladorHell analisador = null;
       try {
          analisador = new CompiladorHell(new FileInputStream(Config.nomeArquivoFonte));
@@ -188,7 +189,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var; Token tipo;}
      var=<VAR>
      {
 		  simb = new Simbolo(var.image, tipo.image);
-	      tabela.inclui(simb);
+	       CompiladorHell.tabela.inclui(simb);
 	 }
      (
        <ATRIB>
@@ -199,7 +200,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var; Token tipo;}
        var=<VAR>
        {
 		  simb = new Simbolo(var.image, tipo.image);
-	      tabela.inclui(simb);
+	       CompiladorHell.tabela.inclui(simb);
 	   }
        (
          <ATRIB>
@@ -211,7 +212,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var; Token tipo;}
      var=<VAR>
      {
 		  simb = new Simbolo(var.image, tipo.image);
-	      tabela.inclui(simb);
+	       CompiladorHell.tabela.inclui(simb);
 	 }
      (
        <ATRIB>
@@ -222,7 +223,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var; Token tipo;}
        var=<VAR>
        {
 		  simb = new Simbolo(var.image, tipo.image);
-	      tabela.inclui(simb);
+	       CompiladorHell.tabela.inclui(simb);
 	   }
        (
          <ATRIB>
@@ -234,7 +235,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var; Token tipo;}
      var=<VAR>
      {
 		  simb = new Simbolo(var.image, tipo.image);
-	      tabela.inclui(simb);
+	       CompiladorHell.tabela.inclui(simb);
 	 }
      (
        <ATRIB>
@@ -245,7 +246,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var; Token tipo;}
        var=<VAR>
        {
 		  simb = new Simbolo(var.image, tipo.image);
-	      tabela.inclui(simb);
+	      CompiladorHell.tabela.inclui(simb);
 	   }
        (
          <ATRIB>
@@ -406,7 +407,7 @@ void comandoLaco () : {Simbolo simb; Token var; Token tipo = null;}
 	  if(tipo != null)
 	  {
 	     simb = new Simbolo(var.image, tipo.image);
-	     tabela.inclui(simb);
+	      CompiladorHell.tabela.inclui(simb);
       }
     }
     <ATRIB> exp() <PT_VIRG>
@@ -466,7 +467,7 @@ void inicioLaco(Token tipo) : {Simbolo simb; Token var;}
 	  if(tipo!=null)
 	  { 
 		  simb = new Simbolo(var.image,tipo.image);
-	      tabela.inclui(simb);
+	       CompiladorHell.tabela.inclui(simb);
       }
     }
 	contLaco(tipo) faixa()
@@ -479,7 +480,7 @@ void contLaco(Token tipo) : {Simbolo simb; Token var;}
 	  if(tipo!=null)
 	  { 
 		  simb = new Simbolo(var.image,tipo.image);
-	      tabela.inclui(simb);
+	       CompiladorHell.tabela.inclui(simb);
       }
     }
 	contLaco(tipo) faixa() <VIRG> 
@@ -523,7 +524,7 @@ void comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;}
 		  if(tipo!=null)
 		  {
 		    simb = new Simbolo(var.image,tipo.image);
-	      	tabela.inclui(simb);
+	      	 CompiladorHell.tabela.inclui(simb);
 		  }
       }
       (
@@ -533,7 +534,7 @@ void comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;}
 			if(tipo!=null)
 			{
 			  simb = new Simbolo(var.image,tipo.image);
-	      	  tabela.inclui(simb);
+	      	   CompiladorHell.tabela.inclui(simb);
 			}
     	}
       )*
