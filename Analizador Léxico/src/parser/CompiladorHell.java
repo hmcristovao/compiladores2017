@@ -5,10 +5,10 @@ import java.io.*;
 import apoio.*;
 import semantica.*;
 
-public class CompiladorHell implements CompiladorHellConstants {
- public static Tabela tabelaSimbolos = new Tabela();
-   public static void main(String args[]) throws ParseException {
 
+public class CompiladorHell implements CompiladorHellConstants {
+	//public static Tabela tabelaSimbolos = new Tabela();
+   public static void main(String args[]) throws ParseException {
       CompiladorHell analisador = null;
       try {
          analisador = new CompiladorHell(new FileInputStream(Config.nomeArquivoFonte));
