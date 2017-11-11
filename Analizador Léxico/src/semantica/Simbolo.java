@@ -6,7 +6,7 @@ public class Simbolo {
     private static int marcador = 1; // armazena a �ltima refer�ncia inclu�da na tabela
     private Tipo tipo;
     
-    public Simbolo(String _nome, Tipo tipo) {
+    public Simbolo(String _nome) {
           this.nome = _nome;
           this.referencia = Simbolo.marcador;
           Simbolo.marcador += 2; 
