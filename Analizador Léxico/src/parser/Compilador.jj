@@ -185,10 +185,10 @@ comandoDeclaracaoVariavel ->
 void comandoDeclaracaoVariavel() : {Simbolo simb; Token var; Token tipo;}
 {
    (
-     tipo=<TYPENUM>
+     <TYPENUM>
      var=<VAR>
      {
-		  simb = new Simbolo(var.image, tipo.image);
+		  simb = new Simbolo(var.image, tipo.NUMERO);
 	       CompiladorHell.tabela.inclui(simb);
 	 }
      (
@@ -199,7 +199,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var; Token tipo;}
        <VIRG>
        var=<VAR>
        {
-		  simb = new Simbolo(var.image, tipo.image);
+		  simb = new Simbolo(var.image, tipo.NUMERO);
 	       CompiladorHell.tabela.inclui(simb);
 	   }
        (
@@ -208,10 +208,10 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var; Token tipo;}
        )?
       )*
    | 
-     tipo=<TYPESTR>
+     <TYPESTR>
      var=<VAR>
      {
-		  simb = new Simbolo(var.image, tipo.image);
+		  simb = new Simbolo(var.image, tipo.STRING);
 	       CompiladorHell.tabela.inclui(simb);
 	 }
      (
@@ -222,7 +222,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var; Token tipo;}
        <VIRG>
        var=<VAR>
        {
-		  simb = new Simbolo(var.image, tipo.image);
+		  simb = new Simbolo(var.image, tipo.STRING);
 	       CompiladorHell.tabela.inclui(simb);
 	   }
        (
@@ -231,10 +231,10 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var; Token tipo;}
        )?
      )*
    | 
-     tipo=<TYPEBOOL>
+     <TYPEBOOL>
      var=<VAR>
      {
-		  simb = new Simbolo(var.image, tipo.image);
+		  simb = new Simbolo(var.image, tipo.BOOLEANO);
 	       CompiladorHell.tabela.inclui(simb);
 	 }
      (
@@ -245,7 +245,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var; Token tipo;}
        <VIRG>
        var=<VAR>
        {
-		  simb = new Simbolo(var.image, tipo.image);
+		  simb = new Simbolo(var.image, tipo.BOLLEANO);
 	      CompiladorHell.tabela.inclui(simb);
 	   }
        (

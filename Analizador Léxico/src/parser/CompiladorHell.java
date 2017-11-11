@@ -5,10 +5,10 @@ import java.io.*;
 import apoio.*;
 import semantica.*;
 
-
 public class CompiladorHell implements CompiladorHellConstants {
-	public static Tabela tabelaSimbolos = new Tabela();
+ public static Tabela tabelaSimbolos = new Tabela();
    public static void main(String args[]) throws ParseException {
+
       CompiladorHell analisador = null;
       try {
          analisador = new CompiladorHell(new FileInputStream(Config.nomeArquivoFonte));
@@ -129,9 +129,9 @@ comandoDeclaracaoVariavel ->
                                     Simbolo simb; Token var; Token tipo;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TYPENUM:
-      tipo = jj_consume_token(TYPENUM);
+      jj_consume_token(TYPENUM);
       var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, tipo.image);
+                  simb = new Simbolo(var.image, tipo.NUMERO);
                CompiladorHell.tabela.inclui(simb);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ATRIB:
@@ -154,7 +154,7 @@ comandoDeclaracaoVariavel ->
         }
         jj_consume_token(VIRG);
         var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, tipo.image);
+                  simb = new Simbolo(var.image, tipo.NUMERO);
                CompiladorHell.tabela.inclui(simb);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ATRIB:
@@ -168,9 +168,9 @@ comandoDeclaracaoVariavel ->
       }
       break;
     case TYPESTR:
-      tipo = jj_consume_token(TYPESTR);
+      jj_consume_token(TYPESTR);
       var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, tipo.image);
+                  simb = new Simbolo(var.image, tipo.STRING);
                CompiladorHell.tabela.inclui(simb);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ATRIB:
@@ -193,7 +193,7 @@ comandoDeclaracaoVariavel ->
         }
         jj_consume_token(VIRG);
         var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, tipo.image);
+                  simb = new Simbolo(var.image, tipo.STRING);
                CompiladorHell.tabela.inclui(simb);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ATRIB:
@@ -207,9 +207,9 @@ comandoDeclaracaoVariavel ->
       }
       break;
     case TYPEBOOL:
-      tipo = jj_consume_token(TYPEBOOL);
+      jj_consume_token(TYPEBOOL);
       var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, tipo.image);
+                  simb = new Simbolo(var.image, tipo.BOOLEANO);
                CompiladorHell.tabela.inclui(simb);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ATRIB:
@@ -232,7 +232,7 @@ comandoDeclaracaoVariavel ->
         }
         jj_consume_token(VIRG);
         var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, tipo.image);
+                  simb = new Simbolo(var.image, tipo.BOLLEANO);
               CompiladorHell.tabela.inclui(simb);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ATRIB:
