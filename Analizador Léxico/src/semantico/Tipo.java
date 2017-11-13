@@ -1,4 +1,4 @@
-package semantica;
+package semantico;
 
 public enum Tipo {
 	    VAR_STRING,

@@ -1,4 +1,4 @@
-package semantica;
+package semantico;
 import java.util.HashMap;
 
 public class Tabela {

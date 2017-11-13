@@ -1,4 +1,4 @@
-package semantica;
+package semantico;
 
 public class Simbolo {
     private String nome;      // nome da vari�vel
