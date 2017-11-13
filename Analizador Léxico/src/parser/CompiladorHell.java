@@ -6,7 +6,9 @@ import apoio.*;
 import semantica.*;
 
 public class CompiladorHell implements CompiladorHellConstants {
- public static Tabela tabelaSimbolos = new Tabela();
+
+   public static Tabela tabela = new Tabela();
+
    public static void main(String args[]) throws ParseException {
 
       CompiladorHell analisador = null;
@@ -15,7 +17,7 @@ public class CompiladorHell implements CompiladorHellConstants {
          CompiladorHell.inicio();
           System.out.println("Analise lexica e sintatica sem erros!");
 
-                  System.out.println(tabelaSimbolos());
+                  System.out.println(tabela);
 
       }
       catch(FileNotFoundException e) {
@@ -126,12 +128,12 @@ comandoDeclaracaoVariavel ->
     <COMENT>	
 */
   static final public void comandoDeclaracaoVariavel() throws ParseException {
-                                    Simbolo simb; Token var; Token tipo;
+                                    Simbolo simb; Token var;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TYPENUM:
       jj_consume_token(TYPENUM);
       var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, tipo.NUMERO);
+                   simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
                CompiladorHell.tabela.inclui(simb);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ATRIB:
@@ -154,7 +156,7 @@ comandoDeclaracaoVariavel ->
         }
         jj_consume_token(VIRG);
         var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, tipo.NUMERO);
+                   simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
                CompiladorHell.tabela.inclui(simb);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ATRIB:
@@ -170,7 +172,7 @@ comandoDeclaracaoVariavel ->
     case TYPESTR:
       jj_consume_token(TYPESTR);
       var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, tipo.STRING);
+                   simb = new Simbolo(var.image, Tipo.VAR_STRING);
                CompiladorHell.tabela.inclui(simb);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ATRIB:
@@ -193,7 +195,7 @@ comandoDeclaracaoVariavel ->
         }
         jj_consume_token(VIRG);
         var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, tipo.STRING);
+                  simb = new Simbolo(var.image, Tipo.VAR_STRING);
                CompiladorHell.tabela.inclui(simb);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ATRIB:
@@ -209,7 +211,7 @@ comandoDeclaracaoVariavel ->
     case TYPEBOOL:
       jj_consume_token(TYPEBOOL);
       var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, tipo.BOOLEANO);
+                  simb = new Simbolo(var.image, Tipo.VAR_BOOLEANO);
                CompiladorHell.tabela.inclui(simb);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ATRIB:
@@ -232,7 +234,7 @@ comandoDeclaracaoVariavel ->
         }
         jj_consume_token(VIRG);
         var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, tipo.BOLLEANO);
+                  simb = new Simbolo(var.image, Tipo.VAR_BOOLEANO);
               CompiladorHell.tabela.inclui(simb);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ATRIB:
@@ -443,7 +445,7 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
                <ACH> <COMENT> listaComandos <FCH>
 */
   static final public void comandoLaco() throws ParseException {
-                       Simbolo simb; Token var; Token tipo = null;
+                       Simbolo simb; Token var; Token tokenTipo = null;
     jj_consume_token(FOR);
     try {
       jj_consume_token(AP);
@@ -453,16 +455,16 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TYPENUM:
-      tipo = jj_consume_token(TYPENUM);
+      tokenTipo = jj_consume_token(TYPENUM);
       break;
     default:
       jj_la1[19] = jj_gen;
       ;
     }
     var = jj_consume_token(VAR);
-          if(tipo != null)
+          if(tokenTipo != null)
           {
-             simb = new Simbolo(var.image, tipo.image);
+             simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
               CompiladorHell.tabela.inclui(simb);
       }
     jj_consume_token(ATRIB);
@@ -495,7 +497,7 @@ faixa -> exp <TO> exp
         (<STEP> exp)?
 */
   static final public void comandoLacoMultiplo() throws ParseException {
-                              Token tipo = null;
+                              Token tokenTipo = null;
     jj_consume_token(FORMULTIPLE);
     try {
       jj_consume_token(AP);
@@ -505,13 +507,13 @@ faixa -> exp <TO> exp
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TYPENUM:
-      tipo = jj_consume_token(TYPENUM);
+      tokenTipo = jj_consume_token(TYPENUM);
       break;
     default:
       jj_la1[20] = jj_gen;
       ;
     }
-    inicioLaco(tipo);
+    inicioLaco(tokenTipo);
     try {
       jj_consume_token(FP);
     } catch (ParseException e) {
@@ -524,30 +526,30 @@ faixa -> exp <TO> exp
     jj_consume_token(FCH);
   }
 
-  static final public void inicioLaco(Token tipo) throws ParseException {
-                               Simbolo simb; Token var;
+  static final public void inicioLaco(Token tokenTipo) throws ParseException {
+                                    Simbolo simb; Token var;
     var = jj_consume_token(VAR);
-          if(tipo!=null)
+          if(tokenTipo!=null)
           {
-                  simb = new Simbolo(var.image,tipo.image);
+                   simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
                CompiladorHell.tabela.inclui(simb);
       }
-    contLaco(tipo);
+    contLaco(tokenTipo);
     faixa();
   }
 
-  static final public void contLaco(Token tipo) throws ParseException {
-                             Simbolo simb; Token var;
+  static final public void contLaco(Token tokenTipo) throws ParseException {
+                                  Simbolo simb; Token var;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VIRG:
       jj_consume_token(VIRG);
       var = jj_consume_token(VAR);
-          if(tipo!=null)
+          if(tokenTipo!=null)
           {
-                  simb = new Simbolo(var.image,tipo.image);
-               CompiladorHell.tabela.inclui(simb);
+                  simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
+              CompiladorHell.tabela.inclui(simb);
       }
-      contLaco(tipo);
+      contLaco(tokenTipo);
       faixa();
       jj_consume_token(VIRG);
       break;
@@ -605,7 +607,7 @@ faixa -> expAritmetica <TO> expAritmetica
     var = jj_consume_token(VAR);
                   if(tipo!=null)
                   {
-                    simb = new Simbolo(var.image,tipo.image);
+                    simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
                  CompiladorHell.tabela.inclui(simb);
                   }
     label_8:
@@ -622,7 +624,7 @@ faixa -> expAritmetica <TO> expAritmetica
       var = jj_consume_token(VAR);
                         if(tipo!=null)
                         {
-                          simb = new Simbolo(var.image,tipo.image);
+                          simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
                    CompiladorHell.tabela.inclui(simb);
                         }
     }
@@ -689,7 +691,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
   }
 
   static final public void expAnd() throws ParseException {
-    expNot();
+    expAnds();
     label_11:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -701,20 +703,37 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         break label_11;
       }
       jj_consume_token(AND);
+      expAnds();
+    }
+  }
+
+  static final public void expAnds() throws ParseException {
+    expNot();
+    label_12:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case ANDS:
+        ;
+        break;
+      default:
+        jj_la1[28] = jj_gen;
+        break label_12;
+      }
+      jj_consume_token(ANDS);
       expNot();
     }
   }
 
   static final public void expNot() throws ParseException {
-    label_12:
+    label_13:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case NOT:
         ;
         break;
       default:
-        jj_la1[28] = jj_gen;
-        break label_12;
+        jj_la1[29] = jj_gen;
+        break label_13;
       }
       jj_consume_token(NOT);
     }
@@ -723,7 +742,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
 
   static final public void expRelacional() throws ParseException {
     expAdit();
-    label_13:
+    label_14:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MAIOR:
@@ -735,8 +754,8 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         ;
         break;
       default:
-        jj_la1[29] = jj_gen;
-        break label_13;
+        jj_la1[30] = jj_gen;
+        break label_14;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MAIOR:
@@ -764,7 +783,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         expAdit();
         break;
       default:
-        jj_la1[30] = jj_gen;
+        jj_la1[31] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -773,7 +792,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
 
   static final public void expAdit() throws ParseException {
     expMult();
-    label_14:
+    label_15:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ADD:
@@ -781,8 +800,8 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         ;
         break;
       default:
-        jj_la1[31] = jj_gen;
-        break label_14;
+        jj_la1[32] = jj_gen;
+        break label_15;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ADD:
@@ -794,7 +813,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         expMult();
         break;
       default:
-        jj_la1[32] = jj_gen;
+        jj_la1[33] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -803,7 +822,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
 
   static final public void expMult() throws ParseException {
     expPot();
-    label_15:
+    label_16:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MULT:
@@ -811,8 +830,8 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         ;
         break;
       default:
-        jj_la1[33] = jj_gen;
-        break label_15;
+        jj_la1[34] = jj_gen;
+        break label_16;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MULT:
@@ -824,7 +843,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         expPot();
         break;
       default:
-        jj_la1[34] = jj_gen;
+        jj_la1[35] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -839,7 +858,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       expPot();
       break;
     default:
-      jj_la1[35] = jj_gen;
+      jj_la1[36] = jj_gen;
       ;
     }
   }
@@ -873,7 +892,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       jj_consume_token(FP);
       break;
     default:
-      jj_la1[36] = jj_gen;
+      jj_la1[37] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -889,7 +908,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[37];
+  static final private int[] jj_la1 = new int[38];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -897,10 +916,10 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x7a000000,0x7a000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000000,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x400000,0x200000,0x800000,0x1f8000,0x1f8000,0x300,0x300,0xc00,0xc00,0x1000,0x300,};
+      jj_la1_0 = new int[] {0x7a000000,0x7a000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000000,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x400000,0x200000,0x1000000,0x800000,0x1f8000,0x1f8000,0x300,0x300,0xc00,0xc00,0x1000,0x300,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x47006,0x47006,0x800,0x20,0x800,0x800,0x20,0x800,0x800,0x20,0x800,0x7000,0x60,0x60,0x20,0x0,0x80,0x1,0x0,0x1000,0x1000,0x60,0x10,0x1000,0x20,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x78080,};
+      jj_la1_1 = new int[] {0x47006,0x47006,0x800,0x20,0x800,0x800,0x20,0x800,0x800,0x20,0x800,0x7000,0x60,0x60,0x20,0x0,0x80,0x1,0x0,0x1000,0x1000,0x60,0x10,0x1000,0x20,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x78080,};
    }
 
   /** Constructor with InputStream. */
@@ -921,7 +940,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -935,7 +954,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -952,7 +971,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -962,7 +981,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -978,7 +997,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -987,7 +1006,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -1043,7 +1062,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 37; i++) {
+    for (int i = 0; i < 38; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

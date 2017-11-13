@@ -6,10 +6,10 @@ portatres = false //.
 portaquatro = true //.
 
 portageral = portaum E portadois //.
-printa(portageral) //Impressão.
+PRINTA(portageral) //Impressão.
 
 portageral = portageral O portatres //.
 PRINTA(portageral) //Impressão.
 
-portageral = N portaum E portatres O portaquatro ANDS portadois //.
+portageral = N portaum E portatres O portaquatro EE portadois //.
 PRINTA(portageral) //Impressão.
