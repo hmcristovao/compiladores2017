@@ -2,7 +2,6 @@
 package parser;
 
 import java.io.*;
-
 import apoio.*;
 import semantico.*;
 
