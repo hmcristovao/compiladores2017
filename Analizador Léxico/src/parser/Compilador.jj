@@ -10,7 +10,7 @@ package parser;
 
 import java.io.*;
 import apoio.*;
-import semantico.*;
+import semantica.*;
 
 public class CompiladorHell {
    
@@ -337,17 +337,32 @@ comandoSe -> <IF><AP> exp <FP>
              (<ELSE><ACH><COMENT>
              listaComandos <FCH>)?
 */
-void comandoSe() : {}
+
+SeSenao comandoSe() : {Comando seSenao = new SeSenao(); Expressao expSeSenao = new Expressao(); ListaComandos listaComandosCondicaoVerdadeiro = new ListaComandos(); ListaComandos listaComandosCondicaoFalso = new ListaComandos(); }
 {  
-	<IF> <AP> exp() <FP>
+	<IF> <AP> expSeSenao = exp() <FP>
+	{
+	  seSenao.setexpSeSenao(expSeSEnao);
+	}
 	<ACH><COMENT>
-	listaComandos() <FCH>
+	listaComandosCondicaoVerdadeiro = listaComandos() <FCH>
+	{
+	  seSenao.setlistaComandosCondicaoVerdadeiro(listaComandosCondicaoVerdadeiro);
+	}
 	(
 	  <ELSE><ACH><COMENT>
-	  listaComandos()
+	  listaComandosCondicaoFalso = listaComandos()
+	  {
+	     seSenao.setlistaComandosCondicaoFalso (listaComandosCondicaoFalso);
+	  }
 	  <FCH>
 	)?
+
+{ return seSenao;}
+
 }
+
+
 
 /*
 comandoTeste() -> <TEST><ACH> (	blocoCondicional )+
@@ -360,29 +375,40 @@ blocoCondicional -> <AP> exp <FP> <COMENT>
                     <ACH> listaComandos()
 	                <FCH> (<BREAK>)? 
 */
-void comandoTeste(): {}{
+
+Teste comandoTeste(): {Condicional c; ListaComandos lc; Teste t = new Teste();}{
 	<TEST><ACH>
 	(
-		blocoCondicional()
+		c = blocoCondicional()
+		{t.addCondicoes(c);}
 	)+
 
 	(
 		<OTHERWISE><ACH> <COMENT>
-	    listaComandos()
+	    lc = listaComandos()
+	    { t.setOutroCaso(lc);}
 	    <FCH> 
 	)?
 	<FCH>
+
+	{return t;}
 }
 
-void blocoCondicional():{}
+Condicional blocoCondicional():{Expressao e; ListaComandos lc; Condicional c = new Condicional()}
 {
-	<AP>exp()<FP>
+	<AP>
+	e = exp()
+	{c.setExpressao(e);}
+	<FP>
 	<ACH> <COMENT>
-    listaComandos()
+    lc = listaComandos()
+    {c.setListaComandos(lc);}
 	<FCH>
-	(<BREAK>)? 
-}
+	(<BREAK>)?
 
+	{ return c; }
+	  
+}
 
 /*
 comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
