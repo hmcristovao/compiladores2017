@@ -271,6 +271,21 @@ void comandoAtribuicao() : {}
     <COMENT>
 }
 
+Comando comandoAtribuicao() : {ComandoAtribuicao atrib; Token var; Expressao expa;}
+{
+    var=<VAR>
+    <ATRIB>
+    expa = exp()
+    {
+      atrib = new ComandoAtribuicao(var.image, expa);
+    }
+    <COMENT>
+    {
+	return atrib;
+    }
+}
+
+
 /*
 comandoPrinta -> <OUT> <AP>
                  exp ((<VIRG>|<PT_VIRG>) exp)*
