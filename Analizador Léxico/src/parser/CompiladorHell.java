@@ -2,9 +2,8 @@
 package parser;
 
 import java.io.*;
-
 import apoio.*;
-import semantico.*;
+import semantica.*;
 
 public class CompiladorHell implements CompiladorHellConstants {
 

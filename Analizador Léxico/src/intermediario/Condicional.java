@@ -8,6 +8,11 @@ public class Condicional {
 
 	
 	
+	public Condicional(Expressao expressao, ListaComandos listaComandos) {
+		this.expressao = expressao;
+		this.listaComandos = listaComandos;
+	}
+
 	public Expressao getExpressao() {
 		return expressao;
 	}

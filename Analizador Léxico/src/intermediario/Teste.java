@@ -10,7 +10,6 @@ public class Teste extends Comando {
 	
 	
 	public Teste(LinkedList<Condicional> condicoes, ListaComandos outroCaso) {
-		super();
 		this.condicoes = condicoes;
 		this.outroCaso = outroCaso;
 	}
@@ -34,13 +33,6 @@ public class Teste extends Comando {
 	public void setOutroCaso(ListaComandos outroCaso) {
 		this.outroCaso = outroCaso;
 	}
-	
-	
-	public void saida(){
-		
-	};
-	
-	
 	
 	
 	
