@@ -11,6 +11,7 @@ package parser;
 import java.io.*;
 import apoio.*;
 import semantico.*;
+import intermediario.*;
 
 public class CompiladorHell {
    
@@ -437,7 +438,7 @@ contLaco     -> <VIRG> <VAR> contLaco faixa <VIRG>
 faixa -> exp <TO> exp
         (<STEP> exp)?
 */
-void comandoLacoMultiplo() : {Token tokenTipo = null;}
+void comandoLacoMultiplo() : {Token tokenTipo = null;LacoMultiplo laco;}
 {
 	<FORMULTIPLE>
 	try {
@@ -450,7 +451,7 @@ void comandoLacoMultiplo() : {Token tokenTipo = null;}
 	(
       tokenTipo = <TYPENUM>
     )?
-	inicioLaco(tokenTipo)
+	laco = inicioLaco(tokenTipo)
 	try {
 		<FP>
 	}
@@ -462,41 +463,58 @@ void comandoLacoMultiplo() : {Token tokenTipo = null;}
 	listaComandos()
 	<FCH>
 }
-void inicioLaco(Token tokenTipo) : {Simbolo simb; Token var;}
+LacoMultiplo inicioLaco(Token tokenTipo) : {Simbolo simb; Token var;BlocoLacoMultiplo bloco;}
 {
+  	
 	var=<VAR>
 	{
+	  LacoMultiplo laco = new LacoMultiplo ();
+	  bloco = new BlocoLacoMultiplo(var.image);
+	  laco.incluiBloco(bloco);
+	  
 	  if(tokenTipo!=null)
 	  { 
 		   simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
 	       CompiladorHell.tabela.inclui(simb);
       }
     }
-	contLaco(tokenTipo) faixa()
+	contLaco(tokenTipo,laco) faixaLacoMultiplo(laco)
+
+	{
+	  return laco;
+	}
 }
-void contLaco(Token tokenTipo) : {Simbolo simb; Token var;}
+void contLaco(Token tokenTipo,LacoMultiplo laco) : {Simbolo simb; Token var;BlocoLacoMultiplo bloco;}
 {
 	<VIRG>
 	var=<VAR>
 	{
+	  bloco = new BlocoLacoMultiplo(var.image);
+	  laco.incluiBloco(bloco);
+	  
 	  if(tokenTipo!=null)
 	  { 
 		  simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
 	      CompiladorHell.tabela.inclui(simb);
       }
     }
-	contLaco(tokenTipo) faixa() <VIRG> 
+	contLaco(tokenTipo,laco) faixaLacoMultiplo(laco) <VIRG> 
 	|
 	<PT_VIRG>
 }
-void faixa() : {}
+void faixaLacoMultiplo(LacoMultiplo laco) : {Expressao expFrom,expTo;Expressao expStep = new Expressao();}
 {
-	exp()
+  	
+  	
+	expFrom = exp()
 	<TO>
-	exp()
+	expTo = exp()
 	(
-	    <STEP> exp()
+	    <STEP> expStep = exp()
 	)?
+	{
+	  laco.addFaixa(expFrom,expTo,expStep); //possui um contador interno para controle de insercao das faixas
+	}
 }
 
 /*
@@ -553,6 +571,16 @@ void comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;}
       listaComandos()
       <FCH>
 }
+void faixa() : {}
+{
+  	
+	exp()
+	<TO>
+	exp()
+	(
+	    <STEP> exp()
+	)?
+}
 
 /*
 exp           -> expOr   ( <CONCAT>  expOr )*
@@ -568,7 +596,7 @@ expPot        -> expToken ( <POT> expPot )?
 expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING> 
                  | <AP> exp <FP>
 */
-void exp() : {}
+Expressao exp() : {}
 {
     expOr()
     (

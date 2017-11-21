@@ -9,7 +9,7 @@ public class BlocoLacoMultiplo {
 	public BlocoLacoMultiplo(String _var){
 		this.var = _var;
 	}
-	public BlocoLacoMultiplo(Expressao _expFrom,Expressao _expTo,Expressao _expStep){
+	public void addFaixa(Expressao _expFrom,Expressao _expTo,Expressao _expStep){
 		this.expFrom = _expFrom;
 		this.expTo = _expTo;
 		this.expStep = _expStep;
