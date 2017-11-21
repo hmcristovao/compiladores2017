@@ -518,6 +518,7 @@ ArrayList<Expressao> faixa() : {ArrayList<Expressao> expressao; Expressao auxili
 	    <STEP> auxiliar = exp()
 	    { expressao.add(auxiliar); }
 	)?
+	{ return expressao; }
 }
 
 /*

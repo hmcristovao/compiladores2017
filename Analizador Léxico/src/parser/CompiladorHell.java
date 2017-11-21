@@ -587,6 +587,8 @@ faixa -> exp <TO> exp
       jj_la1[22] = jj_gen;
       ;
     }
+          {if (true) return expressao;}
+    throw new Error("Missing return statement in function");
   }
 
 /*
