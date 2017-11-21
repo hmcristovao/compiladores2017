@@ -444,8 +444,8 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
                comandoAtribuicao <FP>
                <ACH> <COMENT> listaComandos <FCH>
 */
-  static final public void comandoLaco() throws ParseException {
-                       Simbolo simb; Token var; Token tokenTipo = null;
+  static final public Comando comandoLaco() throws ParseException {
+                          Simbolo simb; Token var; Token tokenTipo = null; Comando laco = new Laco(); Expressao expressaoAuxiliar = new Expressao(); ListaComandos listaAuxiliar = new ListaComandos();
     jj_consume_token(FOR);
     try {
       jj_consume_token(AP);
@@ -467,14 +467,18 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
              simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
               CompiladorHell.tabela.inclui(simb);
       }
+       laco.setvarControle(var);
     jj_consume_token(ATRIB);
-    exp();
+    expressaoAuxiliar = exp();
     jj_consume_token(PT_VIRG);
-    exp();
+        laco.setExpressaoInicializacao(expressaoAuxiliar);
+    expressaoAuxiliar = exp();
+        laco.setExpressaoComparadora(expressaoAuxiliar);
     jj_consume_token(PT_VIRG);
     jj_consume_token(VAR);
     jj_consume_token(ATRIB);
-    exp();
+    expressaoAuxiliar = exp();
+        laco.setExpressaoIteracao(expressaoAuxiliar);
     try {
       jj_consume_token(FP);
     } catch (ParseException e) {
@@ -483,8 +487,11 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
     }
     jj_consume_token(ACH);
     jj_consume_token(COMENT);
-    listaComandos();
+    listaAuxiliar = listaComandos();
     jj_consume_token(FCH);
+        laco.setListaComandos(listaAuxiliar);
+      {if (true) return laco;}
+    throw new Error("Missing return statement in function");
   }
 
 /*
@@ -563,14 +570,18 @@ faixa -> exp <TO> exp
     }
   }
 
-  static final public void faixa() throws ParseException {
-    exp();
+  static final public ArrayList<Expressao> faixa() throws ParseException {
+                                ArrayList<Expressao> expressao; Expressao auxiliar;
+    auxiliar = exp();
+         expressao.add(auxiliar);
     jj_consume_token(TO);
-    exp();
+    auxiliar = exp();
+         expressao.add(auxiliar);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case STEP:
       jj_consume_token(STEP);
-      exp();
+      auxiliar = exp();
+              expressao.add(auxiliar);
       break;
     default:
       jj_la1[22] = jj_gen;
@@ -587,8 +598,8 @@ comandoLacoMatrix -> <FORMATRIX> <AP> <VAR>
 faixa -> expAritmetica <TO> expAritmetica
         (<STEP> expAritmetica)?
 */
-  static final public void comandoLacoMatrix() throws ParseException {
-                            Simbolo simb; Token var; Token tipo = null;
+  static final public Comando comandoLacoMatrix() throws ParseException {
+                               Simbolo simb; Token var; Token tipo = null; Comando lacoMatrix = new LacoMatrix(); Expressao expressaoAuxiliar = new Expressao(); ListaComandos listaAuxiliar = new ListaComandos(); ArrayList<Expressao > expressao;
     jj_consume_token(FORMATRIX);
     try {
       jj_consume_token(AP);
@@ -610,6 +621,7 @@ faixa -> expAritmetica <TO> expAritmetica
                     simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
                  CompiladorHell.tabela.inclui(simb);
                   }
+        lacoMatrix.setVariaveisControle(var);
     label_8:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -627,9 +639,16 @@ faixa -> expAritmetica <TO> expAritmetica
                           simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
                    CompiladorHell.tabela.inclui(simb);
                         }
+          lacoMatrix.setVariaveisControle(var);
     }
     jj_consume_token(PT_VIRG);
-    faixa();
+    expressao = faixa();
+            lacoMatrix.setExpressaoInicial(expressao.get(0));
+            lacoMatrix.setExpressaoFinal(expressao.get(1));
+            if(expressao.size() > 2)
+                {
+                  lacoMatrix.setExpressaoPasso(expressao.get(2));
+                }
     try {
       jj_consume_token(FP);
     } catch (ParseException e) {
@@ -638,8 +657,11 @@ faixa -> expAritmetica <TO> expAritmetica
     }
     jj_consume_token(ACH);
     jj_consume_token(COMENT);
-    listaComandos();
+    listaAuxiliar = listaComandos();
+        lacoMatrix.setListaComandos(listaAuxiliar);
     jj_consume_token(FCH);
+        {if (true) return lacoMatrix;}
+    throw new Error("Missing return statement in function");
   }
 
 /*
