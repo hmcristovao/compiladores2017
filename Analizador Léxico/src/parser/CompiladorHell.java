@@ -259,11 +259,22 @@ comandoDeclaracaoVariavel ->
 comandoAtribui��o ->  <VAR><ATRIB> exp <COMENT>
 exp               ->  expLogica | expAritmetica | expString
 */
-  static final public void comandoAtribuicao() throws ParseException {
-    jj_consume_token(VAR);
+/*void comandoAtribuicao() : {}
+{
+    <VAR>
+    <ATRIB>
+    exp()
+    <COMENT>
+}*/
+  static final public Comando comandoAtribuicao() throws ParseException {
+                               ComandoAtribuicao atrib; Token var; Expressao expa;
+    var = jj_consume_token(VAR);
     jj_consume_token(ATRIB);
-    exp();
+    expa = exp();
+      atrib = new ComandoAtribuicao(var.image, expa);
     jj_consume_token(COMENT);
+        {if (true) return atrib;}
+    throw new Error("Missing return statement in function");
   }
 
 /*
@@ -271,7 +282,34 @@ comandoPrinta -> <OUT> <AP>
                  exp ((<VIRG>|<PT_VIRG>) exp)*
                  <FP> <COMENT>
 */
-  static final public void comandoPrinta() throws ParseException {
+/*void comandoPrinta ():{}
+{
+	<OUT>
+	try {
+		<AP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
+		return;
+	}
+	exp()
+	(
+	  	(
+			<VIRG> | <PT_VIRG>
+		)
+		exp()
+	)*
+	try {
+		<FP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
+		return;
+    }
+	<COMENT>
+}*/
+  static final public Comando comandoPrinta() throws ParseException {
+                          ComandoPrinta printa; Expressao expa;
     jj_consume_token(OUT);
     try {
       jj_consume_token(AP);
@@ -279,7 +317,8 @@ comandoPrinta -> <OUT> <AP>
                 RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
                 {if (true) return;}
     }
-    exp();
+    expa = exp();
+          printa = new ComandoPrinta(expa);
     label_5:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -303,7 +342,8 @@ comandoPrinta -> <OUT> <AP>
         jj_consume_token(-1);
         throw new ParseException();
       }
-      exp();
+      expa = exp();
+                  printa.addExpressao(expa);
     }
     try {
       jj_consume_token(FP);
@@ -312,6 +352,8 @@ comandoPrinta -> <OUT> <AP>
                 {if (true) return;}
     }
     jj_consume_token(COMENT);
+          {if (true) return printa;}
+    throw new Error("Missing return statement in function");
   }
 
 /*

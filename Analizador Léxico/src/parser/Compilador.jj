@@ -263,13 +263,13 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
 comandoAtribui��o ->  <VAR><ATRIB> exp <COMENT>
 exp               ->  expLogica | expAritmetica | expString
 */
-void comandoAtribuicao() : {}
+/*void comandoAtribuicao() : {}
 {
     <VAR>
     <ATRIB>
     exp()
     <COMENT>
-}
+}*/
 
 Comando comandoAtribuicao() : {ComandoAtribuicao atrib; Token var; Expressao expa;}
 {
@@ -291,7 +291,7 @@ comandoPrinta -> <OUT> <AP>
                  exp ((<VIRG>|<PT_VIRG>) exp)*
                  <FP> <COMENT>
 */
-void comandoPrinta ():{}
+/*void comandoPrinta ():{}
 {
 	<OUT>
 	try {
@@ -316,6 +316,42 @@ void comandoPrinta ():{}
 		return;
     }
 	<COMENT>
+}*/
+
+Comando comandoPrinta ():{ComandoPrinta printa; Expressao expa;}
+{
+	<OUT>
+	try {
+		<AP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
+		return;
+	}
+	expa = exp()
+	{
+	  printa = new ComandoPrinta(expa);
+	}
+	(
+	  	(
+			<VIRG> | <PT_VIRG>
+		)
+		expa = exp()
+		{
+		  printa.addExpressao(expa);
+		}
+	)*
+	try {
+		<FP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
+		return;
+    }
+	<COMENT>
+	{
+	  return printa;
+	}
 }
 
 /*
