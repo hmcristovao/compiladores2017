@@ -1,15 +1,13 @@
 package intermediario;
 
 import java.util.LinkedList;
-import parser.Token;
 
-//OBS: na versão anterior continha a classe Token no package intermediario
 public class Pega extends Comando {
 
 	LinkedList<String> listaVariaveis;
 	
 	public Pega(){
-		this.listaVariaveis = new LinkedList<Token>();		
+		this.listaVariaveis = new LinkedList<String>();		
 	}
 	
 	@Override

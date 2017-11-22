@@ -15,6 +15,9 @@ import semantico.*;
 public class CompiladorHell {
    
    public static Tabela tabela = new Tabela();
+
+	// Flag que verifica se algum erro de vaiavel nao declarada ocorreu
+   private static boolean erroDecVar = false;
    
    public static void main(String args[]) throws ParseException {
       
@@ -22,9 +25,14 @@ public class CompiladorHell {
       try {
          analisador = new CompiladorHell(new FileInputStream(Config.nomeArquivoFonte));
          CompiladorHell.inicio();
-          System.out.println("Analise lexica e sintatica sem erros!");
-
-		  System.out.println(tabela);
+         
+         // Caso nenhum erro de variavel nao declarada tenha ocorrido
+         if (!erroDecVar) { 
+         	System.out.println("Analise lexica e sintatica sem erros!");
+         	System.out.println(tabela);
+         }else { 
+         	System.out.println("Falha na compilacao!");
+        }
           
       }
       catch(FileNotFoundException e) {
@@ -263,28 +271,20 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
 comandoAtribui��o ->  <VAR><ATRIB> exp <COMENT>
 exp               ->  expLogica | expAritmetica | expString
 */
-void comandoAtribuicao() : {}
+void comandoAtribuicao() : {Token var;}
 {
-    <VAR>
+    var = <VAR>
+    {
+      if (!tabela.isExiste(var.image)) {
+        	erroDecVar = true;
+			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
+				var.beginLine + ", coluna " + var.beginColumn);
+      }
+    }
     <ATRIB>
     exp()
     <COMENT>
 }
-
-Comando comandoAtribuicao() : {ComandoAtribuicao atrib; Token var; Expressao expa;}
-{
-    var=<VAR>
-    <ATRIB>
-    expa = exp()
-    {
-      atrib = new ComandoAtribuicao(var.image, expa);
-    }
-    <COMENT>
-    {
-	return atrib;
-    }
-}
-
 
 /*
 comandoPrinta -> <OUT> <AP>
@@ -321,7 +321,7 @@ void comandoPrinta ():{}
 /*
 comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
 */
-Pega comandoPega (): {Token t; Pega pega = new Pega();}
+void comandoPega (): {Token var;}
 {
 	<IN>
 	try {
@@ -329,25 +329,34 @@ Pega comandoPega (): {Token t; Pega pega = new Pega();}
 	}
 	catch(ParseException e) {
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
-		return null;
+		return;
 	}
-	t = <VAR>  
-	{pega.adicionaVariavel(t.image);}
+	var = <VAR>
+	{
+      if (!tabela.isExiste(var.image)) {
+        	erroDecVar = true;
+			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
+				var.beginLine + ", coluna " + var.beginColumn);
+      }
+    }
 	(
-	  <VIRG>
-	  t = <VAR>
-	  {pega.adicionaVariavel(t.image);}
+	  <VIRG> var = <VAR>
+	  {
+      	if (!tabela.isExiste(var.image)) {
+        	erroDecVar = true;
+			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
+				var.beginLine + ", coluna " + var.beginColumn);
+      	}
+   	}
 	)*
-	try { 
+	try {
 		<FP>
 	}
 	catch(ParseException e) {
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
-		return null;
+		return;
 	}
-	<COMENT>
-	{return pega;}
-	  
+	<COMENT>	
 }
 
 /*
@@ -426,6 +435,12 @@ void comandoLaco () : {Simbolo simb; Token var; Token tokenTipo = null;}
     )?
     var=<VAR>
     {
+		if (!tabela.isExiste(var.image)) {
+			erroDecVar = true;
+			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
+				var.beginLine + ", coluna " + var.beginColumn);
+		}
+		
 	  if(tokenTipo != null)
 	  {
 	     simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
@@ -486,6 +501,12 @@ void inicioLaco(Token tokenTipo) : {Simbolo simb; Token var;}
 {
 	var=<VAR>
 	{
+	  if (!tabela.isExiste(var.image)) {
+        	erroDecVar = true;
+			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
+				var.beginLine + ", coluna " + var.beginColumn);
+      	}
+      	
 	  if(tokenTipo!=null)
 	  { 
 		   simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
@@ -499,6 +520,12 @@ void contLaco(Token tokenTipo) : {Simbolo simb; Token var;}
 	<VIRG>
 	var=<VAR>
 	{
+	  if (!tabela.isExiste(var.image)) {
+        	erroDecVar = true;
+			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
+				var.beginLine + ", coluna " + var.beginColumn);
+      	}
+	  
 	  if(tokenTipo!=null)
 	  { 
 		  simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
@@ -543,6 +570,12 @@ void comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;}
       )?	
       var=<VAR>
       {
+        if (!tabela.isExiste(var.image)) {
+        	erroDecVar = true;
+			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
+				var.beginLine + ", coluna " + var.beginColumn);
+      	}
+	      	
 		  if(tipo!=null)
 		  {
 		    simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
@@ -553,6 +586,12 @@ void comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;}
         <VIRG>
        	var=<VAR>
         {
+          if (!tabela.isExiste(var.image)) {
+        	erroDecVar = true;
+			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
+				var.beginLine + ", coluna " + var.beginColumn);
+      		}
+      		
 			if(tipo!=null)
 			{
 			  simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
@@ -666,7 +705,7 @@ void expPot() : {}
 	  <POT> expPot()
 	)?
 }
-void expToken() :{Simbolo simb; Token t;}
+void expToken() :{Simbolo simb; Token t; Token var;}
 {
     <NUM>
     |
@@ -676,7 +715,14 @@ void expToken() :{Simbolo simb; Token t;}
       <SUB>
       <NUM>
     |
-      <VAR>
+      var = <VAR>
+	{
+		if (!tabela.isExiste(var.image)) {
+        	erroDecVar = true;
+			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
+				var.beginLine + ", coluna " + var.beginColumn);
+      	}
+	}
     |
       <BOOL>
     |
