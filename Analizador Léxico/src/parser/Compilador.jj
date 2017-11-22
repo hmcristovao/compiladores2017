@@ -321,7 +321,7 @@ void comandoPrinta ():{}
 /*
 comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
 */
-void comandoPega (): {Token var;}
+Pega comandoPega (): {Token var; Pega pega = new Pega();}
 {
 	<IN>
 	try {
@@ -332,6 +332,7 @@ void comandoPega (): {Token var;}
 		return;
 	}
 	var = <VAR>
+	{pega.adicionaVariavel(var.image);}
 	{
       if (!tabela.isExiste(var.image)) {
         	erroDecVar = true;
@@ -341,6 +342,7 @@ void comandoPega (): {Token var;}
     }
 	(
 	  <VIRG> var = <VAR>
+	  {pega.adicionaVariavel(var.image);}
 	  {
       	if (!tabela.isExiste(var.image)) {
         	erroDecVar = true;
@@ -356,7 +358,9 @@ void comandoPega (): {Token var;}
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
 		return;
 	}
-	<COMENT>	
+	<COMENT>
+	{return pega;}
+	  
 }
 
 /*
