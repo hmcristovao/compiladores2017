@@ -321,7 +321,7 @@ void comandoPrinta ():{}
 /*
 comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
 */
-void comandoPega (): {}
+Pega comandoPega (): {Token t; Pega pega = new Pega();}
 {
 	<IN>
 	try {
@@ -329,20 +329,25 @@ void comandoPega (): {}
 	}
 	catch(ParseException e) {
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
-		return;
+		return null;
 	}
-	<VAR>
+	t = <VAR>  
+	{pega.adicionaVariavel(t.image);}
 	(
-	  <VIRG><VAR>
+	  <VIRG>
+	  t = <VAR>
+	  {pega.adicionaVariavel(t.image);}
 	)*
-	try {
+	try { 
 		<FP>
 	}
 	catch(ParseException e) {
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
-		return;
+		return null;
 	}
-	<COMENT>	
+	<COMENT>
+	{return pega;}
+	  
 }
 
 /*
