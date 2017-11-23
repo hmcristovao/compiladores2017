@@ -740,6 +740,7 @@ expToken()
 }
 void expToken(Expressao e) :{Item item; Token t;}
 {
+  	String tconcatenada;
     t = <NUM>
     {
        item = new Item(Tipo.CTE_NUMERICA, t.image);
@@ -747,19 +748,52 @@ void expToken(Expressao e) :{Item item; Token t;}
     }
       
     |
-      <ADD>
-      <NUM>
+      t=<ADD>
+      tconcatenada = t.image;
+      t=<NUM>
+      tconcatenada = tconcatenada + t.image;
+      {
+      item = new Item(Tipo.CTE_NUMERICA, tconcatenada);
+      e.add(item);
+    	}
+      
     |
-      <SUB>
-      <NUM>
+      t=<SUB>
+      tconcatenada = t.image;
+      t=<NUM>
+      tconcatenada = tconcatenada + t.image;
+      {
+      item = new Item(Tipo.CTE_NUMERICA, tconcatenada);
+      e.add(item);
+    	}
     |
       <VAR>
     |
-      <BOOL>
+      t=<BOOL>
+      {
+       item = new Item(Tipo.CTE_BOOLEANO, t.image);
+       e.add(item);
+      }
     |
-      <STRING>
+      t=<STRING>
+      {
+       item = new Item(Tipo.CTE_STRING, t.image);
+       e.add(item);
+      }
     |
-    <AP> exp0()<FP>
+      t=<AP>
+      {
+       item = new Item(Tipo.PARENTESES t.image);
+       e.add(item);
+      }
+      exp0()
+      
+      t=<FP>
+	  {
+       item = new Item(Tipo.PARENTESES t.image);
+       e.add(item);
+      }
+      
     {
       e.gerarPosfixo();
     }
