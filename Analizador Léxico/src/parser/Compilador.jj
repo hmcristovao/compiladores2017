@@ -583,87 +583,169 @@ expPot        -> expToken ( <POT> expPot )?
 expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING> 
                  | <AP> exp <FP>
 */
-void exp() : {}
+Expressao exp() : {Expressao e = new Expressao();}
 {
-    expOr()
-    (
-      <CONCAT> expOr()
-    )*
+  
+    exp0(e)
+    {
+      return e;
+    }
+
+    
 }
-void expOr() : {}
+
+void exp0(Expressao e) : { Item item; Token t;}
+{
+  
+    expOr(e)
+    (
+      t=<CONCAT> expOr(e)
+      {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }
+    )*
+  
+}
+void expOr(Expressao e) : {Item item; Token t;}
 {
     expAnd()
     (
-      <OR> expAnd()
+      t=<OR> expAnd()
+      {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }
     )*
 }
-void expAnd() : {}
+void expAnd() : {Item item; Token t;}
 {
     expAnds()
     (
-       <AND> expAnds()
+       t=<AND> expAnds()
+       {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }
     )*
 }
-void expAnds() : {}
+void expAnds() : {Item item; Token t;}
 {
     expNot()
     (
-       <ANDS> expNot()
+       t=<ANDS> expNot()
+       {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }
     )*
 }
-void expNot() : {}
+void expNot() : {Item item; Token t;}
 {
     (
-       <NOT>
+       t=<NOT>
+       {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }
     )*
     expRelacional()
 }
-void expRelacional() : {}
+void expRelacional() : {Item item; Token t;}
 {
    expAdit()
    (
-       <MAIOR>   expAdit()     
+       t=<MAIOR>   expAdit()
+       {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }     
      |
-       <MENOR>   expAdit()     
+       t=<MENOR>   expAdit()
+       {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }     
      |
-       <MAIOR_I> expAdit()
+       t=<MAIOR_I> expAdit()
+       {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }
        
      |
-       <MENOR_I> expAdit()    
+       t=<MENOR_I> expAdit()
+       {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }    
      |
-       <IGUAL>   expAdit()     
+      t=<IGUAL>   expAdit()
+       {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }     
      |
-       <DIF>     expAdit()  
+       t=<DIF>     expAdit()
+       {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }  
    )*
 }
-void expAdit() : {}
+void expAdit() : {Item item; Token t;}
 {
-	expMult()
-	(
-	  <ADD> expMult()
-	  |
-	  <SUB> expMult()
-	 )*
+expMult()
+(
+  t=<ADD> expMult()
+  {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }  
+  |
+  t=<SUB> expMult()
+  {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }  
+)*
 }  
-void expMult() : {}
+void expMult() : {Item item; Token t;}
 {
-	expPot()
-	(
-	   <MULT> expPot()
-	 |
-	   <DIV>  expPot()
-	)*
+expPot()
+(
+   t=<MULT> expPot()
+   {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }  
+|
+   t=<DIV>  expPot()
+   {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }  
+)*
 }
-void expPot() : {}
+void expPot() : {Item item; Token t;}
 {
-	expToken()
-	(
-	  <POT> expPot()
-	)?
+expToken()
+(
+  t=<POT> expPot()
+  {  
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
+      }  
+)?
 }
-void expToken() :{Simbolo simb; Token t;}
+void expToken(Expressao e) :{Item item; Token t;}
 {
-    <NUM>
+    t = <NUM>
+    {
+       item = new Item(Tipo.CTE_NUMERICA, t.image);
+       e.add(item);
+    }
+      
     |
       <ADD>
       <NUM>
@@ -677,5 +759,9 @@ void expToken() :{Simbolo simb; Token t;}
     |
       <STRING>
     |
-    <AP> exp()<FP>
+    <AP> exp0()<FP>
+    {
+      e.gerarPosfixo();
+    }
 }
+
