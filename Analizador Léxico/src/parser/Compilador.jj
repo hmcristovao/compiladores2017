@@ -420,7 +420,7 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
                comandoAtribuicao <FP>
                <ACH> <COMENT> listaComandos <FCH>
 */
-void comandoLaco () : {Simbolo simb; Token var; Token tokenTipo = null;}
+Comando comandoLaco () : {Simbolo simb; Token var; Token tokenTipo = null; Comando laco = new Laco(); Expressao expressaoAuxiliar = new Expressao(); ListaComandos listaAuxiliar = new ListaComandos();}
 {
     <FOR>
     try {
@@ -441,11 +441,25 @@ void comandoLaco () : {Simbolo simb; Token var; Token tokenTipo = null;}
 	      CompiladorHell.tabela.inclui(simb);
       }
     }
-    <ATRIB> exp() <PT_VIRG>
-    exp()
+    {
+       laco.setvarControle(var);
+    }
+    <ATRIB> expressaoAuxiliar = exp() <PT_VIRG>
+    {
+      	laco.setExpressaoInicializacao(expressaoAuxiliar);
+  	} 
+    expressaoAuxiliar = exp()
+    {
+      	laco.setExpressaoComparadora(expressaoAuxiliar);
+    }
     <PT_VIRG> 
     <VAR>
-    <ATRIB> exp()
+    <ATRIB> expressaoAuxiliar = exp()
+    {
+      	laco.setExpressaoIteracao(expressaoAuxiliar);
+    }
+	
+	  
     try {
 		<FP>
 	}
@@ -454,7 +468,11 @@ void comandoLaco () : {Simbolo simb; Token var; Token tokenTipo = null;}
         return;		                                   
 	}
     <ACH> <COMENT>
-    listaComandos() <FCH>
+    listaAuxiliar = listaComandos() <FCH>
+    {
+      	laco.setListaComandos(listaAuxiliar);
+    }
+    { return laco; }
 }
 
 /*
@@ -518,14 +536,18 @@ void contLaco(Token tokenTipo) : {Simbolo simb; Token var;}
 	|
 	<PT_VIRG>
 }
-void faixa() : {}
+ArrayList<Expressao> faixa() : {ArrayList<Expressao> expressao; Expressao auxiliar;}
 {
-	exp()
+	auxiliar = exp()
+	{expressao.add(auxiliar); }
 	<TO>
-	exp()
+	auxiliar = exp()
+	{expressao.add(auxiliar); }
 	(
-	    <STEP> exp()
+	    <STEP> auxiliar = exp()
+	    { expressao.add(auxiliar); }
 	)?
+	{ return expressao; }
 }
 
 /*
@@ -537,7 +559,7 @@ comandoLacoMatrix -> <FORMATRIX> <AP> <VAR>
 faixa -> expAritmetica <TO> expAritmetica
         (<STEP> expAritmetica)?
 */
-void comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;} 
+Comando comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null; Comando lacoMatrix = new LacoMatrix(); Expressao expressaoAuxiliar = new Expressao(); ListaComandos listaAuxiliar = new ListaComandos(); ArrayList<Expressao > expressao;} 
 {
       <FORMATRIX>
       try {
@@ -558,6 +580,7 @@ void comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;}
 	      	 CompiladorHell.tabela.inclui(simb);
 		  }
       }
+      { lacoMatrix.setVariaveisControle(var); }
       (
         <VIRG>
        	var=<VAR>
@@ -568,9 +591,18 @@ void comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;}
 	      	   CompiladorHell.tabela.inclui(simb);
 			}
     	}
+    	{ lacoMatrix.setVariaveisControle(var); }
       )*
       <PT_VIRG>
-      faixa()
+      expressao = faixa()
+	  { lacoMatrix.setExpressaoInicial(expressao.get(0)); }
+	  { lacoMatrix.setExpressaoFinal(expressao.get(1)); }
+	  {
+	    if(expressao.size() > 2)
+	  	{
+	  	  lacoMatrix.setExpressaoPasso(expressao.get(2)); 
+	  	}
+	  }
       try {
 		<FP>
 	  }
@@ -579,8 +611,10 @@ void comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;}
         return;	
 	  }
       <ACH> <COMENT>
-      listaComandos()
+      listaAuxiliar = listaComandos()
+      { lacoMatrix.setListaComandos(listaAuxiliar); }
       <FCH>
+      { return lacoMatrix; }
 }
 
 /*
