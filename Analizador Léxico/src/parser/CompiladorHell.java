@@ -365,27 +365,33 @@ comandoSe -> <IF><AP> exp <FP>
              (<ELSE><ACH><COMENT>
              listaComandos <FCH>)?
 */
-  static final public void comandoSe() throws ParseException {
+  static final public SeSenao comandoSe() throws ParseException {
+                       Comando seSenao = new SeSenao(); Expressao expSeSenao = new Expressao(); ListaComandos listaComandosCondicaoVerdadeiro = new ListaComandos(); ListaComandos listaComandosCondicaoFalso = new ListaComandos();
     jj_consume_token(IF);
     jj_consume_token(AP);
-    exp();
+    expSeSenao = exp();
     jj_consume_token(FP);
+          seSenao.setexpSeSenao(expSeSEnao);
     jj_consume_token(ACH);
     jj_consume_token(COMENT);
-    listaComandos();
+    listaComandosCondicaoVerdadeiro = listaComandos();
     jj_consume_token(FCH);
+          seSenao.setlistaComandosCondicaoVerdadeiro(listaComandosCondicaoVerdadeiro);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ELSE:
       jj_consume_token(ELSE);
       jj_consume_token(ACH);
       jj_consume_token(COMENT);
-      listaComandos();
+      listaComandosCondicaoFalso = listaComandos();
+             seSenao.setlistaComandosCondicaoFalso (listaComandosCondicaoFalso);
       jj_consume_token(FCH);
       break;
     default:
       jj_la1[15] = jj_gen;
       ;
     }
+  {if (true) return seSenao;}
+    throw new Error("Missing return statement in function");
   }
 
 /*

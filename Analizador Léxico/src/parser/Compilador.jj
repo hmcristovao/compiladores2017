@@ -125,7 +125,7 @@ TOKEN : /* VARIAVEL */
   < VAR : (["a"-"z"])+ >
 }
 
-TOKEN : /* COMENTARIO OBRIGAT�RIO */
+TOKEN : /* COMENTARIO OBRIGATORIO */
 {
   < COMENT : "//" (~["."])* "." >
 }
@@ -354,16 +354,29 @@ comandoSe -> <IF><AP> exp <FP>
              (<ELSE><ACH><COMENT>
              listaComandos <FCH>)?
 */
-void comandoSe() : {}
+
+SeSenao comandoSe() : {Comando seSenao = new SeSenao(); Expressao expSeSenao = new Expressao(); ListaComandos listaComandosCondicaoVerdadeiro = new ListaComandos(); ListaComandos listaComandosCondicaoFalso = new ListaComandos(); }
 {  
-	<IF> <AP> exp() <FP>
+	<IF> <AP> expSeSenao = exp() <FP>
+	{
+	  seSenao.setexpSeSenao(expSeSEnao);
+	}
 	<ACH><COMENT>
-	listaComandos() <FCH>
+	listaComandosCondicaoVerdadeiro = listaComandos() <FCH>
+	{
+	  seSenao.setlistaComandosCondicaoVerdadeiro(listaComandosCondicaoVerdadeiro);
+	}
 	(
 	  <ELSE><ACH><COMENT>
-	  listaComandos()
+	  listaComandosCondicaoFalso = listaComandos()
+	  {
+	     seSenao.setlistaComandosCondicaoFalso (listaComandosCondicaoFalso);
+	  }
 	  <FCH>
 	)?
+
+{ return seSenao;}
+
 }
 
 /*
