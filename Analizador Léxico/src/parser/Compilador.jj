@@ -378,17 +378,18 @@ blocoCondicional -> <AP> exp <FP> <COMENT>
 	                <FCH> (<BREAK>)? 
 */
 
-Teste comandoTeste(): {Condicional c; ListaComandos lc; Teste t = new Teste();}{
+Teste comandoTeste(): {Condicional c; ListaComandos lc; Teste t = new Teste();}
+{
 	<TEST><ACH>
 	(
 		c = blocoCondicional()
-		{t.addCondicoes(c);}
+		{t.addCondicoes(c); }
 	)+
 
 	(
 		<OTHERWISE><ACH> <COMENT>
 	    lc = listaComandos()
-	    { t.setOutroCaso(lc) }
+	    { t.setOutroCaso(lc); }
 	    <FCH> 
 	)?
 	<FCH>
@@ -396,7 +397,7 @@ Teste comandoTeste(): {Condicional c; ListaComandos lc; Teste t = new Teste();}{
 	{return t;}
 }
 
-Condicional blocoCondicional():{Expressao e; ListaComandos lc; Condicional c = new Condicional()}
+Condicional blocoCondicional():{Expressao e; ListaComandos lc; Condicional c = new Condicional();}
 {
 	<AP>
 	e = exp()

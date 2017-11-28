@@ -2,12 +2,8 @@
 package parser;
 import java.io.*;
 import apoio.*;
-<<<<<<< HEAD
 import semantico.*;
 import intermediario.*;
-=======
-import semantica.*;
->>>>>>> refs/remotes/origin/ComandoTeste
 
 /** Token Manager. */
 public class CompiladorHellTokenManager implements CompiladorHellConstants

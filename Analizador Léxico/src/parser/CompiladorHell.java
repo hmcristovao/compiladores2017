@@ -3,12 +3,8 @@ package parser;
 
 import java.io.*;
 import apoio.*;
-<<<<<<< HEAD
 import semantico.*;
 import intermediario.*;
-=======
-import semantica.*;
->>>>>>> refs/remotes/origin/ComandoTeste
 
 public class CompiladorHell implements CompiladorHellConstants {
 
@@ -403,12 +399,14 @@ blocoCondicional -> <AP> exp <FP> <COMENT>
                     <ACH> listaComandos()
 	                <FCH> (<BREAK>)? 
 */
-  static final public void comandoTeste() throws ParseException {
+  static final public Teste comandoTeste() throws ParseException {
+                       Condicional c; ListaComandos lc; Teste t = new Teste();
     jj_consume_token(TEST);
     jj_consume_token(ACH);
     label_7:
     while (true) {
-      blocoCondicional();
+      c = blocoCondicional();
+                 t.addCondicoes(c);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case AP:
         ;
@@ -423,7 +421,8 @@ blocoCondicional -> <AP> exp <FP> <COMENT>
       jj_consume_token(OTHERWISE);
       jj_consume_token(ACH);
       jj_consume_token(COMENT);
-      listaComandos();
+      lc = listaComandos();
+              t.setOutroCaso(lc);
       jj_consume_token(FCH);
       break;
     default:
@@ -431,15 +430,20 @@ blocoCondicional -> <AP> exp <FP> <COMENT>
       ;
     }
     jj_consume_token(FCH);
+         {if (true) return t;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void blocoCondicional() throws ParseException {
+  static final public Condicional blocoCondicional() throws ParseException {
+                                Expressao e; ListaComandos lc; Condicional c = new Condicional();
     jj_consume_token(AP);
-    exp();
+    e = exp();
+         c.setExpressao(e);
     jj_consume_token(FP);
     jj_consume_token(ACH);
     jj_consume_token(COMENT);
-    listaComandos();
+    lc = listaComandos();
+     c.setListaComandos(lc);
     jj_consume_token(FCH);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case BREAK:
@@ -449,6 +453,8 @@ blocoCondicional -> <AP> exp <FP> <COMENT>
       jj_la1[18] = jj_gen;
       ;
     }
+          {if (true) return c;}
+    throw new Error("Missing return statement in function");
   }
 
 /*
