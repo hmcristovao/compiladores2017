@@ -5,6 +5,7 @@ public enum Tipo {
 	    VAR_BOOLEANO,
 	    VAR_NUMERO,
 	    OPERADOR,
+	    PARENTESES,
 	    CTE_STRING,
 	    CTE_BOOLEANO,
 	    CTE_NUMERO;
@@ -16,6 +17,7 @@ public enum Tipo {
 	   else if(tipo == Tipo.OPERADOR) return "operador";
 	   else if(tipo == Tipo.CTE_STRING) return "constante string";
 	   else if(tipo == Tipo.CTE_BOOLEANO) return "constante booleano";
+	   else if(tipo == Tipo.PARENTESES) return "parenteses";
 	   else return "constante numero";
 	}
 }
