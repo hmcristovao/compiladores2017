@@ -276,7 +276,8 @@ comandoPrinta -> <OUT> <AP>
                  exp ((<VIRG>|<PT_VIRG>) exp)*
                  <FP> <COMENT>
 */
-  static final public void comandoPrinta() throws ParseException {
+  static final public Comando comandoPrinta() throws ParseException {
+                          ComandoPrinta printa; Expressao expa;
     jj_consume_token(OUT);
     try {
       jj_consume_token(AP);
@@ -284,7 +285,8 @@ comandoPrinta -> <OUT> <AP>
                 RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
                 {if (true) return;}
     }
-    exp();
+    expa = exp();
+          printa = new ComandoPrinta(expa);
     label_5:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -308,7 +310,8 @@ comandoPrinta -> <OUT> <AP>
         jj_consume_token(-1);
         throw new ParseException();
       }
-      exp();
+      expa = exp();
+                  printa.addExpressao(expa);
     }
     try {
       jj_consume_token(FP);
@@ -317,6 +320,8 @@ comandoPrinta -> <OUT> <AP>
                 {if (true) return;}
     }
     jj_consume_token(COMENT);
+          {if (true) return printa;}
+    throw new Error("Missing return statement in function");
   }
 
 /*

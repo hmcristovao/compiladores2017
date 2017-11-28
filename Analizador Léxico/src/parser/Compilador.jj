@@ -284,7 +284,7 @@ comandoPrinta -> <OUT> <AP>
                  exp ((<VIRG>|<PT_VIRG>) exp)*
                  <FP> <COMENT>
 */
-void comandoPrinta ():{}
+Comando comandoPrinta ():{ComandoPrinta printa; Expressao expa;}
 {
 	<OUT>
 	try {
@@ -294,12 +294,18 @@ void comandoPrinta ():{}
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
 		return;
 	}
-	exp()
+	expa = exp()
+	{
+	  printa = new ComandoPrinta(expa);
+	}
 	(
 	  	(
 			<VIRG> | <PT_VIRG>
 		)
-		exp()
+		expa = exp()
+		{
+		  printa.addExpressao(expa);
+		}
 	)*
 	try {
 		<FP>
@@ -309,6 +315,9 @@ void comandoPrinta ():{}
 		return;
     }
 	<COMENT>
+	{
+	  return printa;
+	}
 }
 
 /*
