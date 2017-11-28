@@ -4,6 +4,7 @@ package parser;
 import java.io.*;
 import apoio.*;
 import semantico.*;
+import intermediario.*;
 
 public class CompiladorHell implements CompiladorHellConstants {
 
@@ -259,11 +260,15 @@ comandoDeclaracaoVariavel ->
 comandoAtribui��o ->  <VAR><ATRIB> exp <COMENT>
 exp               ->  expLogica | expAritmetica | expString
 */
-  static final public void comandoAtribuicao() throws ParseException {
-    jj_consume_token(VAR);
+  static final public Comando comandoAtribuicao() throws ParseException {
+                               ComandoAtribuicao atrib; Token var; Expressao expa;
+    var = jj_consume_token(VAR);
     jj_consume_token(ATRIB);
-    exp();
+    expa = exp();
+      atrib = new ComandoAtribuicao(var.image, expa);
     jj_consume_token(COMENT);
+        {if (true) return atrib;}
+    throw new Error("Missing return statement in function");
   }
 
 /*

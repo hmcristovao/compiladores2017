@@ -11,6 +11,7 @@ package parser;
 import java.io.*;
 import apoio.*;
 import semantico.*;
+import intermediario.*;
 
 public class CompiladorHell {
    
@@ -263,14 +264,6 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
 comandoAtribui��o ->  <VAR><ATRIB> exp <COMENT>
 exp               ->  expLogica | expAritmetica | expString
 */
-void comandoAtribuicao() : {}
-{
-    <VAR>
-    <ATRIB>
-    exp()
-    <COMENT>
-}
-
 Comando comandoAtribuicao() : {ComandoAtribuicao atrib; Token var; Expressao expa;}
 {
     var=<VAR>
