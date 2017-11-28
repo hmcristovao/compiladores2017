@@ -257,7 +257,7 @@ comandoDeclaracaoVariavel ->
   }
 
 /*
-comandoAtribui��o ->  <VAR><ATRIB> exp <COMENT>
+comandoAtribuicao ->  <VAR><ATRIB> exp <COMENT>
 exp               ->  expLogica | expAritmetica | expString
 */
   static final public Comando comandoAtribuicao() throws ParseException {
@@ -740,8 +740,16 @@ expPot        -> expToken ( <POT> expPot )?
 expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING> 
                  | <AP> exp <FP>
 */
-  static final public void exp() throws ParseException {
-    expOr();
+  static final public Expressao exp() throws ParseException {
+                   Expressao e = new Expressao();
+    exp0(e);
+      {if (true) return e;}
+    throw new Error("Missing return statement in function");
+  }
+
+  static final public void exp0(Expressao e) throws ParseException {
+                           Item item; Token t;
+    expOr(e);
     label_9:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -752,12 +760,15 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         jj_la1[26] = jj_gen;
         break label_9;
       }
-      jj_consume_token(CONCAT);
-      expOr();
+      t = jj_consume_token(CONCAT);
+      expOr(e);
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
     }
   }
 
-  static final public void expOr() throws ParseException {
+  static final public void expOr(Expressao e) throws ParseException {
+                           Item item; Token t;
     expAnd();
     label_10:
     while (true) {
@@ -769,12 +780,15 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         jj_la1[27] = jj_gen;
         break label_10;
       }
-      jj_consume_token(OR);
+      t = jj_consume_token(OR);
       expAnd();
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
     }
   }
 
   static final public void expAnd() throws ParseException {
+                 Item item; Token t;
     expAnds();
     label_11:
     while (true) {
@@ -786,12 +800,15 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         jj_la1[28] = jj_gen;
         break label_11;
       }
-      jj_consume_token(AND);
+      t = jj_consume_token(AND);
       expAnds();
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
     }
   }
 
   static final public void expAnds() throws ParseException {
+                  Item item; Token t;
     expNot();
     label_12:
     while (true) {
@@ -803,12 +820,15 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         jj_la1[29] = jj_gen;
         break label_12;
       }
-      jj_consume_token(ANDS);
+      t = jj_consume_token(ANDS);
       expNot();
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
     }
   }
 
   static final public void expNot() throws ParseException {
+                 Item item; Token t;
     label_13:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -819,12 +839,15 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         jj_la1[30] = jj_gen;
         break label_13;
       }
-      jj_consume_token(NOT);
+      t = jj_consume_token(NOT);
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
     }
     expRelacional();
   }
 
   static final public void expRelacional() throws ParseException {
+                        Item item; Token t;
     expAdit();
     label_14:
     while (true) {
@@ -843,28 +866,40 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MAIOR:
-        jj_consume_token(MAIOR);
+        t = jj_consume_token(MAIOR);
         expAdit();
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
         break;
       case MENOR:
-        jj_consume_token(MENOR);
+        t = jj_consume_token(MENOR);
         expAdit();
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
         break;
       case MAIOR_I:
-        jj_consume_token(MAIOR_I);
+        t = jj_consume_token(MAIOR_I);
         expAdit();
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
         break;
       case MENOR_I:
-        jj_consume_token(MENOR_I);
+        t = jj_consume_token(MENOR_I);
         expAdit();
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
         break;
       case IGUAL:
-        jj_consume_token(IGUAL);
+        t = jj_consume_token(IGUAL);
         expAdit();
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
         break;
       case DIF:
-        jj_consume_token(DIF);
+        t = jj_consume_token(DIF);
         expAdit();
+        item = new Item(Tipo.OPERADOR, t.image);
+        e.add(item);
         break;
       default:
         jj_la1[32] = jj_gen;
@@ -875,6 +910,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
   }
 
   static final public void expAdit() throws ParseException {
+                  Item item; Token t;
     expMult();
     label_15:
     while (true) {
@@ -889,12 +925,16 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ADD:
-        jj_consume_token(ADD);
+        t = jj_consume_token(ADD);
         expMult();
+                item = new Item(Tipo.OPERADOR, t.image);
+                e.add(item);
         break;
       case SUB:
-        jj_consume_token(SUB);
+        t = jj_consume_token(SUB);
         expMult();
+                item = new Item(Tipo.OPERADOR, t.image);
+                e.add(item);
         break;
       default:
         jj_la1[34] = jj_gen;
@@ -905,6 +945,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
   }
 
   static final public void expMult() throws ParseException {
+                  Item item; Token t;
     expPot();
     label_16:
     while (true) {
@@ -919,12 +960,16 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MULT:
-        jj_consume_token(MULT);
+        t = jj_consume_token(MULT);
         expPot();
+                item = new Item(Tipo.OPERADOR, t.image);
+                e.add(item);
         break;
       case DIV:
-        jj_consume_token(DIV);
+        t = jj_consume_token(DIV);
         expPot();
+                item = new Item(Tipo.OPERADOR, t.image);
+                e.add(item);
         break;
       default:
         jj_la1[36] = jj_gen;
@@ -935,11 +980,14 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
   }
 
   static final public void expPot() throws ParseException {
+                 Item item; Token t;
     expToken();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case POT:
-      jj_consume_token(POT);
+      t = jj_consume_token(POT);
       expPot();
+                item = new Item(Tipo.OPERADOR, t.image);
+                e.add(item);
       break;
     default:
       jj_la1[37] = jj_gen;
@@ -947,33 +995,52 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     }
   }
 
-  static final public void expToken() throws ParseException {
-                  Simbolo simb; Token t;
+  static final public void expToken(Expressao e) throws ParseException {
+                             Item item; Token t; String tConcatenada;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NUM:
-      jj_consume_token(NUM);
+      t = jj_consume_token(NUM);
+       item = new Item(Tipo.CTE_NUMERICA, t.image);
+       e.add(item);
       break;
     case ADD:
-      jj_consume_token(ADD);
-      jj_consume_token(NUM);
+      t = jj_consume_token(ADD);
+        tConcatenada = t.image;
+      t = jj_consume_token(NUM);
+         tconcatenada = tconcatenada + t.image;
+         item = new Item(Tipo.CTE_NUMERICA, tConcatenada);
+         e.add(item);
       break;
     case SUB:
-      jj_consume_token(SUB);
-      jj_consume_token(NUM);
+      t = jj_consume_token(SUB);
+        tConcatenada = t.image;
+      t = jj_consume_token(NUM);
+         tconcatenada = tconcatenada + t.image;
+         item = new Item(Tipo.CTE_NUMERICA, tConcatenada);
+         e.add(item);
       break;
     case VAR:
       jj_consume_token(VAR);
       break;
     case BOOL:
-      jj_consume_token(BOOL);
+      t = jj_consume_token(BOOL);
+        item = new Item(Tipo.CTE_BOOLEANO, t.image);
+        e.add(item);
       break;
     case STRING:
-      jj_consume_token(STRING);
+      t = jj_consume_token(STRING);
+        item = new Item(Tipo.CTE_STRING, t.image);
+        e.add(item);
       break;
     case AP:
-      jj_consume_token(AP);
-      exp();
-      jj_consume_token(FP);
+      t = jj_consume_token(AP);
+        item = new Item(Tipo.PARENTESES, t.image);
+        e.add(item);
+      exp0();
+      t = jj_consume_token(FP);
+        item = new Item(Tipo.PARENTESES, t.image);
+        e.add(item);
+      e.gerarPosfixo();
       break;
     default:
       jj_la1[38] = jj_gen;

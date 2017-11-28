@@ -261,7 +261,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
 }
 
 /*
-comandoAtribui��o ->  <VAR><ATRIB> exp <COMENT>
+comandoAtribuicao ->  <VAR><ATRIB> exp <COMENT>
 exp               ->  expLogica | expAritmetica | expString
 */
 Comando comandoAtribuicao() : {ComandoAtribuicao atrib; Token var; Expressao expa;}
@@ -671,18 +671,13 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
 */
 Expressao exp() : {Expressao e = new Expressao();}
 {
-  
     exp0(e)
     {
       return e;
-    }
-
-    
+    }    
 }
-
 void exp0(Expressao e) : { Item item; Token t;}
-{
-  
+{  
     expOr(e)
     (
       t=<CONCAT> expOr(e)
@@ -781,52 +776,51 @@ void expRelacional() : {Item item; Token t;}
 }
 void expAdit() : {Item item; Token t;}
 {
-expMult()
-(
-  t=<ADD> expMult()
-  {  
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
-      }  
-  |
-  t=<SUB> expMult()
-  {  
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
-      }  
-)*
+	expMult()
+	(
+	  t=<ADD> expMult()
+	  {  
+	        item = new Item(Tipo.OPERADOR, t.image);
+	        e.add(item);
+	      }  
+	  |
+	  t=<SUB> expMult()
+	  {  
+	        item = new Item(Tipo.OPERADOR, t.image);
+	        e.add(item);
+	      }  
+	)*
 }  
 void expMult() : {Item item; Token t;}
 {
-expPot()
-(
-   t=<MULT> expPot()
-   {  
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
-      }  
-|
-   t=<DIV>  expPot()
-   {  
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
-      }  
-)*
+	expPot()
+	(
+	   t=<MULT> expPot()
+	   {  
+	        item = new Item(Tipo.OPERADOR, t.image);
+	        e.add(item);
+	      }  
+	|
+	   t=<DIV>  expPot()
+	   {  
+	        item = new Item(Tipo.OPERADOR, t.image);
+	        e.add(item);
+	      }  
+	)*
 }
 void expPot() : {Item item; Token t;}
 {
-expToken()
-(
-  t=<POT> expPot()
-  {  
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
-      }  
-)?
+	expToken()
+	(
+	  t=<POT> expPot()
+	  {  
+	        item = new Item(Tipo.OPERADOR, t.image);
+	        e.add(item);
+	      }  
+	)?
 }
-void expToken(Expressao e) :{Item item; Token t;}
+void expToken(Expressao e) :{Item item; Token t; String tConcatenada;}
 {
-  	String tconcatenada;
     t = <NUM>
     {
        item = new Item(Tipo.CTE_NUMERICA, t.image);
@@ -835,51 +829,49 @@ void expToken(Expressao e) :{Item item; Token t;}
       
     |
       t=<ADD>
-      tconcatenada = t.image;
-      t=<NUM>
-      tconcatenada = tconcatenada + t.image;
+      { tConcatenada = t.image; }      t=<NUM>
       {
-      item = new Item(Tipo.CTE_NUMERICA, tconcatenada);
-      e.add(item);
-    	}
+         tconcatenada = tconcatenada + t.image; 
+         item = new Item(Tipo.CTE_NUMERICA, tConcatenada);
+         e.add(item);
+      }
       
     |
       t=<SUB>
-      tconcatenada = t.image;
+      { tConcatenada = t.image; }
       t=<NUM>
-      tconcatenada = tconcatenada + t.image;
       {
-      item = new Item(Tipo.CTE_NUMERICA, tconcatenada);
-      e.add(item);
-    	}
+         tconcatenada = tconcatenada + t.image; 
+         item = new Item(Tipo.CTE_NUMERICA, tConcatenada);
+         e.add(item);
+      }
     |
       <VAR>
     |
       t=<BOOL>
       {
-       item = new Item(Tipo.CTE_BOOLEANO, t.image);
-       e.add(item);
+        item = new Item(Tipo.CTE_BOOLEANO, t.image);
+        e.add(item);
       }
     |
       t=<STRING>
       {
-       item = new Item(Tipo.CTE_STRING, t.image);
-       e.add(item);
+        item = new Item(Tipo.CTE_STRING, t.image);
+        e.add(item);
       }
     |
       t=<AP>
       {
-       item = new Item(Tipo.PARENTESES t.image);
-       e.add(item);
+        item = new Item(Tipo.PARENTESES, t.image);
+        e.add(item);
       }
       exp0()
       
       t=<FP>
 	  {
-       item = new Item(Tipo.PARENTESES t.image);
-       e.add(item);
-      }
-      
+        item = new Item(Tipo.PARENTESES, t.image);
+        e.add(item);
+      } 
     {
       e.gerarPosfixo();
     }
