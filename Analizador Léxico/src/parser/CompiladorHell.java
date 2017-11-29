@@ -15,10 +15,20 @@ public class CompiladorHell implements CompiladorHellConstants {
       CompiladorHell analisador = null;
       try {
          analisador = new CompiladorHell(new FileInputStream(Config.nomeArquivoFonte));
-         CompiladorHell.inicio();
-          System.out.println("Analise lexica e sintatica sem erros!");
 
-                  System.out.println(tabela);
+                 // 1a passagem do Compilador
+         ListaComandos listaComandos1aPassagem;
+         listaComandos1aPassagem = CompiladorHell.inicio();
+         System.out.println("Analise lexica e sintatica sem erros!");
+                 System.out.println("\u005cnTabela de simbolos: "+tabela);
+         System.out.println("\u005cnLista completa dos comandos da 1a passagem do compilador: "
+                             +listaComandos1aPassagem);
+
+                 // 2a passagem do Compilador 
+                 PrimitivoListaComandos listaComandos2aPassagem;
+                 listaComandos2aPassagem = listaComandos1aPassagem.geraListaPrimitivoComando();
+                 System.out.println("\u005cnLista completa dos comandos da 2a passagem do compilador: "
+                                    +listaComandos2aPassagem);
 
       }
       catch(FileNotFoundException e) {
@@ -46,12 +56,16 @@ comando       ->
 	|comandoLacoMultiplo()
 	|comandoLacoMatrix()
 */
-  static final public void inicio() throws ParseException {
-    listaComandos();
+  static final public ListaComandos inicio() throws ParseException {
+                           ListaComandos lista = ListaComandos();
+    lista = listaComandos();
     jj_consume_token(0);
+           {if (true) return lista;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void listaComandos() throws ParseException {
+  static final public ListaComandos listaComandos() throws ParseException {
+                                  Comando com; ListaComandos lista = ListaComandos();
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -72,40 +86,44 @@ comando       ->
         jj_la1[0] = jj_gen;
         break label_1;
       }
-      comando();
+      com = comando();
+              lista.add(com);
     }
+           {if (true) return lista;}
+    throw new Error("Missing return statement in function");
   }
 
-  static final public void comando() throws ParseException {
+  static final public Comando comando() throws ParseException {
+                     Comando com;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TYPENUM:
     case TYPESTR:
     case TYPEBOOL:
-      comandoDeclaracaoVariavel();
+      com = comandoDeclaracaoVariavel();
       break;
     case VAR:
-      comandoAtribuicao();
+      com = comandoAtribuicao();
       break;
     case OUT:
-      comandoPrinta();
+      com = comandoPrinta();
       break;
     case IN:
-      comandoPega();
+      com = comandoPega();
       break;
     case IF:
-      comandoSe();
+      com = comandoSe();
       break;
     case TEST:
-      comandoTeste();
+      com = comandoTeste();
       break;
     case FOR:
-      comandoLaco();
+      com = comandoLaco();
       break;
     case FORMULTIPLE:
-      comandoLacoMultiplo();
+      com = comandoLacoMultiplo();
       break;
     case FORMATRIX:
-      comandoLacoMatrix();
+      com = comandoLacoMatrix();
       break;
     default:
       jj_la1[1] = jj_gen;
@@ -283,7 +301,7 @@ comandoPrinta -> <OUT> <AP>
       jj_consume_token(AP);
     } catch (ParseException e) {
                 RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
-                {if (true) return;}
+                {if (true) return null;}
     }
     expa = exp();
           printa = new ComandoPrinta(expa);
@@ -317,7 +335,6 @@ comandoPrinta -> <OUT> <AP>
       jj_consume_token(FP);
     } catch (ParseException e) {
                 RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
-                {if (true) return;}
     }
     jj_consume_token(COMENT);
           {if (true) return printa;}
@@ -333,7 +350,6 @@ comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
       jj_consume_token(AP);
     } catch (ParseException e) {
                 RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
-                {if (true) return;}
     }
     jj_consume_token(VAR);
     label_6:
@@ -353,7 +369,6 @@ comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
       jj_consume_token(FP);
     } catch (ParseException e) {
                 RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
-                {if (true) return;}
     }
     jj_consume_token(COMENT);
   }
@@ -371,7 +386,7 @@ comandoSe -> <IF><AP> exp <FP>
     jj_consume_token(AP);
     expSeSenao = exp();
     jj_consume_token(FP);
-          seSenao.setexpSeSenao(expSeSEnao);
+          seSenao.setexpSeSenao(expSeSenao);
     jj_consume_token(ACH);
     jj_consume_token(COMENT);
     listaComandosCondicaoVerdadeiro = listaComandos();
@@ -477,7 +492,7 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
       jj_consume_token(AP);
     } catch (ParseException e) {
                 RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "abre parenteses");
-                {if (true) return;}
+                {if (true) return null;}
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TYPENUM:
@@ -509,7 +524,7 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
       jj_consume_token(FP);
     } catch (ParseException e) {
                 RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
-        {if (true) return;}
+        {if (true) return null;}
     }
     jj_consume_token(ACH);
     jj_consume_token(COMENT);
@@ -536,7 +551,7 @@ faixa -> exp <TO> exp
       jj_consume_token(AP);
     } catch (ParseException e) {
                 RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
-        {if (true) return;}
+        {if (true) return null;}
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TYPENUM:
@@ -551,7 +566,7 @@ faixa -> exp <TO> exp
       jj_consume_token(FP);
     } catch (ParseException e) {
                 RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
-        {if (true) return;}
+        {if (true) return null;}
     }
     jj_consume_token(ACH);
     jj_consume_token(COMENT);
@@ -649,7 +664,7 @@ faixa -> exp <TO> exp
       jj_consume_token(AP);
     } catch (ParseException e) {
                    RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
-        {if (true) return;}
+        {if (true) return null;}
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TYPENUM:
@@ -697,7 +712,7 @@ faixa -> exp <TO> exp
       jj_consume_token(FP);
     } catch (ParseException e) {
                   RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
-        {if (true) return;}
+          {if (true) return null;}
     }
     jj_consume_token(ACH);
     jj_consume_token(COMENT);

@@ -1,10 +1,10 @@
 package semantico;
 
 public class Simbolo {
-    private String nome;      // nome da vari�vel
+    private String nome;      // nome da variavel
     private Tipo tipo;
-    private int referencia;   // refer�ncia usada na gera��o do c�digo destino
-    private static int marcador = 1; // armazena a �ltima refer�ncia inclu�da na tabela
+    private int referencia;   // refencia usada na geracao do codigo destino
+    private static int marcador = 1; // armazena a ultima referencia incluida na tabela
     
     public Simbolo(String _nome, Tipo _tipo) { 
           this.nome = _nome;

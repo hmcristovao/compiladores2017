@@ -5,7 +5,7 @@ options {
    DEBUG_TOKEN_MANAGER = false;
 }
 
-PARSER_BEGIN(CompiladorHell)
+PARSER_BEGIN(CompiladorHell) 
 package parser;
 
 import java.io.*;
@@ -22,10 +22,20 @@ public class CompiladorHell {
       CompiladorHell analisador = null;
       try {
          analisador = new CompiladorHell(new FileInputStream(Config.nomeArquivoFonte));
-         CompiladorHell.inicio();
-          System.out.println("Analise lexica e sintatica sem erros!");
 
-		  System.out.println(tabela);
+		 // 1a passagem do Compilador
+         ListaComandos listaComandos1aPassagem;
+         listaComandos1aPassagem = CompiladorHell.inicio();
+         System.out.println("Analise lexica e sintatica sem erros!");
+		 System.out.println("\nTabela de simbolos: "+tabela);
+         System.out.println("\nLista completa dos comandos da 1a passagem do compilador: "
+                             +listaComandos1aPassagem);
+
+		 // 2a passagem do Compilador 
+		 PrimitivoListaComandos listaComandos2aPassagem;
+		 listaComandos2aPassagem = listaComandos1aPassagem.geraListaPrimitivoComando();
+		 System.out.println("\nLista completa dos comandos da 2a passagem do compilador: "
+		                    +listaComandos2aPassagem);
           
       }
       catch(FileNotFoundException e) {
@@ -144,30 +154,39 @@ comando       ->
 	|comandoLacoMultiplo()
 	|comandoLacoMatrix()
 */
-void inicio() : {} {
-	listaComandos() <EOF>
+ListaComandos inicio() : { ListaComandos lista = ListaComandos(); } {
+	lista = listaComandos() <EOF>
+	{
+	   return lista;
+    }	
 }
-void listaComandos() : {} {
-	(comando())* 
+ListaComandos listaComandos() : { Comando com; ListaComandos lista = ListaComandos(); } {
+	(
+	   com = comando()
+	   {
+	      lista.add(com);	   }
+	)*
+	{	   return lista;
+    }
 }
-void comando() : {} {
-	  comandoDeclaracaoVariavel()
+Comando comando() : {Comando com;} {
+	  com = comandoDeclaracaoVariavel()
     |
-      comandoAtribuicao()
+      com = comandoAtribuicao()
     |
-      comandoPrinta()
+      com = comandoPrinta()
     |
-      comandoPega()
+      com = comandoPega()
 	|
-	  comandoSe()
+	  com = comandoSe()
 	|
-	  comandoTeste()
+	  com = comandoTeste()
 	|
-	  comandoLaco()
+	  com = comandoLaco()
 	|
-	  comandoLacoMultiplo()
+	  com = comandoLacoMultiplo()
 	|
-	  comandoLacoMatrix()
+	  com = comandoLacoMatrix()
 }
 
 /*
@@ -292,7 +311,7 @@ Comando comandoPrinta ():{ComandoPrinta printa; Expressao expa;}
 	}
 	catch(ParseException e) {
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
-		return;
+		return null;
 	}
 	expa = exp()
 	{
@@ -312,7 +331,6 @@ Comando comandoPrinta ():{ComandoPrinta printa; Expressao expa;}
 	}
 	catch(ParseException e) {
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
-		return;
     }
 	<COMENT>
 	{
@@ -331,7 +349,6 @@ void comandoPega (): {}
 	}
 	catch(ParseException e) {
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
-		return;
 	}
 	<VAR>
 	(
@@ -342,7 +359,6 @@ void comandoPega (): {}
 	}
 	catch(ParseException e) {
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
-		return;
 	}
 	<COMENT>	
 }
@@ -359,7 +375,7 @@ SeSenao comandoSe() : {Comando seSenao = new SeSenao(); Expressao expSeSenao = n
 {  
 	<IF> <AP> expSeSenao = exp() <FP>
 	{
-	  seSenao.setexpSeSenao(expSeSEnao);
+	  seSenao.setexpSeSenao(expSeSenao);
 	}
 	<ACH><COMENT>
 	listaComandosCondicaoVerdadeiro = listaComandos() <FCH>
@@ -441,7 +457,7 @@ Comando comandoLaco () : {Simbolo simb; Token var; Token tokenTipo = null; Coman
 	}
 	catch(ParseException e) {
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "abre parenteses");
-		return;	
+		return null;	
 	}
     (
       tokenTipo = <TYPENUM>
@@ -478,7 +494,7 @@ Comando comandoLaco () : {Simbolo simb; Token var; Token tokenTipo = null; Coman
 	}
 	catch(ParseException e) {
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
-        return;		                                   
+        return null;		                                   
 	}
     <ACH> <COMENT>
     listaAuxiliar = listaComandos() <FCH>
@@ -505,7 +521,7 @@ LacoMultiplo comandoLacoMultiplo() : {Token tokenTipo = null;LacoMultiplo laco;}
 	}
 	catch(ParseException e) {
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
-        return;	
+        return null;	
 	}
 	(
       tokenTipo = <TYPENUM>
@@ -516,7 +532,7 @@ LacoMultiplo comandoLacoMultiplo() : {Token tokenTipo = null;LacoMultiplo laco;}
 	}
 	catch(ParseException e) {
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
-        return;	
+        return null;	
 	}
 	<ACH> <COMENT>
 	listaComandos()
@@ -603,7 +619,7 @@ Comando comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;
 	  }
 	  catch(ParseException e) {
 		   RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
-        return;	
+        return null;	
 	  }
       (
       tipo = <TYPENUM>
@@ -644,7 +660,7 @@ Comando comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;
 	  }
 	  catch(ParseException e) {
 		  RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
-        return;	
+          return null;	
 	  }
       <ACH> <COMENT>
       listaAuxiliar = listaComandos()

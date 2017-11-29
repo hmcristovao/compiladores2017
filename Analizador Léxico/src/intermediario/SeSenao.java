@@ -6,11 +6,15 @@ public class SeSenao extends Comando{
 	private ListaComandos listaComandosCondicaoVerdadeiro;
 	private ListaComandos listaComandosCondicaoFalsa;
 	
+	public SeSenao(){
+		this.expSeSenao = null;
+		this.listaComandosCondicaoVerdadeiro = null;
+		this.listaComandosCondicaoFalsa = null;		
+	}
 	public SeSenao(Expressao _expSeSenao, ListaComandos _listaComandosCondicaoVerdadeiro, ListaComandos _listaComandosCondicaoFalsa){
 		this.expSeSenao = _expSeSenao;
 		this.listaComandosCondicaoVerdadeiro = _listaComandosCondicaoVerdadeiro;
-		this.listaComandosCondicaoFalsa = _listaComandosCondicaoFalsa;
-		
+		this.listaComandosCondicaoFalsa = _listaComandosCondicaoFalsa;		
 	}
 
 
