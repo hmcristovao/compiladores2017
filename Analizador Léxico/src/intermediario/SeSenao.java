@@ -47,21 +47,26 @@ public class SeSenao extends Comando{
 	}
 
 
-	public ListaComandos getListaComandosCondicaoFalsa() {
+	public ListaComandos getListaComandosCondicaoFalso() {
 		return listaComandosCondicaoFalsa;
 	}
 
 
-	public void setListaComandosCondicaoFalsa(
-			ListaComandos listaComandosCondicaoFalsa) {
+	public void setListaComandosCondicaoFalso(ListaComandos listaComandosCondicaoFalsa) {
 		this.listaComandosCondicaoFalsa = listaComandosCondicaoFalsa;
 	}
 	
 	
-	public PrimitivoListaComandos geraCodigoPrimitivo() {
-	
+
+
+	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		/* falta implementar ... */  
+		return null;
 	}
+
+	
+
+
 }
 	
 
-}

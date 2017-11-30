@@ -6,7 +6,10 @@ public class Condicional {
 	private Expressao expressao;
 	private ListaComandos listaComandos;
 
-	
+	public Condicional() {
+		this.expressao = null;
+		this.listaComandos = null;
+	}
 	
 	public Condicional(Expressao expressao, ListaComandos listaComandos) {
 		this.expressao = expressao;

@@ -1,4 +1,6 @@
 package intermediario;
+import intermediario2.PrimitivoListaComandos;
+
 import java.util.LinkedList;
 
 public class ComandoPrinta extends Comando {
@@ -28,4 +30,12 @@ public class ComandoPrinta extends Comando {
 		}
 		return str.toString();
 	}	
+
+
+	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		/* falta implementar ... */  
+		return null;
+	}
+
+	
 }

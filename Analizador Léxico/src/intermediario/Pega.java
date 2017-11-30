@@ -1,5 +1,7 @@
 package intermediario;
 
+import intermediario2.PrimitivoListaComandos;
+
 import java.util.LinkedList;
 
 public class Pega extends Comando {
@@ -23,4 +25,14 @@ public class Pega extends Comando {
 	public LinkedList<String> listarVariaveis(){
 		return this.listaVariaveis;
 	}
+	
+
+
+	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		/* falta implementar ... */  
+		return null;
+	}
+
+	
+
 }

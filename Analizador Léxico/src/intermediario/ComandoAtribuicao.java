@@ -1,5 +1,7 @@
 package intermediario;
 
+import intermediario2.PrimitivoListaComandos;
+
 public class ComandoAtribuicao extends Comando {
 	private String variavel;
 	private Expressao expressao;
@@ -28,5 +30,13 @@ public class ComandoAtribuicao extends Comando {
 	@Override
 	public String toString() {
 		return "Variavel: " + this.variavel + " / Expressao: " + expressao.toString();
-	}	
+	}
+	
+	
+	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		/* falta implementar ... */  
+		return null;
+	}
+	
+	
 }

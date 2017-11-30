@@ -1,5 +1,7 @@
 package intermediario;
 
+import intermediario2.PrimitivoListaComandos;
+
 import java.util.LinkedList;
 
 public class LacoMultiplo extends Comando{
@@ -26,4 +28,15 @@ public class LacoMultiplo extends Comando{
 		
 		return null;
 	}
+
+
+
+
+	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		/* falta implementar ... */  
+		return null;
+	}
+
+	
+
 }

@@ -25,10 +25,10 @@ public class Expressao
 		return listaPosfixo;
 	}
 	
-	public void addItemInfixo(Item _item){
+	public void addInfixo(Item _item){
 		listaInfixo.add(_item);
 	}	
-	public void addItemPosfixo(Item _item){
+	public void addPosfixo(Item _item){
 		listaPosfixo.add(_item);
 	}	
 }

@@ -9,9 +9,13 @@ PARSER_BEGIN(CompiladorHell)
 package parser;
 
 import java.io.*;
+import java.util.*;
+
 import apoio.*;
 import semantico.*;
 import intermediario.*;
+import intermediario2.*;
+import destino.*;
 
 public class CompiladorHell {
    
@@ -23,7 +27,7 @@ public class CompiladorHell {
       try {
          analisador = new CompiladorHell(new FileInputStream(Config.nomeArquivoFonte));
 
-		 // 1a passagem do Compilador
+		 // 1a passagem do Compilador - gera código intermediário
          ListaComandos listaComandos1aPassagem;
          listaComandos1aPassagem = CompiladorHell.inicio();
          System.out.println("Analise lexica e sintatica sem erros!");
@@ -31,12 +35,15 @@ public class CompiladorHell {
          System.out.println("\nLista completa dos comandos da 1a passagem do compilador: "
                              +listaComandos1aPassagem);
 
-		 // 2a passagem do Compilador 
+		 // 2a passagem do Compilador - gera código intermediário mais proximo do assembler
 		 PrimitivoListaComandos listaComandos2aPassagem;
 		 listaComandos2aPassagem = listaComandos1aPassagem.geraListaPrimitivoComando();
 		 System.out.println("\nLista completa dos comandos da 2a passagem do compilador: "
 		                    +listaComandos2aPassagem);
           
+		 // 3a passagem do Compilador - gera código destino - assembler (JVM do Java)
+		 GeradorCodigoDestino.geraCodigoAssembler(listaComandos2aPassagem);
+  
       }
       catch(FileNotFoundException e) {
          System.out.println("Erro: arquivo nao encontrado");
@@ -154,23 +161,27 @@ comando       ->
 	|comandoLacoMultiplo()
 	|comandoLacoMatrix()
 */
-ListaComandos inicio() : { ListaComandos lista = ListaComandos(); } {
+ListaComandos inicio() : { ListaComandos lista = new ListaComandos(); }
+{
 	lista = listaComandos() <EOF>
 	{
 	   return lista;
     }	
 }
-ListaComandos listaComandos() : { Comando com; ListaComandos lista = ListaComandos(); } {
+ListaComandos listaComandos() : { Comando com; ListaComandos lista = new ListaComandos(); } {
 	(
 	   com = comando()
 	   {
-	      lista.add(com);	   }
+	      if(com != null)  // pode ser uma delcaracao de variavel (comando = null)
+	         lista.add(com);	   }
 	)*
 	{	   return lista;
     }
 }
-Comando comando() : {Comando com;} {
-	  com = comandoDeclaracaoVariavel()
+Comando comando() : {Comando com = null;}
+{
+   (  
+	  comandoDeclaracaoVariavel()
     |
       com = comandoAtribuicao()
     |
@@ -187,6 +198,9 @@ Comando comando() : {Comando com;} {
 	  com = comandoLacoMultiplo()
 	|
 	  com = comandoLacoMatrix()
+   )
+
+   {     return com;   }
 }
 
 /*
@@ -353,7 +367,7 @@ Comando comandoPrinta ():{ComandoPrinta printa; Expressao expa;}
 /*
 comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
 */
-void comandoPega (): {}
+Comando comandoPega (): {Token var; Pega pega = new Pega();}
 {
 	<IN>
 	try {
@@ -361,19 +375,38 @@ void comandoPega (): {}
 	}
 	catch(ParseException e) {
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
+		return null;
 	}
-	<VAR>
+	var = <VAR>
+	{pega.adicionaVariavel(var.image);}
+	{
+      if (!tabela.isExiste(var.image)) {
+			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
+				var.beginLine + ", coluna " + var.beginColumn);
+      }
+    }
 	(
-	  <VIRG><VAR>
+	  <VIRG> var = <VAR>
+	  {pega.adicionaVariavel(var.image);}
+	  {
+      	if (!tabela.isExiste(var.image)) {
+			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
+				var.beginLine + ", coluna " + var.beginColumn);
+      	}
+   	}
 	)*
 	try {
 		<FP>
 	}
 	catch(ParseException e) {
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
+		return null;
 	}
-	<COMENT>	
+	<COMENT>
+	{return pega;}
+	  
 }
+
 
 /*
 comandoSe -> <IF><AP> exp <FP>
@@ -383,22 +416,24 @@ comandoSe -> <IF><AP> exp <FP>
              listaComandos <FCH>)?
 */
 
-SeSenao comandoSe() : {Comando seSenao = new SeSenao(); Expressao expSeSenao = new Expressao(); ListaComandos listaComandosCondicaoVerdadeiro = new ListaComandos(); ListaComandos listaComandosCondicaoFalso = new ListaComandos(); }
+SeSenao comandoSe() : {SeSenao seSenao = new SeSenao(); Expressao expSeSenao;
+                       ListaComandos listaComandosCondicaoVerdadeiro;
+                       ListaComandos listaComandosCondicaoFalso; }
 {  
 	<IF> <AP> expSeSenao = exp() <FP>
 	{
-	  seSenao.setexpSeSenao(expSeSenao);
+	  seSenao.setExpSeSenao(expSeSenao);
 	}
 	<ACH><COMENT>
 	listaComandosCondicaoVerdadeiro = listaComandos() <FCH>
 	{
-	  seSenao.setlistaComandosCondicaoVerdadeiro(listaComandosCondicaoVerdadeiro);
+	  seSenao.setListaComandosCondicaoVerdadeiro(listaComandosCondicaoVerdadeiro);
 	}
 	(
 	  <ELSE><ACH><COMENT>
 	  listaComandosCondicaoFalso = listaComandos()
 	  {
-	     seSenao.setlistaComandosCondicaoFalso (listaComandosCondicaoFalso);
+	     seSenao.setListaComandosCondicaoFalso(listaComandosCondicaoFalso);
 	  }
 	  <FCH>
 	)?
@@ -461,7 +496,10 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
                comandoAtribuicao <FP>
                <ACH> <COMENT> listaComandos <FCH>
 */
-Comando comandoLaco () : {Simbolo simb; Token var; Token tokenTipo = null; Comando laco = new Laco(); Expressao expressaoAuxiliar = new Expressao(); ListaComandos listaAuxiliar = new ListaComandos();}
+Comando comandoLaco () : {Simbolo simb; Token var; Token tokenTipo = null;
+                          Laco laco = new Laco();
+                          Expressao expressaoAuxiliar = new Expressao();
+                          ListaComandos listaAuxiliar = new ListaComandos();}
 {
     <FOR>
     try {
@@ -484,9 +522,8 @@ Comando comandoLaco () : {Simbolo simb; Token var; Token tokenTipo = null; Coman
          else
           	 CompiladorHell.tabela.inclui(simb);
       }
-    }
-    {
-       laco.setvarControle(var);
+
+      laco.setVarControle(var.image);
     }
     <ATRIB> expressaoAuxiliar = exp() <PT_VIRG>
     {
@@ -558,7 +595,7 @@ LacoMultiplo inicioLaco(Token tokenTipo) : {Simbolo simb; Token var;BlocoLacoMul
   	
 	var=<VAR>
 	{
-	  LacoMultiplo laco = new LacoMultiplo ();
+	  LacoMultiplo laco = new LacoMultiplo();
 	  bloco = new BlocoLacoMultiplo(var.image);
 	  laco.incluiBloco(bloco);
 	  
@@ -577,7 +614,7 @@ LacoMultiplo inicioLaco(Token tokenTipo) : {Simbolo simb; Token var;BlocoLacoMul
 	  return laco;
 	}
 }
-void contLaco(Token tokenTipo) : {Simbolo simb; Token var;}
+void contLaco(Token tokenTipo, LacoMultiplo laco) : {Simbolo simb; Token var;}
 {
 	<VIRG>
 	var=<VAR>
@@ -597,7 +634,9 @@ void contLaco(Token tokenTipo) : {Simbolo simb; Token var;}
 }
 
 
-void faixaLacoMultiplo(LacoMultiplo laco) : {Expressao expFrom,expTo;Expressao expStep = new Expressao();}
+LinkedList faixaLacoMultiplo(LacoMultiplo laco) : {Expressao expFrom, expTo, auxiliar;
+                                             Expressao expStep    = new Expressao();
+                                             LinkedList expressao = new LinkedList();}
 {
 	auxiliar = exp()
 	{expressao.add(auxiliar); }
@@ -613,10 +652,11 @@ void faixaLacoMultiplo(LacoMultiplo laco) : {Expressao expFrom,expTo;Expressao e
 	    { expressao.add(auxiliar); }
 	    <STEP> expStep = exp()
 	)?
-	{ return expressao; }
+
 	{
 	  laco.addFaixa(expFrom,expTo,expStep); //possui um contador interno para controle de insercao das faixas
 	}
+	{ return expressao; }
 }
 
 /*
@@ -629,7 +669,7 @@ faixa -> exp <TO> exp
         (<STEP> exp)?
 */
 Comando comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;
-                               Comando lacoMatrix = new LacoMatrix();
+                               LacoMatrix lacoMatrix = new LacoMatrix();
                                Expressao expressaoAuxiliar = new Expressao();
                                ListaComandos listaAuxiliar = new ListaComandos();
                                ArrayList<Expressao> expressao;} 
@@ -640,7 +680,7 @@ Comando comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;
 	  }
 	  catch(ParseException e) {
 		   RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
-        return null;	
+           return null;	
 	  }
       (
       tipo = <TYPENUM>
@@ -656,7 +696,7 @@ Comando comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;
           	   CompiladorHell.tabela.inclui(simb);
 		  }
       }
-      { lacoMatrix.setVariaveisControle(var); }
+      { lacoMatrix.setVariaveisControle(var.image); }
       (
         <VIRG>
        	var=<VAR>
@@ -670,7 +710,7 @@ Comando comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;
           	     CompiladorHell.tabela.inclui(simb);
 			}
     	}
-    	{ lacoMatrix.setVariaveisControle(var); }
+    	{ lacoMatrix.setVariaveisControle(var.image); }
       )*
       <PT_VIRG>
       expressao = faixa()
@@ -703,12 +743,13 @@ faixa -> exp <TO> exp
 ArrayList<Expressao> faixa(): {ArrayList<Expressao> listaExpressoes = new ArrayList<Expressao>();
                                Expressao e;}
 {
-   e = exp()  { listExpressoes.add(e); }   <TO>
-   e = exp() { listExpressoes.add(e); }
+   e = exp()  { listaExpressoes.add(e); }   <TO>
+   e = exp() { listaExpressoes.add(e); }
    (
       <STEP>
-      e = exp() { listExpressoes.add(e); }
+      e = exp() { listaExpressoes.add(e); }
    )?
+   {      return listaExpressoes;   }
 }
 
 /*
@@ -750,37 +791,37 @@ void exp0(Expressao e) : { Item item; Token t;}
 }
 void expOr(Expressao e) : {Item item; Token t;}
 {
-    expAnd()
+    expAnd(e)
     (
       t=<OR>
       {  
         item = new Item(Tipo.OPERADOR, t.image);
         e.addInfixo(item);
       }
-      expAnd()
+      expAnd(e)
       {  
         e.addPosfixo(item);
       }
     )*
 }
-void expAnd() : {Item item; Token t;}
+void expAnd(Expressao e) : {Item item; Token t;}
 {
-    expAnds()
+    expAnds(e)
     (
        t=<AND>
        {  
           item = new Item(Tipo.OPERADOR, t.image);
           e.addInfixo(item);
        }
-       expAnds()
+       expAnds(e)
       {  
         e.addPosfixo(item);
       }
     )*
 }
-void expAnds() : {Item item; Token t;}
+void expAnds(Expressao e) : {Item item; Token t;}
 {
-    expNot()
+    expNot(e)
     (
        t=<ANDS>
        {  
@@ -788,13 +829,13 @@ void expAnds() : {Item item; Token t;}
 	       e.addInfixo(item);
        }
 
-       expNot()
+       expNot(e)
        {  
         e.addPosfixo(item);
       }
     )*
 }
-void expNot() : {Item item; Token t; int cont = 0;}
+void expNot(Expressao e) : {Item item = null; Token t; int cont = 0;}
 {
     (
        t=<NOT>
@@ -804,15 +845,15 @@ void expNot() : {Item item; Token t; int cont = 0;}
 	       cont++;
        }
     )*
-    expRelacional()
+    expRelacional(e)
     {  
         while(cont-- > 0)
            e.addPosfixo(item);
     }
 }
-void expRelacional() : {Item item; Token t;}
+void expRelacional(Expressao e) : {Item item; Token t;}
 {
-   expAdit()
+   expAdit(e)
    (
        t=<MAIOR>
        {  
@@ -820,10 +861,10 @@ void expRelacional() : {Item item; Token t;}
 	       e.addInfixo(item);
        }
 
-       expAdit()
-      {  
-        e.addPosfixo(item);
-      }
+       expAdit(e)
+       {  
+           e.addPosfixo(item);
+       }
      |
        t=<MENOR>
        {  
@@ -831,10 +872,10 @@ void expRelacional() : {Item item; Token t;}
 	       e.addInfixo(item);
        }
 
-       expAdit()
-      {  
-        e.addPosfixo(item);
-      }
+       expAdit(e)
+       {  
+           e.addPosfixo(item);
+       }
      |
        t=<MAIOR_I>
        {  
@@ -842,10 +883,10 @@ void expRelacional() : {Item item; Token t;}
 	       e.addInfixo(item);
        }
 
-       expAdit()
-      {  
-        e.addPosfixo(item);
-      }
+       expAdit(e)
+       {  
+           e.addPosfixo(item);
+       }
        
      |
        t=<MENOR_I>
@@ -854,57 +895,61 @@ void expRelacional() : {Item item; Token t;}
 	       e.addInfixo(item);
        }
 
-       expAdit()
-      {  
-        e.addPosfixo(item);
-      }
+       expAdit(e)
+       {  
+           e.addPosfixo(item);
+       }
      |
       t=<IGUAL>
-       {  
+      {  
 	       item = new Item(Tipo.OPERADOR, t.image);
 	       e.addInfixo(item);
-       }
+      }
 
-      expAdit()
+      expAdit(e)
       {  
-        e.addPosfixo(item);
+           e.addPosfixo(item);
       }
      |
-       t=<DIF>     expAdit()
+      t=<DIF>
       {  
-        e.addPosfixo(item);
+	       item = new Item(Tipo.OPERADOR, t.image);
+	       e.addInfixo(item);
+      }
+      expAdit(e)
+      {  
+           e.addPosfixo(item);
       }
    )*
 }
-void expAdit() : {Item item; Token t;}
+void expAdit(Expressao e) : {Item item; Token t;}
 {
-	expMult()
+	expMult(e)
 	(
-	  t=<ADD>
-       {  
-	       item = new Item(Tipo.OPERADOR, t.image);
-	       e.addInfixo(item);
-       }
-	  expMult()
-      {  
-        e.addPosfixo(item);
-      }
+	     t=<ADD>
+         {  
+	         item = new Item(Tipo.OPERADOR, t.image);
+	         e.addInfixo(item);
+         }
+	     expMult(e)
+         {  
+             e.addPosfixo(item);
+         }
 	  |
-	  t=<SUB>
-       {  
-	       item = new Item(Tipo.OPERADOR, t.image);
-	       e.addInfixo(item);
-       }
-
-	  expMult()
-      {  
-        e.addPosfixo(item);
-      }
+	     t=<SUB>
+         {  
+	         item = new Item(Tipo.OPERADOR, t.image);
+	         e.addInfixo(item);
+         }
+         expMult(e)
+         {  
+             e.addPosfixo(item);
+         }
 	)*
 }  
-void expMult() : {Item item; Token t;}
+void expMult(Expressao e) : {Item item; Token t;}
 {
-	expPot()
+	expPot(e)
 	(
 	   t=<MULT>
        {  
@@ -912,7 +957,7 @@ void expMult() : {Item item; Token t;}
 	       e.addInfixo(item);
        }
 
-	   expPot()
+	   expPot(e)
       {  
         e.addPosfixo(item);
       }
@@ -923,22 +968,22 @@ void expMult() : {Item item; Token t;}
 	       e.addInfixo(item);
        }
 
-	   expPot()
+	   expPot(e)
       {  
         e.addPosfixo(item);
       }
 	)*
 }
-void expPot() : {Item item; Token t;}
+void expPot(Expressao e) : {Item item; Token t;}
 {
-	expToken()
+	expToken(e)
 	(
 	  t=<POT>
 	  {  
 	        item = new Item(Tipo.OPERADOR, t.image);
             e.addInfixo(item);
 	  } 
-	  expPot()
+	  expPot(e)
 	  {  
             e.addPosfixo(item);
 	  }  
@@ -948,7 +993,7 @@ void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
 {
     t = <NUM>
     {
-       item = new Item(Tipo.CTE_NUMERICA, t.image);
+       item = new Item(Tipo.CTE_NUMERO, t.image);
        e.addPosfixo(item);
        e.addInfixo(item);
     }
@@ -958,7 +1003,7 @@ void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
       { tConcatenada = t.image; }      t=<NUM>
       {
          tConcatenada = tConcatenada + t.image; 
-         item = new Item(Tipo.CTE_NUMERICA, tConcatenada);
+         item = new Item(Tipo.CTE_NUMERO, tConcatenada);
          e.addPosfixo(item);
          e.addInfixo(item);
       }
@@ -968,15 +1013,15 @@ void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
       { tConcatenada = t.image; }
       t=<NUM>
       {
-         tconcatenada = tconcatenada + t.image; 
-         item = new Item(Tipo.CTE_NUMERICA, tConcatenada);
+         tConcatenada = tConcatenada + t.image; 
+         item = new Item(Tipo.CTE_NUMERO, tConcatenada);
          e.addPosfixo(item);
          e.addInfixo(item);
       }
     |
-      t=<VAR>
+      t=<VAR>  
       {
-         tipo = Tabela.getTipo(t.image);
+         tipo = tabela.consultaTipo(t.image);
          item = new Item(tipo,t.image);
          e.addPosfixo(item);
          e.addInfixo(item);
@@ -1001,7 +1046,7 @@ void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
         item = new Item(Tipo.PARENTESES, t.image);
         e.addInfixo(item);
       }
-      exp0()
+      exp0(e)
       
       t=<FP>
 	  {

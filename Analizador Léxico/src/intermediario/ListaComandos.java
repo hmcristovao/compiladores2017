@@ -8,6 +8,10 @@ public class ListaComandos
 {	
 	public LinkedList<Comando> comandos;
 	
+	public void add(Comando com) {
+		this.comandos.add(com);
+	}
+	
 	public PrimitivoListaComandos geraListaPrimitivoComando() {
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
 		for(Comando com : this.comandos) {

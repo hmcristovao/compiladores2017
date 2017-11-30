@@ -2,9 +2,13 @@
 package parser;
 
 import java.io.*;
+import java.util.*;
+
 import apoio.*;
 import semantico.*;
 import intermediario.*;
+import intermediario2.*;
+import destino.*;
 
 public class CompiladorHell implements CompiladorHellConstants {
 
@@ -16,7 +20,7 @@ public class CompiladorHell implements CompiladorHellConstants {
       try {
          analisador = new CompiladorHell(new FileInputStream(Config.nomeArquivoFonte));
 
-                 // 1a passagem do Compilador
+                 // 1a passagem do Compilador - gera código intermediário
          ListaComandos listaComandos1aPassagem;
          listaComandos1aPassagem = CompiladorHell.inicio();
          System.out.println("Analise lexica e sintatica sem erros!");
@@ -24,11 +28,14 @@ public class CompiladorHell implements CompiladorHellConstants {
          System.out.println("\u005cnLista completa dos comandos da 1a passagem do compilador: "
                              +listaComandos1aPassagem);
 
-                 // 2a passagem do Compilador 
+                 // 2a passagem do Compilador - gera código intermediário mais proximo do assembler
                  PrimitivoListaComandos listaComandos2aPassagem;
                  listaComandos2aPassagem = listaComandos1aPassagem.geraListaPrimitivoComando();
                  System.out.println("\u005cnLista completa dos comandos da 2a passagem do compilador: "
                                     +listaComandos2aPassagem);
+
+                 // 3a passagem do Compilador - gera código destino - assembler (JVM do Java)
+                 GeradorCodigoDestino.geraCodigoAssembler(listaComandos2aPassagem);
 
       }
       catch(FileNotFoundException e) {
@@ -57,7 +64,7 @@ comando       ->
 	|comandoLacoMatrix()
 */
   static final public ListaComandos inicio() throws ParseException {
-                           ListaComandos lista = ListaComandos();
+                           ListaComandos lista = new ListaComandos();
     lista = listaComandos();
     jj_consume_token(0);
            {if (true) return lista;}
@@ -65,7 +72,7 @@ comando       ->
   }
 
   static final public ListaComandos listaComandos() throws ParseException {
-                                  Comando com; ListaComandos lista = ListaComandos();
+                                  Comando com; ListaComandos lista = new ListaComandos();
     label_1:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -87,19 +94,20 @@ comando       ->
         break label_1;
       }
       com = comando();
-              lista.add(com);
+              if(com != null)  // pode ser uma delcaracao de variavel (comando = null)
+                 lista.add(com);
     }
            {if (true) return lista;}
     throw new Error("Missing return statement in function");
   }
 
   static final public Comando comando() throws ParseException {
-                     Comando com;
+                     Comando com = null;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TYPENUM:
     case TYPESTR:
     case TYPEBOOL:
-      com = comandoDeclaracaoVariavel();
+      comandoDeclaracaoVariavel();
       break;
     case VAR:
       com = comandoAtribuicao();
@@ -130,6 +138,8 @@ comando       ->
       jj_consume_token(-1);
       throw new ParseException();
     }
+     {if (true) return com;}
+    throw new Error("Missing return statement in function");
   }
 
 /*
@@ -356,14 +366,21 @@ comandoPrinta -> <OUT> <AP>
 /*
 comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
 */
-  static final public void comandoPega() throws ParseException {
+  static final public Comando comandoPega() throws ParseException {
+                         Token var; Pega pega = new Pega();
     jj_consume_token(IN);
     try {
       jj_consume_token(AP);
     } catch (ParseException e) {
                 RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
+                {if (true) return null;}
     }
-    jj_consume_token(VAR);
+    var = jj_consume_token(VAR);
+         pega.adicionaVariavel(var.image);
+      if (!tabela.isExiste(var.image)) {
+                        System.out.println("Variavel nao declarada: \u005c"" + var.image + "\u005c" na linha " +
+                                var.beginLine + ", coluna " + var.beginColumn);
+      }
     label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -375,14 +392,22 @@ comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
         break label_6;
       }
       jj_consume_token(VIRG);
-      jj_consume_token(VAR);
+      var = jj_consume_token(VAR);
+           pega.adicionaVariavel(var.image);
+        if (!tabela.isExiste(var.image)) {
+                        System.out.println("Variavel nao declarada: \u005c"" + var.image + "\u005c" na linha " +
+                                var.beginLine + ", coluna " + var.beginColumn);
+        }
     }
     try {
       jj_consume_token(FP);
     } catch (ParseException e) {
                 RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
+                {if (true) return null;}
     }
     jj_consume_token(COMENT);
+         {if (true) return pega;}
+    throw new Error("Missing return statement in function");
   }
 
 /*
@@ -393,24 +418,26 @@ comandoSe -> <IF><AP> exp <FP>
              listaComandos <FCH>)?
 */
   static final public SeSenao comandoSe() throws ParseException {
-                       Comando seSenao = new SeSenao(); Expressao expSeSenao = new Expressao(); ListaComandos listaComandosCondicaoVerdadeiro = new ListaComandos(); ListaComandos listaComandosCondicaoFalso = new ListaComandos();
+                       SeSenao seSenao = new SeSenao(); Expressao expSeSenao;
+                       ListaComandos listaComandosCondicaoVerdadeiro;
+                       ListaComandos listaComandosCondicaoFalso;
     jj_consume_token(IF);
     jj_consume_token(AP);
     expSeSenao = exp();
     jj_consume_token(FP);
-          seSenao.setexpSeSenao(expSeSenao);
+          seSenao.setExpSeSenao(expSeSenao);
     jj_consume_token(ACH);
     jj_consume_token(COMENT);
     listaComandosCondicaoVerdadeiro = listaComandos();
     jj_consume_token(FCH);
-          seSenao.setlistaComandosCondicaoVerdadeiro(listaComandosCondicaoVerdadeiro);
+          seSenao.setListaComandosCondicaoVerdadeiro(listaComandosCondicaoVerdadeiro);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ELSE:
       jj_consume_token(ELSE);
       jj_consume_token(ACH);
       jj_consume_token(COMENT);
       listaComandosCondicaoFalso = listaComandos();
-             seSenao.setlistaComandosCondicaoFalso (listaComandosCondicaoFalso);
+             seSenao.setListaComandosCondicaoFalso(listaComandosCondicaoFalso);
       jj_consume_token(FCH);
       break;
     default:
@@ -498,7 +525,10 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
                <ACH> <COMENT> listaComandos <FCH>
 */
   static final public Comando comandoLaco() throws ParseException {
-                          Simbolo simb; Token var; Token tokenTipo = null; Comando laco = new Laco(); Expressao expressaoAuxiliar = new Expressao(); ListaComandos listaAuxiliar = new ListaComandos();
+                          Simbolo simb; Token var; Token tokenTipo = null;
+                          Laco laco = new Laco();
+                          Expressao expressaoAuxiliar = new Expressao();
+                          ListaComandos listaAuxiliar = new ListaComandos();
     jj_consume_token(FOR);
     try {
       jj_consume_token(AP);
@@ -523,7 +553,8 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
          else
                  CompiladorHell.tabela.inclui(simb);
       }
-       laco.setvarControle(var);
+
+      laco.setVarControle(var.image);
     jj_consume_token(ATRIB);
     expressaoAuxiliar = exp();
     jj_consume_token(PT_VIRG);
@@ -593,7 +624,7 @@ faixa -> exp <TO> exp
   static final public LacoMultiplo inicioLaco(Token tokenTipo) throws ParseException {
                                             Simbolo simb; Token var;BlocoLacoMultiplo bloco;
     var = jj_consume_token(VAR);
-          LacoMultiplo laco = new LacoMultiplo ();
+          LacoMultiplo laco = new LacoMultiplo();
           bloco = new BlocoLacoMultiplo(var.image);
           laco.incluiBloco(bloco);
 
@@ -611,8 +642,8 @@ faixa -> exp <TO> exp
     throw new Error("Missing return statement in function");
   }
 
-  static final public void contLaco(Token tokenTipo) throws ParseException {
-                                  Simbolo simb; Token var;
+  static final public void contLaco(Token tokenTipo, LacoMultiplo laco) throws ParseException {
+                                                     Simbolo simb; Token var;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VIRG:
       jj_consume_token(VIRG);
@@ -639,8 +670,10 @@ faixa -> exp <TO> exp
     }
   }
 
-  static final public void faixaLacoMultiplo(LacoMultiplo laco) throws ParseException {
-                                             Expressao expFrom,expTo;Expressao expStep = new Expressao();
+  static final public LinkedList faixaLacoMultiplo(LacoMultiplo laco) throws ParseException {
+                                                   Expressao expFrom, expTo, auxiliar;
+                                             Expressao expStep    = new Expressao();
+                                             LinkedList expressao = new LinkedList();
     auxiliar = exp();
          expressao.add(auxiliar);
     expFrom = exp();
@@ -660,9 +693,10 @@ faixa -> exp <TO> exp
       jj_la1[22] = jj_gen;
       ;
     }
-          {if (true) return expressao;}
           laco.addFaixa(expFrom,expTo,expStep); //possui um contador interno para controle de insercao das faixas
 
+          {if (true) return expressao;}
+    throw new Error("Missing return statement in function");
   }
 
 /*
@@ -676,7 +710,7 @@ faixa -> exp <TO> exp
 */
   static final public Comando comandoLacoMatrix() throws ParseException {
                                Simbolo simb; Token var; Token tipo = null;
-                               Comando lacoMatrix = new LacoMatrix();
+                               LacoMatrix lacoMatrix = new LacoMatrix();
                                Expressao expressaoAuxiliar = new Expressao();
                                ListaComandos listaAuxiliar = new ListaComandos();
                                ArrayList<Expressao> expressao;
@@ -685,7 +719,7 @@ faixa -> exp <TO> exp
       jj_consume_token(AP);
     } catch (ParseException e) {
                    RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
-        {if (true) return null;}
+           {if (true) return null;}
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TYPENUM:
@@ -704,7 +738,7 @@ faixa -> exp <TO> exp
             else
                    CompiladorHell.tabela.inclui(simb);
                   }
-        lacoMatrix.setVariaveisControle(var);
+        lacoMatrix.setVariaveisControle(var.image);
     label_8:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -725,7 +759,7 @@ faixa -> exp <TO> exp
               else
                      CompiladorHell.tabela.inclui(simb);
                         }
-          lacoMatrix.setVariaveisControle(var);
+          lacoMatrix.setVariaveisControle(var.image);
     }
     jj_consume_token(PT_VIRG);
     expressao = faixa();
@@ -758,20 +792,22 @@ faixa -> exp <TO> exp
                                ArrayList<Expressao> listaExpressoes = new ArrayList<Expressao>();
                                Expressao e;
     e = exp();
-                listExpressoes.add(e);
+                listaExpressoes.add(e);
     jj_consume_token(TO);
     e = exp();
-               listExpressoes.add(e);
+               listaExpressoes.add(e);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case STEP:
       jj_consume_token(STEP);
       e = exp();
-                  listExpressoes.add(e);
+                  listaExpressoes.add(e);
       break;
     default:
       jj_la1[25] = jj_gen;
       ;
     }
+      {if (true) return listaExpressoes;}
+    throw new Error("Missing return statement in function");
   }
 
 /*
@@ -818,7 +854,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
 
   static final public void expOr(Expressao e) throws ParseException {
                            Item item; Token t;
-    expAnd();
+    expAnd(e);
     label_10:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -832,14 +868,14 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       t = jj_consume_token(OR);
         item = new Item(Tipo.OPERADOR, t.image);
         e.addInfixo(item);
-      expAnd();
+      expAnd(e);
         e.addPosfixo(item);
     }
   }
 
-  static final public void expAnd() throws ParseException {
-                 Item item; Token t;
-    expAnds();
+  static final public void expAnd(Expressao e) throws ParseException {
+                            Item item; Token t;
+    expAnds(e);
     label_11:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -853,14 +889,14 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       t = jj_consume_token(AND);
           item = new Item(Tipo.OPERADOR, t.image);
           e.addInfixo(item);
-      expAnds();
+      expAnds(e);
         e.addPosfixo(item);
     }
   }
 
-  static final public void expAnds() throws ParseException {
-                  Item item; Token t;
-    expNot();
+  static final public void expAnds(Expressao e) throws ParseException {
+                             Item item; Token t;
+    expNot(e);
     label_12:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -874,13 +910,13 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       t = jj_consume_token(ANDS);
                item = new Item(Tipo.OPERADOR, t.image);
                e.addInfixo(item);
-      expNot();
+      expNot(e);
         e.addPosfixo(item);
     }
   }
 
-  static final public void expNot() throws ParseException {
-                 Item item; Token t; int cont = 0;
+  static final public void expNot(Expressao e) throws ParseException {
+                            Item item = null; Token t; int cont = 0;
     label_13:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -896,14 +932,14 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
                e.addInfixo(item);
                cont++;
     }
-    expRelacional();
+    expRelacional(e);
         while(cont-- > 0)
            e.addPosfixo(item);
   }
 
-  static final public void expRelacional() throws ParseException {
-                        Item item; Token t;
-    expAdit();
+  static final public void expRelacional(Expressao e) throws ParseException {
+                                   Item item; Token t;
+    expAdit(e);
     label_14:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -924,41 +960,43 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         t = jj_consume_token(MAIOR);
                item = new Item(Tipo.OPERADOR, t.image);
                e.addInfixo(item);
-        expAdit();
-        e.addPosfixo(item);
+        expAdit(e);
+           e.addPosfixo(item);
         break;
       case MENOR:
         t = jj_consume_token(MENOR);
                item = new Item(Tipo.OPERADOR, t.image);
                e.addInfixo(item);
-        expAdit();
-        e.addPosfixo(item);
+        expAdit(e);
+           e.addPosfixo(item);
         break;
       case MAIOR_I:
         t = jj_consume_token(MAIOR_I);
                item = new Item(Tipo.OPERADOR, t.image);
                e.addInfixo(item);
-        expAdit();
-        e.addPosfixo(item);
+        expAdit(e);
+           e.addPosfixo(item);
         break;
       case MENOR_I:
         t = jj_consume_token(MENOR_I);
                item = new Item(Tipo.OPERADOR, t.image);
                e.addInfixo(item);
-        expAdit();
-        e.addPosfixo(item);
+        expAdit(e);
+           e.addPosfixo(item);
         break;
       case IGUAL:
         t = jj_consume_token(IGUAL);
                item = new Item(Tipo.OPERADOR, t.image);
                e.addInfixo(item);
-        expAdit();
-        e.addPosfixo(item);
+        expAdit(e);
+           e.addPosfixo(item);
         break;
       case DIF:
         t = jj_consume_token(DIF);
-        expAdit();
-        e.addPosfixo(item);
+               item = new Item(Tipo.OPERADOR, t.image);
+               e.addInfixo(item);
+        expAdit(e);
+           e.addPosfixo(item);
         break;
       default:
         jj_la1[32] = jj_gen;
@@ -968,9 +1006,9 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     }
   }
 
-  static final public void expAdit() throws ParseException {
-                  Item item; Token t;
-    expMult();
+  static final public void expAdit(Expressao e) throws ParseException {
+                             Item item; Token t;
+    expMult(e);
     label_15:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -985,17 +1023,17 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ADD:
         t = jj_consume_token(ADD);
-               item = new Item(Tipo.OPERADOR, t.image);
-               e.addInfixo(item);
-        expMult();
-        e.addPosfixo(item);
+                 item = new Item(Tipo.OPERADOR, t.image);
+                 e.addInfixo(item);
+        expMult(e);
+             e.addPosfixo(item);
         break;
       case SUB:
         t = jj_consume_token(SUB);
-               item = new Item(Tipo.OPERADOR, t.image);
-               e.addInfixo(item);
-        expMult();
-        e.addPosfixo(item);
+                 item = new Item(Tipo.OPERADOR, t.image);
+                 e.addInfixo(item);
+        expMult(e);
+             e.addPosfixo(item);
         break;
       default:
         jj_la1[34] = jj_gen;
@@ -1005,9 +1043,9 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     }
   }
 
-  static final public void expMult() throws ParseException {
-                  Item item; Token t;
-    expPot();
+  static final public void expMult(Expressao e) throws ParseException {
+                             Item item; Token t;
+    expPot(e);
     label_16:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1024,14 +1062,14 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         t = jj_consume_token(MULT);
                item = new Item(Tipo.OPERADOR, t.image);
                e.addInfixo(item);
-        expPot();
+        expPot(e);
         e.addPosfixo(item);
         break;
       case DIV:
         t = jj_consume_token(DIV);
                item = new Item(Tipo.OPERADOR, t.image);
                e.addInfixo(item);
-        expPot();
+        expPot(e);
         e.addPosfixo(item);
         break;
       default:
@@ -1042,15 +1080,16 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     }
   }
 
-  static final public void expPot() throws ParseException {
-                 Item item; Token t;
-    expToken();
+  static final public void expPot(Expressao e) throws ParseException {
+                            Item item; Token t;
+    expToken(e);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case POT:
       t = jj_consume_token(POT);
-      expPot();
                 item = new Item(Tipo.OPERADOR, t.image);
-                e.add(item);
+            e.addInfixo(item);
+      expPot(e);
+            e.addPosfixo(item);
       break;
     default:
       jj_la1[37] = jj_gen;
@@ -1063,7 +1102,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NUM:
       t = jj_consume_token(NUM);
-       item = new Item(Tipo.CTE_NUMERICA, t.image);
+       item = new Item(Tipo.CTE_NUMERO, t.image);
        e.addPosfixo(item);
        e.addInfixo(item);
       break;
@@ -1072,7 +1111,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         tConcatenada = t.image;
       t = jj_consume_token(NUM);
          tConcatenada = tConcatenada + t.image;
-         item = new Item(Tipo.CTE_NUMERICA, tConcatenada);
+         item = new Item(Tipo.CTE_NUMERO, tConcatenada);
          e.addPosfixo(item);
          e.addInfixo(item);
       break;
@@ -1080,14 +1119,14 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       t = jj_consume_token(SUB);
         tConcatenada = t.image;
       t = jj_consume_token(NUM);
-         tconcatenada = tconcatenada + t.image;
-         item = new Item(Tipo.CTE_NUMERICA, tConcatenada);
+         tConcatenada = tConcatenada + t.image;
+         item = new Item(Tipo.CTE_NUMERO, tConcatenada);
          e.addPosfixo(item);
          e.addInfixo(item);
       break;
     case VAR:
       t = jj_consume_token(VAR);
-         tipo = Tabela.getTipo(t.image);
+         tipo = tabela.consultaTipo(t.image);
          item = new Item(tipo,t.image);
          e.addPosfixo(item);
          e.addInfixo(item);
@@ -1108,7 +1147,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       t = jj_consume_token(AP);
         item = new Item(Tipo.PARENTESES, t.image);
         e.addInfixo(item);
-      exp0();
+      exp0(e);
       t = jj_consume_token(FP);
         item = new Item(Tipo.PARENTESES, t.image);
         e.addInfixo(item);

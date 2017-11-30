@@ -1,27 +1,36 @@
 package intermediario;
 
+import intermediario2.PrimitivoListaComandos;
+
 import java.util.ArrayList;
 
 import semantico.Simbolo;
 
-public class LacoMatrix {
+public class LacoMatrix extends Comando {
 	
-	private ArrayList<Simbolo> variaveisControle;
+	private ArrayList<String> variaveisControle;
 	private Expressao expressaoInicial;
 	private Expressao expressaoFinal;
 	private Expressao expressaoPasso;
 	private ListaComandos listaComandos;
 	
-	public LacoMatrix(ArrayList<Simbolo> _variaveisControle, Expressao _expressaoInicial, Expressao _expressaoFinal, Expressao _expressaoPasso, ListaComandos _listaComandos
-			 ) { 
-		        this.variaveisControle = _variaveisControle;
-		        this.expressaoInicial = _expressaoInicial;
-		        this.expressaoFinal = _expressaoFinal;
-		        this.expressaoPasso = _expressaoPasso;
-		        this.listaComandos = _listaComandos;
-		        
-			}
-	
+	public LacoMatrix() { 
+	    this.variaveisControle = null;
+	    this.expressaoInicial = null;
+	    this.expressaoFinal = null;
+	    this.expressaoPasso = null;
+	    this.listaComandos = null;
+    
+	}
+	public LacoMatrix(ArrayList<String> _variaveisControle, Expressao _expressaoInicial, 
+			          Expressao _expressaoFinal, Expressao _expressaoPasso, ListaComandos _listaComandos) 
+	{ 
+        this.variaveisControle = _variaveisControle;
+        this.expressaoInicial = _expressaoInicial;
+        this.expressaoFinal = _expressaoFinal;
+        this.expressaoPasso = _expressaoPasso;
+        this.listaComandos = _listaComandos;
+    }
 	@Override
 	public String toString() {
 		return "LacoMatrix [variaveisControle=" + variaveisControle
@@ -30,10 +39,10 @@ public class LacoMatrix {
 				+ expressaoPasso + ", listaComandos=" + listaComandos + "]";
 	}
 
-	public ArrayList<Simbolo> getVariaveisControle() {
+	public ArrayList<String> getVariaveisControle() {
 		return variaveisControle;
 	}
-	public void setVariaveisControle(Simbolo varControle) {
+	public void setVariaveisControle(String varControle) {
 		this.variaveisControle.add(varControle);
 	}
 	public Expressao getExpressaoInicial() {
@@ -60,5 +69,16 @@ public class LacoMatrix {
 	public void setListaComandos(ListaComandos listaComandos) {
 		this.listaComandos = listaComandos;
 	}
+
+	
+	
+
+
+	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		/* falta implementar ... */  
+		return null;
+	}
+
+	
 
 }
