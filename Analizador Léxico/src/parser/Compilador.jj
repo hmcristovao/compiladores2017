@@ -211,7 +211,10 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
      var=<VAR>
      {
 		   simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
-	       CompiladorHell.tabela.inclui(simb);
+		   if(CompiladorHell.tabela.isExiste(var.image))
+			  AnaliseSemantica.decaracaoRepetida(var);
+           else
+          	  CompiladorHell.tabela.inclui(simb);
 	 }
      (
        <ATRIB>
@@ -222,7 +225,10 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
        var=<VAR>
        {
 		   simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
-	       CompiladorHell.tabela.inclui(simb);
+		   if(CompiladorHell.tabela.isExiste(var.image))
+			  AnaliseSemantica.decaracaoRepetida(var);
+           else
+          	  CompiladorHell.tabela.inclui(simb);
 	   }
        (
          <ATRIB>
@@ -234,7 +240,10 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
      var=<VAR>
      {
 		   simb = new Simbolo(var.image, Tipo.VAR_STRING);
-	       CompiladorHell.tabela.inclui(simb);
+		   if(CompiladorHell.tabela.isExiste(var.image))
+			  AnaliseSemantica.decaracaoRepetida(var);
+           else
+          	  CompiladorHell.tabela.inclui(simb);
 	 }
      (
        <ATRIB>
@@ -245,7 +254,10 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
        var=<VAR>
        {
 		  simb = new Simbolo(var.image, Tipo.VAR_STRING);
-	       CompiladorHell.tabela.inclui(simb);
+		   if(CompiladorHell.tabela.isExiste(var.image))
+			  AnaliseSemantica.decaracaoRepetida(var);
+           else
+          	  CompiladorHell.tabela.inclui(simb);
 	   }
        (
          <ATRIB>
@@ -467,7 +479,10 @@ Comando comandoLaco () : {Simbolo simb; Token var; Token tokenTipo = null; Coman
 	  if(tokenTipo != null)
 	  {
 	     simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
-	      CompiladorHell.tabela.inclui(simb);
+		 if(CompiladorHell.tabela.isExiste(var.image))
+			 AnaliseSemantica.decaracaoRepetida(var);
+         else
+          	 CompiladorHell.tabela.inclui(simb);
       }
     }
     {
@@ -550,7 +565,10 @@ LacoMultiplo inicioLaco(Token tokenTipo) : {Simbolo simb; Token var;BlocoLacoMul
 	  if(tokenTipo!=null)
 	  { 
 		   simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
-	       CompiladorHell.tabela.inclui(simb);
+		   if(CompiladorHell.tabela.isExiste(var.image))
+			  AnaliseSemantica.decaracaoRepetida(var);
+           else
+          	  CompiladorHell.tabela.inclui(simb);
       }
     }
 	contLaco(tokenTipo,laco) faixaLacoMultiplo(laco)
@@ -567,7 +585,10 @@ void contLaco(Token tokenTipo) : {Simbolo simb; Token var;}
 	  if(tokenTipo!=null)
 	  { 
 		  simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
-	      CompiladorHell.tabela.inclui(simb);
+		  if(CompiladorHell.tabela.isExiste(var.image))
+			  AnaliseSemantica.decaracaoRepetida(var);
+          else
+          	  CompiladorHell.tabela.inclui(simb);
       }
     }
 	contLaco(tokenTipo,laco) faixaLacoMultiplo(laco) <VIRG> 
@@ -629,7 +650,10 @@ Comando comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;
 		  if(tipo!=null)
 		  {
 		    simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
-	      	 CompiladorHell.tabela.inclui(simb);
+		    if(CompiladorHell.tabela.isExiste(var.image))
+			   AnaliseSemantica.decaracaoRepetida(var);
+            else
+          	   CompiladorHell.tabela.inclui(simb);
 		  }
       }
       { lacoMatrix.setVariaveisControle(var); }
@@ -640,7 +664,10 @@ Comando comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;
 			if(tipo!=null)
 			{
 			  simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
-	      	   CompiladorHell.tabela.inclui(simb);
+		      if(CompiladorHell.tabela.isExiste(var.image))
+			     AnaliseSemantica.decaracaoRepetida(var);
+              else
+          	     CompiladorHell.tabela.inclui(simb);
 			}
     	}
     	{ lacoMatrix.setVariaveisControle(var); }
@@ -709,10 +736,14 @@ void exp0(Expressao e) : { Item item; Token t;}
 {  
     expOr(e)
     (
-      t=<CONCAT> expOr(e)
+      t=<CONCAT>
       {  
         item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+        e.addInfixo(item);
+      }
+      expOr(e)
+      {  
+        e.addPosfixo(item);
       }
     )*
   
@@ -721,10 +752,14 @@ void expOr(Expressao e) : {Item item; Token t;}
 {
     expAnd()
     (
-      t=<OR> expAnd()
+      t=<OR>
       {  
         item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+        e.addInfixo(item);
+      }
+      expAnd()
+      {  
+        e.addPosfixo(item);
       }
     )*
 }
@@ -732,10 +767,14 @@ void expAnd() : {Item item; Token t;}
 {
     expAnds()
     (
-       t=<AND> expAnds()
+       t=<AND>
        {  
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+          item = new Item(Tipo.OPERADOR, t.image);
+          e.addInfixo(item);
+       }
+       expAnds()
+      {  
+        e.addPosfixo(item);
       }
     )*
 }
@@ -743,126 +782,185 @@ void expAnds() : {Item item; Token t;}
 {
     expNot()
     (
-       t=<ANDS> expNot()
+       t=<ANDS>
        {  
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+	       item = new Item(Tipo.OPERADOR, t.image);
+	       e.addInfixo(item);
+       }
+
+       expNot()
+       {  
+        e.addPosfixo(item);
       }
     )*
 }
-void expNot() : {Item item; Token t;}
+void expNot() : {Item item; Token t; int cont = 0;}
 {
     (
        t=<NOT>
        {  
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
-      }
+	       item = new Item(Tipo.OPERADOR, t.image);
+	       e.addInfixo(item);
+	       cont++;
+       }
     )*
     expRelacional()
+    {  
+        while(cont-- > 0)
+           e.addPosfixo(item);
+    }
 }
 void expRelacional() : {Item item; Token t;}
 {
    expAdit()
    (
-       t=<MAIOR>   expAdit()
+       t=<MAIOR>
        {  
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
-      }     
+	       item = new Item(Tipo.OPERADOR, t.image);
+	       e.addInfixo(item);
+       }
+
+       expAdit()
+      {  
+        e.addPosfixo(item);
+      }
      |
-       t=<MENOR>   expAdit()
+       t=<MENOR>
        {  
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
-      }     
+	       item = new Item(Tipo.OPERADOR, t.image);
+	       e.addInfixo(item);
+       }
+
+       expAdit()
+      {  
+        e.addPosfixo(item);
+      }
      |
-       t=<MAIOR_I> expAdit()
+       t=<MAIOR_I>
        {  
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+	       item = new Item(Tipo.OPERADOR, t.image);
+	       e.addInfixo(item);
+       }
+
+       expAdit()
+      {  
+        e.addPosfixo(item);
       }
        
      |
-       t=<MENOR_I> expAdit()
+       t=<MENOR_I>
        {  
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
-      }    
+	       item = new Item(Tipo.OPERADOR, t.image);
+	       e.addInfixo(item);
+       }
+
+       expAdit()
+      {  
+        e.addPosfixo(item);
+      }
      |
-      t=<IGUAL>   expAdit()
+      t=<IGUAL>
        {  
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
-      }     
+	       item = new Item(Tipo.OPERADOR, t.image);
+	       e.addInfixo(item);
+       }
+
+      expAdit()
+      {  
+        e.addPosfixo(item);
+      }
      |
        t=<DIF>     expAdit()
-       {  
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
-      }  
+      {  
+        e.addPosfixo(item);
+      }
    )*
 }
 void expAdit() : {Item item; Token t;}
 {
 	expMult()
 	(
-	  t=<ADD> expMult()
-	  {  
-	        item = new Item(Tipo.OPERADOR, t.image);
-	        e.add(item);
-	      }  
+	  t=<ADD>
+       {  
+	       item = new Item(Tipo.OPERADOR, t.image);
+	       e.addInfixo(item);
+       }
+	  expMult()
+      {  
+        e.addPosfixo(item);
+      }
 	  |
-	  t=<SUB> expMult()
-	  {  
-	        item = new Item(Tipo.OPERADOR, t.image);
-	        e.add(item);
-	      }  
+	  t=<SUB>
+       {  
+	       item = new Item(Tipo.OPERADOR, t.image);
+	       e.addInfixo(item);
+       }
+
+	  expMult()
+      {  
+        e.addPosfixo(item);
+      }
 	)*
 }  
 void expMult() : {Item item; Token t;}
 {
 	expPot()
 	(
-	   t=<MULT> expPot()
-	   {  
-	        item = new Item(Tipo.OPERADOR, t.image);
-	        e.add(item);
-	      }  
+	   t=<MULT>
+       {  
+	       item = new Item(Tipo.OPERADOR, t.image);
+	       e.addInfixo(item);
+       }
+
+	   expPot()
+      {  
+        e.addPosfixo(item);
+      }
 	|
-	   t=<DIV>  expPot()
-	   {  
-	        item = new Item(Tipo.OPERADOR, t.image);
-	        e.add(item);
-	      }  
+	   t=<DIV>
+       {  
+	       item = new Item(Tipo.OPERADOR, t.image);
+	       e.addInfixo(item);
+       }
+
+	   expPot()
+      {  
+        e.addPosfixo(item);
+      }
 	)*
 }
 void expPot() : {Item item; Token t;}
 {
 	expToken()
 	(
-	  t=<POT> expPot()
+	  t=<POT>
 	  {  
 	        item = new Item(Tipo.OPERADOR, t.image);
-	        e.add(item);
-	      }  
+            e.addInfixo(item);
+	  } 
+	  expPot()
+	  {  
+            e.addPosfixo(item);
+	  }  
 	)?
 }
-void expToken(Expressao e) :{Item item; Token t; String tConcatenada;}
+void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
 {
     t = <NUM>
     {
        item = new Item(Tipo.CTE_NUMERICA, t.image);
-       e.add(item);
+       e.addPosfixo(item);
+       e.addInfixo(item);
     }
       
     |
       t=<ADD>
       { tConcatenada = t.image; }      t=<NUM>
       {
-         tconcatenada = tconcatenada + t.image; 
+         tConcatenada = tConcatenada + t.image; 
          item = new Item(Tipo.CTE_NUMERICA, tConcatenada);
-         e.add(item);
+         e.addPosfixo(item);
+         e.addInfixo(item);
       }
       
     |
@@ -872,37 +970,43 @@ void expToken(Expressao e) :{Item item; Token t; String tConcatenada;}
       {
          tconcatenada = tconcatenada + t.image; 
          item = new Item(Tipo.CTE_NUMERICA, tConcatenada);
-         e.add(item);
+         e.addPosfixo(item);
+         e.addInfixo(item);
       }
     |
-      <VAR>
+      t=<VAR>
+      {
+         tipo = Tabela.getTipo(t.image);
+         item = new Item(tipo,t.image);
+         e.addPosfixo(item);
+         e.addInfixo(item);
+      }
     |
       t=<BOOL>
       {
         item = new Item(Tipo.CTE_BOOLEANO, t.image);
-        e.add(item);
+        e.addPosfixo(item);
+        e.addInfixo(item);
       }
     |
       t=<STRING>
       {
         item = new Item(Tipo.CTE_STRING, t.image);
-        e.add(item);
+        e.addPosfixo(item);
+        e.addInfixo(item);
       }
     |
       t=<AP>
       {
         item = new Item(Tipo.PARENTESES, t.image);
-        e.add(item);
+        e.addInfixo(item);
       }
       exp0()
       
       t=<FP>
 	  {
         item = new Item(Tipo.PARENTESES, t.image);
-        e.add(item);
+        e.addInfixo(item);
       } 
-    {
-      e.gerarPosfixo();
-    }
-}
+ }
 

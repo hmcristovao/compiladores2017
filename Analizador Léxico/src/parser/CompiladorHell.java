@@ -153,7 +153,10 @@ comandoDeclaracaoVariavel ->
       jj_consume_token(TYPENUM);
       var = jj_consume_token(VAR);
                    simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
-               CompiladorHell.tabela.inclui(simb);
+                   if(CompiladorHell.tabela.isExiste(var.image))
+                          AnaliseSemantica.decaracaoRepetida(var);
+           else
+                  CompiladorHell.tabela.inclui(simb);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ATRIB:
         jj_consume_token(ATRIB);
@@ -176,7 +179,10 @@ comandoDeclaracaoVariavel ->
         jj_consume_token(VIRG);
         var = jj_consume_token(VAR);
                    simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
-               CompiladorHell.tabela.inclui(simb);
+                   if(CompiladorHell.tabela.isExiste(var.image))
+                          AnaliseSemantica.decaracaoRepetida(var);
+           else
+                  CompiladorHell.tabela.inclui(simb);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ATRIB:
           jj_consume_token(ATRIB);
@@ -192,7 +198,10 @@ comandoDeclaracaoVariavel ->
       jj_consume_token(TYPESTR);
       var = jj_consume_token(VAR);
                    simb = new Simbolo(var.image, Tipo.VAR_STRING);
-               CompiladorHell.tabela.inclui(simb);
+                   if(CompiladorHell.tabela.isExiste(var.image))
+                          AnaliseSemantica.decaracaoRepetida(var);
+           else
+                  CompiladorHell.tabela.inclui(simb);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ATRIB:
         jj_consume_token(ATRIB);
@@ -215,7 +224,10 @@ comandoDeclaracaoVariavel ->
         jj_consume_token(VIRG);
         var = jj_consume_token(VAR);
                   simb = new Simbolo(var.image, Tipo.VAR_STRING);
-               CompiladorHell.tabela.inclui(simb);
+                   if(CompiladorHell.tabela.isExiste(var.image))
+                          AnaliseSemantica.decaracaoRepetida(var);
+           else
+                  CompiladorHell.tabela.inclui(simb);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ATRIB:
           jj_consume_token(ATRIB);
@@ -506,7 +518,10 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
           if(tokenTipo != null)
           {
              simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
-              CompiladorHell.tabela.inclui(simb);
+                 if(CompiladorHell.tabela.isExiste(var.image))
+                         AnaliseSemantica.decaracaoRepetida(var);
+         else
+                 CompiladorHell.tabela.inclui(simb);
       }
        laco.setvarControle(var);
     jj_consume_token(ATRIB);
@@ -585,7 +600,10 @@ faixa -> exp <TO> exp
           if(tokenTipo!=null)
           {
                    simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
-               CompiladorHell.tabela.inclui(simb);
+                   if(CompiladorHell.tabela.isExiste(var.image))
+                          AnaliseSemantica.decaracaoRepetida(var);
+           else
+                  CompiladorHell.tabela.inclui(simb);
       }
     contLaco(tokenTipo,laco);
     faixaLacoMultiplo(laco);
@@ -602,7 +620,10 @@ faixa -> exp <TO> exp
           if(tokenTipo!=null)
           {
                   simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
-              CompiladorHell.tabela.inclui(simb);
+                  if(CompiladorHell.tabela.isExiste(var.image))
+                          AnaliseSemantica.decaracaoRepetida(var);
+          else
+                  CompiladorHell.tabela.inclui(simb);
       }
       contLaco(tokenTipo,laco);
       faixaLacoMultiplo(laco);
@@ -678,7 +699,10 @@ faixa -> exp <TO> exp
                   if(tipo!=null)
                   {
                     simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
-                 CompiladorHell.tabela.inclui(simb);
+                    if(CompiladorHell.tabela.isExiste(var.image))
+                           AnaliseSemantica.decaracaoRepetida(var);
+            else
+                   CompiladorHell.tabela.inclui(simb);
                   }
         lacoMatrix.setVariaveisControle(var);
     label_8:
@@ -696,7 +720,10 @@ faixa -> exp <TO> exp
                         if(tipo!=null)
                         {
                           simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
-                   CompiladorHell.tabela.inclui(simb);
+                      if(CompiladorHell.tabela.isExiste(var.image))
+                             AnaliseSemantica.decaracaoRepetida(var);
+              else
+                     CompiladorHell.tabela.inclui(simb);
                         }
           lacoMatrix.setVariaveisControle(var);
     }
@@ -782,9 +809,10 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         break label_9;
       }
       t = jj_consume_token(CONCAT);
-      expOr(e);
         item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+        e.addInfixo(item);
+      expOr(e);
+        e.addPosfixo(item);
     }
   }
 
@@ -802,9 +830,10 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         break label_10;
       }
       t = jj_consume_token(OR);
-      expAnd();
         item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+        e.addInfixo(item);
+      expAnd();
+        e.addPosfixo(item);
     }
   }
 
@@ -822,9 +851,10 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         break label_11;
       }
       t = jj_consume_token(AND);
+          item = new Item(Tipo.OPERADOR, t.image);
+          e.addInfixo(item);
       expAnds();
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+        e.addPosfixo(item);
     }
   }
 
@@ -842,14 +872,15 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         break label_12;
       }
       t = jj_consume_token(ANDS);
+               item = new Item(Tipo.OPERADOR, t.image);
+               e.addInfixo(item);
       expNot();
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+        e.addPosfixo(item);
     }
   }
 
   static final public void expNot() throws ParseException {
-                 Item item; Token t;
+                 Item item; Token t; int cont = 0;
     label_13:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -861,10 +892,13 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         break label_13;
       }
       t = jj_consume_token(NOT);
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+               item = new Item(Tipo.OPERADOR, t.image);
+               e.addInfixo(item);
+               cont++;
     }
     expRelacional();
+        while(cont-- > 0)
+           e.addPosfixo(item);
   }
 
   static final public void expRelacional() throws ParseException {
@@ -888,39 +922,43 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MAIOR:
         t = jj_consume_token(MAIOR);
+               item = new Item(Tipo.OPERADOR, t.image);
+               e.addInfixo(item);
         expAdit();
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+        e.addPosfixo(item);
         break;
       case MENOR:
         t = jj_consume_token(MENOR);
+               item = new Item(Tipo.OPERADOR, t.image);
+               e.addInfixo(item);
         expAdit();
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+        e.addPosfixo(item);
         break;
       case MAIOR_I:
         t = jj_consume_token(MAIOR_I);
+               item = new Item(Tipo.OPERADOR, t.image);
+               e.addInfixo(item);
         expAdit();
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+        e.addPosfixo(item);
         break;
       case MENOR_I:
         t = jj_consume_token(MENOR_I);
+               item = new Item(Tipo.OPERADOR, t.image);
+               e.addInfixo(item);
         expAdit();
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+        e.addPosfixo(item);
         break;
       case IGUAL:
         t = jj_consume_token(IGUAL);
+               item = new Item(Tipo.OPERADOR, t.image);
+               e.addInfixo(item);
         expAdit();
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+        e.addPosfixo(item);
         break;
       case DIF:
         t = jj_consume_token(DIF);
         expAdit();
-        item = new Item(Tipo.OPERADOR, t.image);
-        e.add(item);
+        e.addPosfixo(item);
         break;
       default:
         jj_la1[32] = jj_gen;
@@ -947,15 +985,17 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ADD:
         t = jj_consume_token(ADD);
+               item = new Item(Tipo.OPERADOR, t.image);
+               e.addInfixo(item);
         expMult();
-                item = new Item(Tipo.OPERADOR, t.image);
-                e.add(item);
+        e.addPosfixo(item);
         break;
       case SUB:
         t = jj_consume_token(SUB);
+               item = new Item(Tipo.OPERADOR, t.image);
+               e.addInfixo(item);
         expMult();
-                item = new Item(Tipo.OPERADOR, t.image);
-                e.add(item);
+        e.addPosfixo(item);
         break;
       default:
         jj_la1[34] = jj_gen;
@@ -982,15 +1022,17 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MULT:
         t = jj_consume_token(MULT);
+               item = new Item(Tipo.OPERADOR, t.image);
+               e.addInfixo(item);
         expPot();
-                item = new Item(Tipo.OPERADOR, t.image);
-                e.add(item);
+        e.addPosfixo(item);
         break;
       case DIV:
         t = jj_consume_token(DIV);
+               item = new Item(Tipo.OPERADOR, t.image);
+               e.addInfixo(item);
         expPot();
-                item = new Item(Tipo.OPERADOR, t.image);
-                e.add(item);
+        e.addPosfixo(item);
         break;
       default:
         jj_la1[36] = jj_gen;
@@ -1017,20 +1059,22 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
   }
 
   static final public void expToken(Expressao e) throws ParseException {
-                             Item item; Token t; String tConcatenada;
+                             Item item; Token t; String tConcatenada;Tipo tipo;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NUM:
       t = jj_consume_token(NUM);
        item = new Item(Tipo.CTE_NUMERICA, t.image);
-       e.add(item);
+       e.addPosfixo(item);
+       e.addInfixo(item);
       break;
     case ADD:
       t = jj_consume_token(ADD);
         tConcatenada = t.image;
       t = jj_consume_token(NUM);
-         tconcatenada = tconcatenada + t.image;
+         tConcatenada = tConcatenada + t.image;
          item = new Item(Tipo.CTE_NUMERICA, tConcatenada);
-         e.add(item);
+         e.addPosfixo(item);
+         e.addInfixo(item);
       break;
     case SUB:
       t = jj_consume_token(SUB);
@@ -1038,30 +1082,36 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       t = jj_consume_token(NUM);
          tconcatenada = tconcatenada + t.image;
          item = new Item(Tipo.CTE_NUMERICA, tConcatenada);
-         e.add(item);
+         e.addPosfixo(item);
+         e.addInfixo(item);
       break;
     case VAR:
-      jj_consume_token(VAR);
+      t = jj_consume_token(VAR);
+         tipo = Tabela.getTipo(t.image);
+         item = new Item(tipo,t.image);
+         e.addPosfixo(item);
+         e.addInfixo(item);
       break;
     case BOOL:
       t = jj_consume_token(BOOL);
         item = new Item(Tipo.CTE_BOOLEANO, t.image);
-        e.add(item);
+        e.addPosfixo(item);
+        e.addInfixo(item);
       break;
     case STRING:
       t = jj_consume_token(STRING);
         item = new Item(Tipo.CTE_STRING, t.image);
-        e.add(item);
+        e.addPosfixo(item);
+        e.addInfixo(item);
       break;
     case AP:
       t = jj_consume_token(AP);
         item = new Item(Tipo.PARENTESES, t.image);
-        e.add(item);
+        e.addInfixo(item);
       exp0();
       t = jj_consume_token(FP);
         item = new Item(Tipo.PARENTESES, t.image);
-        e.add(item);
-      e.gerarPosfixo();
+        e.addInfixo(item);
       break;
     default:
       jj_la1[38] = jj_gen;

@@ -1,5 +1,7 @@
 package intermediario;
 
+import intermediario2.PrimitivoListaComandos;
+
 public class SeSenao extends Comando{
 	
 	private Expressao expSeSenao; 
@@ -55,6 +57,11 @@ public class SeSenao extends Comando{
 		this.listaComandosCondicaoFalsa = listaComandosCondicaoFalsa;
 	}
 	
+	
+	public PrimitivoListaComandos geraCodigoPrimitivo() {
+	
+	}
+}
 	
 
 }

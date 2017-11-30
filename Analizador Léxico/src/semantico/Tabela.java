@@ -17,6 +17,9 @@ public class Tabela {
       public int consultaReferencia(String _chave) {
             return ((Simbolo)this.tab.get(_chave)).getReferencia();
       }
+      public Tipo consultaTipo(String _chave) {
+          return (this.tab.get(_chave).getTipo());
+      }
       public boolean isExiste(String _chave) {
             return this.tab.containsKey(_chave);
       }

@@ -10,8 +10,8 @@ public class ListaComandos
 	
 	public PrimitivoListaComandos geraListaPrimitivoComando() {
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
-		for(LinkedList<Comando> com : this.comandos) {
-			lista.comandos.add(com);
+		for(Comando com : this.comandos) {
+			lista.adicionaTodos( com.geraCodigoPrimitivo() );
 		}
 		return lista;
 	}

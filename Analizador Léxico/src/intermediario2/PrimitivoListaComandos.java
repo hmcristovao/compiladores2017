@@ -3,6 +3,11 @@ package intermediario2;
 import java.util.LinkedList;
 
 public class PrimitivoListaComandos  {
-	public LinkedList<PrimitivoComando> lista;	
+	public LinkedList<PrimitivoComando> comandos;
+	
+	// adiciona uma lista no final
+	public void adicionaTodos(PrimitivoListaComandos lista) {
+		this.comandos.addAll(lista.comandos);
+	}
 	
 }
