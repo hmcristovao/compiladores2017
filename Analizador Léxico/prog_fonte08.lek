@@ -1,11 +1,11 @@
-BOOL  flag //Declaração de Variável.
+BOOL  flag //Declaracao de Variavel.
 
 PRINTA("DIGITE true ou false: ")//.
 PEGA(flag)//.
 
 SE(flag == true)
 {//.
-    PRINTA("Verdadeiro"//.
+    PRINTA("Verdadeiro")//.
 }
 SENAO
 {//.

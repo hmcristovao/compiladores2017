@@ -1,14 +1,14 @@
-STRING nome //Declaração de Variável.
-STRING universidade //Declaração de Variável.
-STRING matricula, frase //Declaração de Variável.
+STRING nome //Declaracao de Variavel.
+STRING universidade //Declaracao de Variavel.
+STRING matricula, frase //Declaracao de Variavel.
 
-frase = "Isto"++"é"++"realmente"++"necessario" //Atribuição com Expressão String.
-PRINTA(frase) //Impressão.
+frase = "Isto "++"eh "++"realmente "++"necessario " //Atribuicao com Expressao String.
+PRINTA(frase) //Impressao.
 
-nome = "Henrique" //.
-universidade = "UFES" //.
+nome = "Henrique " //.
+universidade = "UFES " //.
 matricula = "1990112233"//.
 
 frase = "Aluno: "++nome++" Universidade: "++universidade++" Matricula: "++matricula //.
-PRINTA(frase) //Impressão.
+PRINTA(frase) //Impressao.
 

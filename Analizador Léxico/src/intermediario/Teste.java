@@ -10,8 +10,8 @@ public class Teste extends Comando {
 	private ListaComandos outroCaso;
 	
 	public Teste() {
-		this.condicoes = null;
-		this.outroCaso = null;
+		this.condicoes = new LinkedList<Condicional>();
+		this.outroCaso = new ListaComandos();
 	}
 
 	public Teste(LinkedList<Condicional> condicoes, ListaComandos outroCaso) {
@@ -42,8 +42,8 @@ public class Teste extends Comando {
 	
 	
 	public String toString() {
-		return "\n\nComando Teste, lista de condicoes: " + this.condicoes +
-				", lista de comandos para outro caso: " + this.outroCaso;
+		return "\n\nComando Teste: lista de condicoes = " + this.condicoes +
+				"\n- lista de comandos para outro caso = " + this.outroCaso;
 	}	
 
 	
@@ -51,8 +51,9 @@ public class Teste extends Comando {
 
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		PrimitivoListaComandos lista = new PrimitivoListaComandos();
 		/* falta implementar ... */  
-		return null;
+		return lista;
 	}
 
 	

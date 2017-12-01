@@ -9,7 +9,7 @@ public class ListaComandos
 	public LinkedList<Comando> comandos;
 	
 	public ListaComandos() {
-	   this.comandos = new LinkedList();
+	   this.comandos = new LinkedList<Comando>();
 	}
 	
 	public void add(Comando com) {

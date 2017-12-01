@@ -1,4 +1,4 @@
-FLUT numero //Declaração de Variável.
+FLUT numero //Declaracao de Variavel.
 
 PRINTA("DIGITE UM NUMERO: ") //.
 PEGA(numero) //.

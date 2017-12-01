@@ -9,7 +9,6 @@ public class Expressao
 	// atributos tais como: lista de itens, linha, expressao infixa etc
 	private LinkedList <Item> listaInfixo;
 	private LinkedList <Item> listaPosfixo;
-	private int linha;
 	
 	//construtor da classe inicializando duas listas
 	public Expressao() {
@@ -33,7 +32,7 @@ public class Expressao
 	}
 	
 	public String toString() {
-		return "Expressao infixa: "+this.listaInfixo + " / Expressao posfixa: " + this.listaPosfixo;
+		return "expressao infixa: "+this.listaInfixo + " - expressao posfixa: " + this.listaPosfixo;
 	}	
 
 }

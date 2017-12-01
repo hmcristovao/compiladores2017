@@ -1,21 +1,21 @@
-STRING letra //Declaração de Variável.
+STRING letra //Declaracao de Variavel.
 
 PRINTA("DIGITE UMA LETRA: ") //.
 PEGA(letra) //.
 
 TESTE
 {
-	(numero == "a")
+	(letra == "a")
 	{//.
         	PRINTA("LETRA A") //.
 	}
-	(numero == "b")
+	(letra == "b")
 	{//.
 		PRINTA("LETRA B") //.	
 	}
 	OUTROCASO
 	{//.
-		PRINTA("Não é nem a  LETRA A e nem a LETRA B") //.
+		PRINTA("Nao eh nem a LETRA A e nem a LETRA B") //.
 	}
 }
 

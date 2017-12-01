@@ -2,12 +2,6 @@ package intermediario;
 
 import intermediario2.PrimitivoListaComandos;
 
-import java.util.LinkedList;
-
-import semantico.*;
-
-
-
 public class Laco extends Comando {
 	
 	private String varControle;	
@@ -36,11 +30,11 @@ public class Laco extends Comando {
 
 	
 	public String toString() {
-		return "\n\nComando Laco, variavel de controle = " + this.varControle + 
-				", expressao de inicializacao = " + this.expressaoInicializacao +
-				", expressao de comparadora = " + this.expressaoComparadora + 
-				", expressao de iteracao = " + this.expressaoIteracao + 
-				", lista de comandos = " + this.listaComandos;
+		return "\n\nComando Laco: variavel de controle = " + this.varControle + 
+				"- expressao de inicializacao = " + this.expressaoInicializacao +
+				"- expressao de comparadora = " + this.expressaoComparadora + 
+				"- expressao de iteracao = " + this.expressaoIteracao + 
+				"\n- lista de comandos do Laco = " + this.listaComandos;
 	}
 
 
@@ -92,8 +86,9 @@ public class Laco extends Comando {
 
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		PrimitivoListaComandos lista = new PrimitivoListaComandos();
 		/* falta implementar ... */  
-		return null;
+		return lista;
 	}
 
 	

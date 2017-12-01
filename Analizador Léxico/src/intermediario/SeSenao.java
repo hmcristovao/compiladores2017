@@ -21,9 +21,9 @@ public class SeSenao extends Comando{
 
 
 	public String toString() {
-		return "\n\nComando Sesenao, expressao: " + this.expSeSenao + 
-				", lista de comandos condicao verdadeira = " + this.listaComandosCondicaoVerdadeiro + 
-				", lista de comandos condicao falsa = " + this.listaComandosCondicaoFalsa;
+		return "\n\nComando Sesenao: expressao condicional: " + this.expSeSenao + 
+				"\n- lista de comandos SeSenao condicao verdadeira = " + this.listaComandosCondicaoVerdadeiro + 
+				"\n- lista de comandos SeSenao condicao falsa = " + this.listaComandosCondicaoFalsa;
 	}
 
 
@@ -61,8 +61,9 @@ public class SeSenao extends Comando{
 
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		PrimitivoListaComandos lista = new PrimitivoListaComandos();
 		/* falta implementar ... */  
-		return null;
+		return lista;
 	}
 
 	

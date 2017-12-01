@@ -24,23 +24,21 @@ public class CompiladorHell implements CompiladorHellConstants {
          ListaComandos listaComandos1aPassagem;
          listaComandos1aPassagem = CompiladorHell.inicio();
          System.out.println("Analise lexica e sintatica sem erros!");
-                 System.out.println("\u005cnTabela de simbolos: "+tabela);
-         System.out.println("\u005cnLista completa dos comandos da 1a passagem do compilador: "
+                 System.out.println("\u005cn-----\u005cnTabela de simbolos: "+tabela);
+         System.out.println("\u005cn-----\u005cnLista completa dos comandos apos a 1a passagem do compilador: "
                              +listaComandos1aPassagem);
 
 
                  // 2a passagem do Compilador - gera código intermediário mais proximo do assembler
-                 /* liberar apos a implementacao
-		 PrimitivoListaComandos listaComandos2aPassagem;
-		 listaComandos2aPassagem = listaComandos1aPassagem.geraListaPrimitivoComando();
-		 System.out.println("\nLista completa dos comandos da 2a passagem do compilador: "
-		                    +listaComandos2aPassagem);
-         */
+                 PrimitivoListaComandos listaComandos2aPassagem;
+                 listaComandos2aPassagem = listaComandos1aPassagem.geraListaPrimitivoComando();
+                 System.out.println("\u005cn-----\u005cnLista completa dos comandos apos a 2a passagem do compilador: "
+                                    +listaComandos2aPassagem);
 
                  // 3a passagem do Compilador - gera código destino - assembler (JVM do Java)
-                 /* liberar apos a implementacao
-		 GeradorCodigoDestino.geraCodigoAssembler(listaComandos2aPassagem);
-         */
+                 CodigoDestino codigoDestino = new CodigoDestino();
+                 codigoDestino.geraCodigoAssembler(listaComandos2aPassagem);
+         System.out.println("\u005cn-----\u005cnCodigo destino completo: " + codigoDestino);
 
       }
       catch(FileNotFoundException e) {
@@ -386,7 +384,8 @@ comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
          pega.adicionaVariavel(var.image);
       if (!tabela.isExiste(var.image)) {
                         System.out.println("Variavel nao declarada: \u005c"" + var.image + "\u005c" na linha " +
-                                var.beginLine + ", coluna " + var.beginColumn);
+                                                var.beginLine + ", coluna " + var.beginColumn);
+                    System.exit(1);
       }
     label_6:
     while (true) {
@@ -403,7 +402,8 @@ comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
            pega.adicionaVariavel(var.image);
         if (!tabela.isExiste(var.image)) {
                         System.out.println("Variavel nao declarada: \u005c"" + var.image + "\u005c" na linha " +
-                                var.beginLine + ", coluna " + var.beginColumn);
+                                               var.beginLine + ", coluna " + var.beginColumn);
+                    System.exit(1);
         }
     }
     try {
@@ -467,13 +467,13 @@ blocoCondicional -> <AP> exp <FP> <COMENT>
 	                <FCH> (<BREAK>)? 
 */
   static final public Teste comandoTeste() throws ParseException {
-                       Condicional c; ListaComandos lc; Teste t = new Teste();
+                       Condicional cond; ListaComandos listaCom; Teste teste = new Teste();
     jj_consume_token(TEST);
     jj_consume_token(ACH);
     label_7:
     while (true) {
-      c = blocoCondicional();
-                 t.addCondicoes(c);
+      cond = blocoCondicional();
+                 teste.addCondicoes(cond);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case AP:
         ;
@@ -488,8 +488,8 @@ blocoCondicional -> <AP> exp <FP> <COMENT>
       jj_consume_token(OTHERWISE);
       jj_consume_token(ACH);
       jj_consume_token(COMENT);
-      lc = listaComandos();
-              t.setOutroCaso(lc);
+      listaCom = listaComandos();
+              teste.setOutroCaso(listaCom);
       jj_consume_token(FCH);
       break;
     default:
@@ -497,20 +497,21 @@ blocoCondicional -> <AP> exp <FP> <COMENT>
       ;
     }
     jj_consume_token(FCH);
-         {if (true) return t;}
+         {if (true) return teste;}
     throw new Error("Missing return statement in function");
   }
 
   static final public Condicional blocoCondicional() throws ParseException {
-                                Expressao e; ListaComandos lc; Condicional c = new Condicional();
+                                Expressao e; ListaComandos listaCom;
+                                Condicional cond = new Condicional();
     jj_consume_token(AP);
     e = exp();
-         c.setExpressao(e);
+         cond.setExpressao(e);
     jj_consume_token(FP);
     jj_consume_token(ACH);
     jj_consume_token(COMENT);
-    lc = listaComandos();
-     c.setListaComandos(lc);
+    listaCom = listaComandos();
+     cond.setListaComandos(listaCom);
     jj_consume_token(FCH);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case BREAK:
@@ -520,7 +521,7 @@ blocoCondicional -> <AP> exp <FP> <COMENT>
       jj_la1[18] = jj_gen;
       ;
     }
-          {if (true) return c;}
+          {if (true) return cond;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1133,10 +1134,15 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       break;
     case VAR:
       t = jj_consume_token(VAR);
-         tipo = tabela.consultaTipo(t.image);
-         item = new Item(tipo,t.image);
-         e.addPosfixo(item);
-         e.addInfixo(item);
+              if (!tabela.isExiste(t.image)) {
+                         System.out.println("Variavel nao declarada: \u005c"" + t.image + "\u005c" na linha " +
+                                                t.beginLine + ", coluna " + t.beginColumn);
+                         System.exit(1);
+          }
+          tipo = tabela.consultaTipo(t.image);
+          item = new Item(tipo,t.image);
+          e.addPosfixo(item);
+          e.addInfixo(item);
       break;
     case BOOL:
       t = jj_consume_token(BOOL);

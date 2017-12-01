@@ -20,13 +20,14 @@ public class ComandoPrinta extends Comando {
 	}
 
 	public String toString() {
-		return "\n\nComando Printa, lista de expressoes: " + this.expressao;
+		return "\n\nComando Printa: lista de expressoes: " + this.expressao;
 	}	
 
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		PrimitivoListaComandos lista = new PrimitivoListaComandos();
 		/* falta implementar ... */  
-		return null;
+		return lista;
 	}
 
 	

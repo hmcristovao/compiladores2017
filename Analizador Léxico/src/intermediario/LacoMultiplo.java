@@ -24,14 +24,15 @@ public class LacoMultiplo extends Comando{
 
 
 	public String toString() {
-		return "\n\nComando Laco Multiplo, lista de blocos = " + this.bloco + 
-				", contador = " + this.contador;
+		return "\n\nComando Laco Multiplo: lista de blocos = " + this.bloco + 
+				"- contador = " + this.contador;
 	}
 
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		PrimitivoListaComandos lista = new PrimitivoListaComandos();
 		/* falta implementar ... */  
-		return null;
+		return lista;
 	}
 
 	

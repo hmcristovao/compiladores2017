@@ -28,13 +28,14 @@ public class ComandoAtribuicao extends Comando {
 	}
 
 	public String toString() {
-		return "\n\nComando Atribuicao, variavel: " + this.variavel + ", expressao: " + expressao.toString();
+		return "\n\nComando Atribuicao: variavel: " + this.variavel + "- expressao: " + expressao.toString();
 	}
 	
 	
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		PrimitivoListaComandos lista = new PrimitivoListaComandos();
 		/* falta implementar ... */  
-		return null;
+		return lista;
 	}
 	
 	

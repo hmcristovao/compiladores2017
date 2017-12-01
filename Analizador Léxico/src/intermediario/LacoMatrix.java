@@ -4,8 +4,6 @@ import intermediario2.PrimitivoListaComandos;
 
 import java.util.ArrayList;
 
-import semantico.Simbolo;
-
 public class LacoMatrix extends Comando {
 	
 	private ArrayList<String> variaveisControle;
@@ -15,11 +13,11 @@ public class LacoMatrix extends Comando {
 	private ListaComandos listaComandos;
 
 	public LacoMatrix() { 
-	    this.variaveisControle = null;
-	    this.expressaoInicial = null;
-	    this.expressaoFinal = null;
-	    this.expressaoPasso = null;
-	    this.listaComandos = null;
+	    this.variaveisControle = new ArrayList<String>();;
+	    this.expressaoInicial = new Expressao();
+	    this.expressaoFinal = new Expressao();
+	    this.expressaoPasso = new Expressao();
+	    this.listaComandos = new ListaComandos();
     
 	}
 	public LacoMatrix(ArrayList<String> _variaveisControle, Expressao _expressaoInicial, 
@@ -65,18 +63,19 @@ public class LacoMatrix extends Comando {
 
 
 	public String toString() {
-		return "\n\nComando Laco Matrix, lista variaveis de controle = " + this.variaveisControle + 
-				", expressao inicial = " + this.expressaoInicial +
-				", expressao final = " + this.expressaoFinal + 
-				", expressao passo = " + this.expressaoPasso + 
-				", lista de comandos = " + this.listaComandos;
+		return "\n\nComando Laco Matrix: lista variaveis de controle = " + this.variaveisControle + 
+				"- expressao inicial = " + this.expressaoInicial +
+				"- expressao final = " + this.expressaoFinal + 
+				"- expressao passo = " + this.expressaoPasso + 
+				"\n- lista de comandos do Laco Matrix = " + this.listaComandos;
 	}
 	
 
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		PrimitivoListaComandos lista = new PrimitivoListaComandos();
 		/* falta implementar ... */  
-		return null;
+		return lista;
 	}
 
 	

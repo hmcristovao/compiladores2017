@@ -33,7 +33,8 @@ public class Condicional {
 	}
 	
 	public String toString() {
-		return "Condicional: expressao: "+this.expressao+ " lista comandos: "+this.listaComandos;
+		return "Condicional: expressao: "+this.expressao+ 
+				"\n - lista comandos do Teste: "+this.listaComandos;
 	}	
 
 }

@@ -1,6 +1,6 @@
-BOOL  flag //Declaração de Variável.
-STRING nome //Declaração de Variável
-FLUT numero, calculo //Declaração de Variável.
+BOOL  flag //Declaracao de Variavel.
+STRING nome //Declaracao de Variavel.
+FLUT numero, calculo //Declaracao de Variavel.
 PRINTA("DIGITE UM NUMERO: ")//.
 PEGA(numero)//.
 flag=false//.
@@ -8,10 +8,10 @@ calculo = 100-((numero*10)/2)+(5**2)//.
 SE(calculo >= 120)
 {//.
 	flag=true//.
-	nome=negativa//.
+	nome="negativa" //.
 	SE(numero==0)
 	{//.
-		flag=false//.
+		flag=false //.
 		PRINTA("Numero=0, necessario encerrar!")//.
 	    
 	}
@@ -22,9 +22,9 @@ SE(calculo >= 120)
 }
 SENAO
 {//.
-	flag=true//.
-	nome=positiva//.
-	calculo = calculo/numero//.
+	flag=true //.
+	nome="positiva" //.
+	calculo = calculo/numero //.
 }
 SE(flag==true)
 {//.

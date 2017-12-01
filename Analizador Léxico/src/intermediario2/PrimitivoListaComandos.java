@@ -14,4 +14,7 @@ public class PrimitivoListaComandos  {
 		this.comandos.addAll(lista.comandos);
 	}
 	
+    public String toString() {
+    	return this.comandos.toString();
+    }
 }

@@ -31,23 +31,21 @@ public class CompiladorHell {
          ListaComandos listaComandos1aPassagem;
          listaComandos1aPassagem = CompiladorHell.inicio();
          System.out.println("Analise lexica e sintatica sem erros!");
-		 System.out.println("\nTabela de simbolos: "+tabela);
-         System.out.println("\nLista completa dos comandos da 1a passagem do compilador: "
+		 System.out.println("\n-----\nTabela de simbolos: "+tabela);
+         System.out.println("\n-----\nLista completa dos comandos apos a 1a passagem do compilador: "
                              +listaComandos1aPassagem);
 
 
 		 // 2a passagem do Compilador - gera código intermediário mais proximo do assembler
-		 /* liberar apos a implementacao
 		 PrimitivoListaComandos listaComandos2aPassagem;
 		 listaComandos2aPassagem = listaComandos1aPassagem.geraListaPrimitivoComando();
-		 System.out.println("\nLista completa dos comandos da 2a passagem do compilador: "
+		 System.out.println("\n-----\nLista completa dos comandos apos a 2a passagem do compilador: "
 		                    +listaComandos2aPassagem);
-         */
           
 		 // 3a passagem do Compilador - gera código destino - assembler (JVM do Java)
-		 /* liberar apos a implementacao
-		 GeradorCodigoDestino.geraCodigoAssembler(listaComandos2aPassagem);
-         */
+		 CodigoDestino codigoDestino = new CodigoDestino();
+		 codigoDestino.geraCodigoAssembler(listaComandos2aPassagem);
+         System.out.println("\n-----\nCodigo destino completo: " + codigoDestino);
          
       }
       catch(FileNotFoundException e) {
@@ -309,7 +307,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
        )?
      )*
    )
-   <COMENT>	
+   <COMENT>
 }
 
 /*
@@ -389,7 +387,8 @@ Comando comandoPega (): {Token var; Pega pega = new Pega();}
 	{
       if (!tabela.isExiste(var.image)) {
 			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
-				var.beginLine + ", coluna " + var.beginColumn);
+				                var.beginLine + ", coluna " + var.beginColumn);
+		    System.exit(1);
       }
     }
 	(
@@ -398,9 +397,10 @@ Comando comandoPega (): {Token var; Pega pega = new Pega();}
 	  {
       	if (!tabela.isExiste(var.image)) {
 			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
-				var.beginLine + ", coluna " + var.beginColumn);
+				               var.beginLine + ", coluna " + var.beginColumn);
+		    System.exit(1);
       	}
-   	}
+   	  }
 	)*
 	try {
 		<FP>
@@ -461,38 +461,39 @@ blocoCondicional -> <AP> exp <FP> <COMENT>
 	                <FCH> (<BREAK>)? 
 */
 
-Teste comandoTeste(): {Condicional c; ListaComandos lc; Teste t = new Teste();}
+Teste comandoTeste(): {Condicional cond; ListaComandos listaCom; Teste teste = new Teste();}
 {
 	<TEST><ACH>
 	(
-		c = blocoCondicional()
-		{t.addCondicoes(c); }
+		cond = blocoCondicional()
+		{teste.addCondicoes(cond); }
 	)+
 
 	(
 		<OTHERWISE><ACH> <COMENT>
-	    lc = listaComandos()
-	    { t.setOutroCaso(lc); }
+	    listaCom = listaComandos()
+	    { teste.setOutroCaso(listaCom); }
 	    <FCH> 
 	)?
 	<FCH>
 
-	{return t;}
+	{return teste;}
 }
 
-Condicional blocoCondicional():{Expressao e; ListaComandos lc; Condicional c = new Condicional();}
+Condicional blocoCondicional():{Expressao e; ListaComandos listaCom;
+                                Condicional cond = new Condicional();}
 {
 	<AP>
 	e = exp()
-	{c.setExpressao(e);}
+	{cond.setExpressao(e);}
 	<FP>
 	<ACH> <COMENT>
-    lc = listaComandos()
-    {c.setListaComandos(lc);}
+    listaCom = listaComandos()
+    {cond.setListaComandos(listaCom);}
 	<FCH>
 	(<BREAK>)?
 
-	{ return c; }
+	{ return cond; }
 	  
 }
 
@@ -1028,10 +1029,15 @@ void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
     |
       t=<VAR>  
       {
-         tipo = tabela.consultaTipo(t.image);
-         item = new Item(tipo,t.image);
-         e.addPosfixo(item);
-         e.addInfixo(item);
+	      if (!tabela.isExiste(t.image)) {
+			 System.out.println("Variavel nao declarada: \"" + t.image + "\" na linha " +
+				                t.beginLine + ", coluna " + t.beginColumn);
+			 System.exit(1);
+          }
+          tipo = tabela.consultaTipo(t.image);
+          item = new Item(tipo,t.image);
+          e.addPosfixo(item);
+          e.addInfixo(item);
       }
     |
       t=<BOOL>

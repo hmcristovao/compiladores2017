@@ -1,18 +1,18 @@
-FLUT numero //Declaração de Variável.
+FLUT numero //Declaracao de Variavel.
 
 PRINTA("DIGITE UM NUMERO: ") //.
 PEGA(numero) //.
 
 TESTE
 {
-	(numero > 10){
-		PRINTA("Entrada é maior que 10") //.
-	} //.
-	(numero < 10){
-		PRINTA("Entrada é menor que 10") //.
-	}//.
-	(numero == 10){
-		PRINTA("Entrada é igual a 10") //.
-	} //.
+	(numero > 10){  // primeira condicao.
+		PRINTA("Entrada eh maior que 10") //.
+	} 
+	(numero < 10){  // segunda condicao.
+		PRINTA("Entrada eh menor que 10") //.
+	}
+	(numero == 10){  // terceira condicao.
+		PRINTA("Entrada eh igual a 10") //.
+	} 
 }
 

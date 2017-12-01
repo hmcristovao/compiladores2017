@@ -21,13 +21,14 @@ public class Pega extends Comando {
 	}
 	
 	public String toString() {
-		return "\n\nComando Pega, lista de variaveis: " + this.listaVariaveis;
+		return "\n\nComando Pega: lista de variaveis: " + this.listaVariaveis;
 	}	
 
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		PrimitivoListaComandos lista = new PrimitivoListaComandos();
 		/* falta implementar ... */  
-		return null;
+		return lista;
 	}
 
 	
