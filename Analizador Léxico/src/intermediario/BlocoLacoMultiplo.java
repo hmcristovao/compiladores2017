@@ -14,4 +14,12 @@ public class BlocoLacoMultiplo {
 		this.expTo = _expTo;
 		this.expStep = _expStep;
 	}
+	
+	
+	public String toString() {
+		return "bloco laco multiplo, variavel = " + this.var + 
+				", expressao inicial = " + this.expFrom +
+				", expressao final = " + this.expTo + 
+				", expressao passo = " + this.expStep;
+	}
 }

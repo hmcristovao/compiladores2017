@@ -13,7 +13,7 @@ public class LacoMatrix extends Comando {
 	private Expressao expressaoFinal;
 	private Expressao expressaoPasso;
 	private ListaComandos listaComandos;
-	
+
 	public LacoMatrix() { 
 	    this.variaveisControle = null;
 	    this.expressaoInicial = null;
@@ -31,13 +31,6 @@ public class LacoMatrix extends Comando {
         this.expressaoPasso = _expressaoPasso;
         this.listaComandos = _listaComandos;
     }
-	@Override
-	public String toString() {
-		return "LacoMatrix [variaveisControle=" + variaveisControle
-				+ ", expressaoInicial=" + expressaoInicial
-				+ ", expressaoFinal=" + expressaoFinal + ", expressaoPasso="
-				+ expressaoPasso + ", listaComandos=" + listaComandos + "]";
-	}
 
 	public ArrayList<String> getVariaveisControle() {
 		return variaveisControle;
@@ -70,7 +63,14 @@ public class LacoMatrix extends Comando {
 		this.listaComandos = listaComandos;
 	}
 
-	
+
+	public String toString() {
+		return "\n\nComando Laco Matrix, lista variaveis de controle = " + this.variaveisControle + 
+				", expressao inicial = " + this.expressaoInicial +
+				", expressao final = " + this.expressaoFinal + 
+				", expressao passo = " + this.expressaoPasso + 
+				", lista de comandos = " + this.listaComandos;
+	}
 	
 
 

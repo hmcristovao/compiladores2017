@@ -27,9 +27,8 @@ public class ComandoAtribuicao extends Comando {
 		this.expressao = expressao;
 	}
 
-	@Override
 	public String toString() {
-		return "Variavel: " + this.variavel + " / Expressao: " + expressao.toString();
+		return "\n\nComando Atribuicao, variavel: " + this.variavel + ", expressao: " + expressao.toString();
 	}
 	
 	

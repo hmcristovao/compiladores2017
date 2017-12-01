@@ -41,15 +41,10 @@ public class Teste extends Comando {
 	
 	
 	
-	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		for(Condicional condicao:condicoes){	
-			condicao.toString();	
-		}
-		outroCaso.toString();
-		return null;
-	}
+		return "\n\nComando Teste, lista de condicoes: " + this.condicoes +
+				", lista de comandos para outro caso: " + this.outroCaso;
+	}	
 
 	
 	

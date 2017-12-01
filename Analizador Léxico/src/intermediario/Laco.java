@@ -35,15 +35,12 @@ public class Laco extends Comando {
 	}
 
 	
-	
-
-
-	@Override
 	public String toString() {
-		return "Laco [varControle=" + varControle + ", expressaoInicializacao="
-				+ expressaoInicializacao + ", expressaoComparadora="
-				+ expressaoComparadora + ", expressaoIteracao="
-				+ expressaoIteracao + ", listaComandos=" + listaComandos + "]";
+		return "\n\nComando Laco, variavel de controle = " + this.varControle + 
+				", expressao de inicializacao = " + this.expressaoInicializacao +
+				", expressao de comparadora = " + this.expressaoComparadora + 
+				", expressao de iteracao = " + this.expressaoIteracao + 
+				", lista de comandos = " + this.listaComandos;
 	}
 
 

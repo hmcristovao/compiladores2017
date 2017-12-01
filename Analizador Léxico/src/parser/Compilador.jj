@@ -161,7 +161,7 @@ comando       ->
 	|comandoLacoMultiplo()
 	|comandoLacoMatrix()
 */
-ListaComandos inicio() : { ListaComandos lista = new ListaComandos(); }
+ListaComandos inicio() : { ListaComandos lista; }
 {
 	lista = listaComandos() <EOF>
 	{
@@ -172,8 +172,7 @@ ListaComandos listaComandos() : { Comando com; ListaComandos lista = new ListaCo
 	(
 	   com = comando()
 	   {
-	      if(com != null)  // pode ser uma delcaracao de variavel (comando = null)
-	         lista.add(com);	   }
+          lista.add(com);	   }
 	)*
 	{	   return lista;
     }
@@ -958,9 +957,9 @@ void expMult(Expressao e) : {Item item; Token t;}
        }
 
 	   expPot(e)
-      {  
-        e.addPosfixo(item);
-      }
+       {  
+           e.addPosfixo(item);
+       }  
 	|
 	   t=<DIV>
        {  
@@ -969,9 +968,9 @@ void expMult(Expressao e) : {Item item; Token t;}
        }
 
 	   expPot(e)
-      {  
-        e.addPosfixo(item);
-      }
+       {  
+           e.addPosfixo(item);
+       }
 	)*
 }
 void expPot(Expressao e) : {Item item; Token t;}
@@ -991,12 +990,12 @@ void expPot(Expressao e) : {Item item; Token t;}
 }
 void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
 {
-    t = <NUM>
-    {
-       item = new Item(Tipo.CTE_NUMERO, t.image);
-       e.addPosfixo(item);
-       e.addInfixo(item);
-    }
+      t = <NUM>
+      {
+         item = new Item(Tipo.CTE_NUMERO, t.image);
+         e.addPosfixo(item);
+         e.addInfixo(item);
+      }  
       
     |
       t=<ADD>

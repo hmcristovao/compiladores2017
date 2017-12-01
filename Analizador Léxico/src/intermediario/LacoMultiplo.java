@@ -4,6 +4,8 @@ import intermediario2.PrimitivoListaComandos;
 
 import java.util.LinkedList;
 
+// erro: nao esta armazenando a lista de comandos, nem na classe BlocoLacoMultiplo
+
 public class LacoMultiplo extends Comando{
 	private LinkedList<BlocoLacoMultiplo> bloco;
 	private int contador;
@@ -19,17 +21,12 @@ public class LacoMultiplo extends Comando{
 		this.bloco.get(contador).addFaixa(_expFrom, _expTo, _expStep);
 		this.contador++;
 	}
-	@Override
+
+
 	public String toString() {
-		// TODO Auto-generated method stub
-		for(BlocoLacoMultiplo alvo:bloco){	
-			alvo.toString();	
-		}
-		
-		return null;
+		return "\n\nComando Laco Multiplo, lista de blocos = " + this.bloco + 
+				", contador = " + this.contador;
 	}
-
-
 
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  

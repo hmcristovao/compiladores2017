@@ -30,5 +30,10 @@ public class Expressao
 	}	
 	public void addPosfixo(Item _item){
 		listaPosfixo.add(_item);
+	}
+	
+	public String toString() {
+		return "Expressao infixa: "+this.listaInfixo + " / Expressao posfixa: " + this.listaPosfixo;
 	}	
+
 }

@@ -64,7 +64,7 @@ comando       ->
 	|comandoLacoMatrix()
 */
   static final public ListaComandos inicio() throws ParseException {
-                           ListaComandos lista = new ListaComandos();
+                           ListaComandos lista;
     lista = listaComandos();
     jj_consume_token(0);
            {if (true) return lista;}
@@ -94,8 +94,7 @@ comando       ->
         break label_1;
       }
       com = comando();
-              if(com != null)  // pode ser uma delcaracao de variavel (comando = null)
-                 lista.add(com);
+          lista.add(com);
     }
            {if (true) return lista;}
     throw new Error("Missing return statement in function");
@@ -1063,14 +1062,14 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
                item = new Item(Tipo.OPERADOR, t.image);
                e.addInfixo(item);
         expPot(e);
-        e.addPosfixo(item);
+           e.addPosfixo(item);
         break;
       case DIV:
         t = jj_consume_token(DIV);
                item = new Item(Tipo.OPERADOR, t.image);
                e.addInfixo(item);
         expPot(e);
-        e.addPosfixo(item);
+           e.addPosfixo(item);
         break;
       default:
         jj_la1[36] = jj_gen;
@@ -1102,9 +1101,9 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NUM:
       t = jj_consume_token(NUM);
-       item = new Item(Tipo.CTE_NUMERO, t.image);
-       e.addPosfixo(item);
-       e.addInfixo(item);
+         item = new Item(Tipo.CTE_NUMERO, t.image);
+         e.addPosfixo(item);
+         e.addInfixo(item);
       break;
     case ADD:
       t = jj_consume_token(ADD);

@@ -20,9 +20,10 @@ public class SeSenao extends Comando{
 	}
 
 
-	@Override
 	public String toString() {
-		return "SeSenao [expSeSenao=" + expSeSenao + ", listaComandosCondicaoVerdadeiro=" + listaComandosCondicaoVerdadeiro + ", listaComandosCondicaoFalsa=" + listaComandosCondicaoFalsa + "]";
+		return "\n\nComando Sesenao, expressao: " + this.expSeSenao + 
+				", lista de comandos condicao verdadeira = " + this.listaComandosCondicaoVerdadeiro + 
+				", lista de comandos condicao falsa = " + this.listaComandosCondicaoFalsa;
 	}
 
 

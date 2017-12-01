@@ -9,7 +9,10 @@ public class ListaComandos
 	public LinkedList<Comando> comandos;
 	
 	public void add(Comando com) {
-		this.comandos.add(com);
+	   System.out.println(com.getClass());
+	   System.out.println(com);
+	   if(com != null)  
+		   this.comandos.add(com);
 	}
 	
 	public PrimitivoListaComandos geraListaPrimitivoComando() {

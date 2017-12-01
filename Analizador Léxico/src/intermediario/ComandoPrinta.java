@@ -19,16 +19,8 @@ public class ComandoPrinta extends Comando {
 		return expressao;
 	}
 
-	@Override
 	public String toString() {
-		StringBuilder str = new StringBuilder();
-		str.append("Expressoes: ");
-		for (Expressao exp : this.expressao) {
-			str.append(exp.toString());
-			if(!exp.equals(this.expressao.getLast()))
-				str.append(", ");
-		}
-		return str.toString();
+		return "\n\nComando Printa, lista de expressoes: " + this.expressao;
 	}	
 
 

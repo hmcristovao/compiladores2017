@@ -12,12 +12,6 @@ public class Pega extends Comando {
 		this.listaVariaveis = new LinkedList<String>();		
 	}
 	
-	@Override
-	public String toString() {
-		// TODO Auto-generated method stub
-		return listaVariaveis.toString();
-	}
-
 	public void adicionaVariavel(String s){
 		this.listaVariaveis.add(s);
 	}
@@ -26,6 +20,9 @@ public class Pega extends Comando {
 		return this.listaVariaveis;
 	}
 	
+	public String toString() {
+		return "\n\nComando Pega, lista de variaveis: " + this.listaVariaveis;
+	}	
 
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
