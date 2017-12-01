@@ -24,4 +24,9 @@ public class Item {
 	public void setValor(String valor) {
 		this.valor = valor;
 	}
+	
+	public String toString() {
+		return "item, tipo = " + this.tipo + 
+			   ", valor = " + this.valor;
+	}
 }

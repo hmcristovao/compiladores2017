@@ -4,7 +4,7 @@ import intermediario2.PrimitivoListaComandos;
 
 import java.util.LinkedList;
 
-// erro: nao esta armazenando a lista de comandos, nem na classe BlocoLacoMultiplo
+// erro: nao esta armazenando a lista de comandos aqui e nem na classe BlocoLacoMultiplo
 
 public class LacoMultiplo extends Comando{
 	private LinkedList<BlocoLacoMultiplo> bloco;

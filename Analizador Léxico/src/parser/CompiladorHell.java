@@ -28,14 +28,19 @@ public class CompiladorHell implements CompiladorHellConstants {
          System.out.println("\u005cnLista completa dos comandos da 1a passagem do compilador: "
                              +listaComandos1aPassagem);
 
+
                  // 2a passagem do Compilador - gera código intermediário mais proximo do assembler
-                 PrimitivoListaComandos listaComandos2aPassagem;
-                 listaComandos2aPassagem = listaComandos1aPassagem.geraListaPrimitivoComando();
-                 System.out.println("\u005cnLista completa dos comandos da 2a passagem do compilador: "
-                                    +listaComandos2aPassagem);
+                 /* liberar apos a implementacao
+		 PrimitivoListaComandos listaComandos2aPassagem;
+		 listaComandos2aPassagem = listaComandos1aPassagem.geraListaPrimitivoComando();
+		 System.out.println("\nLista completa dos comandos da 2a passagem do compilador: "
+		                    +listaComandos2aPassagem);
+         */
 
                  // 3a passagem do Compilador - gera código destino - assembler (JVM do Java)
-                 GeradorCodigoDestino.geraCodigoAssembler(listaComandos2aPassagem);
+                 /* liberar apos a implementacao
+		 GeradorCodigoDestino.geraCodigoAssembler(listaComandos2aPassagem);
+         */
 
       }
       catch(FileNotFoundException e) {
@@ -94,7 +99,10 @@ comando       ->
         break label_1;
       }
       com = comando();
-          lista.add(com);
+             if(com != null) // a declaracao de variaveis nao eh um comando: nao deve ser adicionada na lista
+             {
+                lista.add(com);
+             }
     }
            {if (true) return lista;}
     throw new Error("Missing return statement in function");
