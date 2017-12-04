@@ -5,6 +5,10 @@ public class PrimitivoLabel  extends PrimitivoComando {
 	
 	// ...
 	
+	public PrimitivoLabel(String label){
+		this.label = label;
+	}
+	
 	public String geraCodigoDestino() {
 		// gerar o código destino em assembler (JVM do Java - ver material no AVA)
 		String codigoFinal = null;

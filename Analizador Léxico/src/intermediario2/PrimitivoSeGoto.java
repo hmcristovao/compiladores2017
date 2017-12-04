@@ -7,6 +7,11 @@ public class PrimitivoSeGoto  extends PrimitivoComando {
    private PrimitivoLabel label; 
 	
 	// ...
+   
+   public PrimitivoSeGoto(Expressao condicional, PrimitivoLabel label){
+	   this.condicional = condicional;
+	   this.label = label;
+   }
 	
 	public String geraCodigoDestino() {
 		// gerar o código destino em assembler (JVM do Java - ver material no AVA)
