@@ -29,18 +29,13 @@ public class PrimitivoEntrada  extends PrimitivoComando {
 		codigoFinal += "invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V \r\n";
 
 		if(tipo == Tipo.VAR_STRING){
-			System.out.println("String primitivoEntrada "+referencia);
+			System.out.println("PrimitivoEntrada: String: "+referencia);
 			codigoFinal += "invokevirtual java/util/Scanner/nextLine()Ljava/lang/String; \r\n";
 			codigoFinal += "astore "+referencia+"\r\n";
 		}
 		
-		else if (tipo == Tipo.VAR_BOOLEANO){
-			System.out.println("Booleano primitivoEntrada "+referencia);
-			codigoFinal += "invokevirtual java/util/Scanner/nextBoolean()Z \r\n";
-			codigoFinal += "astore "+referencia+"\r\n";
-		}
 		else {
-			System.out.println("Numero primitivoEntrada "+referencia);
+			System.out.println("PrimitivoEntrada: Numero: "+referencia);
 			codigoFinal += "invokevirtual java/util/Scanner/nextDouble()D \r\n";
 			codigoFinal += "dstore "+referencia+"\r\n";
 		}		
@@ -48,6 +43,6 @@ public class PrimitivoEntrada  extends PrimitivoComando {
 	}
 	
 	public String toString() {
-		return "\nComando ENTRADA (item): "+"item: "+this.variavel.toString();
+		return "\nPrimitivoEntrada:"+" variavel: "+this.variavel.toString();
 	}
 }
