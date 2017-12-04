@@ -573,7 +573,7 @@ contLaco     -> <VIRG> <VAR> contLaco faixa <VIRG>
 faixa -> exp <TO> exp
         (<STEP> exp)?
 */
-LacoMultiplo comandoLacoMultiplo() : {Token tokenTipo = null;LacoMultiplo laco;}
+Comando comandoLacoMultiplo() : {Token tokenTipo = null;LacoMultiplo laco;ListaComandos listaAux;}
 {
 	<FORMULTIPLE>
 	try {
@@ -595,8 +595,12 @@ LacoMultiplo comandoLacoMultiplo() : {Token tokenTipo = null;LacoMultiplo laco;}
         return null;	
 	}
 	<ACH> <COMENT>
-	listaComandos()
+	listaAux = listaComandos()
 	<FCH>
+	{
+	  	laco.setListaComandos(listaAux);
+	  	return laco;
+	}
 }
 LacoMultiplo inicioLaco(Token tokenTipo) : {Simbolo simb; Token var;BlocoLacoMultiplo bloco;}
 {
@@ -622,11 +626,13 @@ LacoMultiplo inicioLaco(Token tokenTipo) : {Simbolo simb; Token var;BlocoLacoMul
 	  return laco;
 	}
 }
-void contLaco(Token tokenTipo, LacoMultiplo laco) : {Simbolo simb; Token var;}
+void contLaco(Token tokenTipo, LacoMultiplo laco) : {Simbolo simb; Token var;BlocoLacoMultiplo bloco;}
 {
 	<VIRG>
 	var=<VAR>
 	{
+	  bloco = new BlocoLacoMultiplo(var.image);
+	  laco.incluiBloco(bloco);
 	  if(tokenTipo!=null)
 	  { 
 		  simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
@@ -636,35 +642,48 @@ void contLaco(Token tokenTipo, LacoMultiplo laco) : {Simbolo simb; Token var;}
           	  CompiladorHell.tabela.inclui(simb);
       }
     }
-	contLaco(tokenTipo,laco) faixaLacoMultiplo(laco) <VIRG> 
+	contLaco(tokenTipo,laco) faixaLacoMultiplo(laco)<VIRG>
 	|
 	<PT_VIRG>
 }
 
 
-LinkedList faixaLacoMultiplo(LacoMultiplo laco) : {Expressao expFrom, expTo, auxiliar;
-                                             Expressao expStep    = new Expressao();
-                                             LinkedList expressao = new LinkedList();}
+void faixaLacoMultiplo(LacoMultiplo laco) : {Expressao expFrom, expTo,expStep; Item auxiliar;}                                       
 {
-	auxiliar = exp()
-	{expressao.add(auxiliar); }
-  	
-  	
+
+  	{
+	  expFrom = new Expressao();
+	  expTo = new Expressao();
+	  expStep = new Expressao();
+	  
+	}
 	expFrom = exp()
+	{
+	  expFrom.toString();
+	}
+  	
+	
 	<TO>
-	auxiliar = exp()
-	{expressao.add(auxiliar); }
 	expTo = exp()
+	{
+	  expTo.toString();
+	  auxiliar = new Item(Tipo.CTE_NUMERO,"1");	
+	  expStep.addInfixo(auxiliar);
+	  expStep.addPosfixo(auxiliar);
+	}
+
+	
+	
 	(
-	    <STEP> auxiliar = exp()
-	    { expressao.add(auxiliar); }
 	    <STEP> expStep = exp()
+	    {
+	    	expStep.toString();
+	    }
 	)?
 
 	{
 	  laco.addFaixa(expFrom,expTo,expStep); //possui um contador interno para controle de insercao das faixas
 	}
-	{ return expressao; }
 }
 
 /*

@@ -598,8 +598,8 @@ contLaco     -> <VIRG> <VAR> contLaco faixa <VIRG>
 faixa -> exp <TO> exp
         (<STEP> exp)?
 */
-  static final public LacoMultiplo comandoLacoMultiplo() throws ParseException {
-                                      Token tokenTipo = null;LacoMultiplo laco;
+  static final public Comando comandoLacoMultiplo() throws ParseException {
+                                 Token tokenTipo = null;LacoMultiplo laco;ListaComandos listaAux;
     jj_consume_token(FORMULTIPLE);
     try {
       jj_consume_token(AP);
@@ -624,8 +624,10 @@ faixa -> exp <TO> exp
     }
     jj_consume_token(ACH);
     jj_consume_token(COMENT);
-    listaComandos();
+    listaAux = listaComandos();
     jj_consume_token(FCH);
+                laco.setListaComandos(listaAux);
+                {if (true) return laco;}
     throw new Error("Missing return statement in function");
   }
 
@@ -651,11 +653,13 @@ faixa -> exp <TO> exp
   }
 
   static final public void contLaco(Token tokenTipo, LacoMultiplo laco) throws ParseException {
-                                                     Simbolo simb; Token var;
+                                                     Simbolo simb; Token var;BlocoLacoMultiplo bloco;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VIRG:
       jj_consume_token(VIRG);
       var = jj_consume_token(VAR);
+          bloco = new BlocoLacoMultiplo(var.image);
+          laco.incluiBloco(bloco);
           if(tokenTipo!=null)
           {
                   simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
@@ -678,24 +682,24 @@ faixa -> exp <TO> exp
     }
   }
 
-  static final public LinkedList faixaLacoMultiplo(LacoMultiplo laco) throws ParseException {
-                                                   Expressao expFrom, expTo, auxiliar;
-                                             Expressao expStep    = new Expressao();
-                                             LinkedList expressao = new LinkedList();
-    auxiliar = exp();
-         expressao.add(auxiliar);
+  static final public void faixaLacoMultiplo(LacoMultiplo laco) throws ParseException {
+                                             Expressao expFrom, expTo,expStep; Item auxiliar;
+          expFrom = new Expressao();
+          expTo = new Expressao();
+          expStep = new Expressao();
     expFrom = exp();
+          expFrom.toString();
     jj_consume_token(TO);
-    auxiliar = exp();
-         expressao.add(auxiliar);
     expTo = exp();
+          expTo.toString();
+          auxiliar = new Item(Tipo.CTE_NUMERO,"1");
+          expStep.addInfixo(auxiliar);
+          expStep.addPosfixo(auxiliar);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case STEP:
       jj_consume_token(STEP);
-      auxiliar = exp();
-              expressao.add(auxiliar);
-      jj_consume_token(STEP);
       expStep = exp();
+                expStep.toString();
       break;
     default:
       jj_la1[22] = jj_gen;
@@ -703,8 +707,6 @@ faixa -> exp <TO> exp
     }
           laco.addFaixa(expFrom,expTo,expStep); //possui um contador interno para controle de insercao das faixas
 
-          {if (true) return expressao;}
-    throw new Error("Missing return statement in function");
   }
 
 /*
