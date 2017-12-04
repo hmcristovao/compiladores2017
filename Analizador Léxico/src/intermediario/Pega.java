@@ -41,7 +41,4 @@ public class Pega extends Comando {
 		}
 		return lista;
 	}
-
-
-
 }
