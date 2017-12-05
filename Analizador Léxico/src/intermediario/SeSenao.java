@@ -1,12 +1,13 @@
 package intermediario;
 
-import intermediario2.PrimitivoListaComandos;
+import intermediario2.*;
 
 public class SeSenao extends Comando{
 	
 	private Expressao expSeSenao; 
 	private ListaComandos listaComandosCondicaoVerdadeiro;
 	private ListaComandos listaComandosCondicaoFalsa;
+	
 	
 	public SeSenao(){
 		this.expSeSenao = null;
@@ -57,12 +58,26 @@ public class SeSenao extends Comando{
 		this.listaComandosCondicaoFalsa = listaComandosCondicaoFalsa;
 	}
 	
-	
-
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
-		/* falta implementar ... */  
+			PrimitivoSeGoto primitivo = new PrimitivoSeGoto();
+			String labelVerdadeiro  = "labelVerdadeiro";
+			String labelFim = "labelFim";
+			
+			lista.addPrimitivoComando(new PrimitivoSeGoto(expSeSenao, new PrimitivoLabel(labelVerdadeiro)));
+			for(Comando c: listaComandosCondicaoFalsa.comandos){
+				lista.adicionaTodos(c.geraCodigoPrimitivo());
+			}
+			
+			lista.addPrimitivoComando(new PrimitivoGoto(new PrimitivoLabel(labelFim)));
+			lista.addPrimitivoComando(new PrimitivoLabel(labelVerdadeiro));
+			
+			for(Comando c: listaComandosCondicaoVerdadeiro.comandos){
+				lista.adicionaTodos(c.geraCodigoPrimitivo());
+			}
+			
+			lista.addPrimitivoComando(new PrimitivoLabel(labelFim));
 		return lista;
 	}
 
