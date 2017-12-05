@@ -1,4 +1,5 @@
 package intermediario;
+import intermediario2.PrimitivoExibicao;
 import intermediario2.PrimitivoListaComandos;
 
 import java.util.LinkedList;
@@ -26,7 +27,12 @@ public class ComandoPrinta extends Comando {
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
-		/* falta implementar ... */  
+		PrimitivoExibicao primitivoExibicao;
+		for(Expressao e: this.expressao){
+			 primitivoExibicao = new PrimitivoExibicao(e);
+			 lista.comandos.add(primitivoExibicao);
+		}
+		
 		return lista;
 	}
 
