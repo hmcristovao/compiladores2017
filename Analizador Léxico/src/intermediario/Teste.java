@@ -52,7 +52,34 @@ public class Teste extends Comando {
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
-		/* falta implementar ... */  
+		PrimitivoSeGoto primitivo = new PrimitivoSeGoto();
+		LinkedList<PrimitivoLabel> labelLista = new LinkedList<PrimitivoLabel>();
+		String label  = "labelCase";
+		String labelFim = "labelCaseFim";
+		Integer contador = 0;
+		for(Condicional i: condicoes){
+			PrimitvoLabel pl = new PrimitvoLabel(label+contador);
+			labelLista.add(pl);
+			lista.addPrimitivoComando(new PrimitivoSeGoto(i.getExpressao(),pl));
+			contador++;
+		}
+		for(Comando c: outroCaso.comandos){
+			lista.adicionaTodos(c.geraCodigoPrimitivo());
+		}
+		lista.addPrimitivoComando(new PrimitivoGoto(new PrimitivoLabel(labelFim)));
+		
+		//Reiniciando a numeração do label
+		contador = 0;		
+		for(Condicional i: condicoes){
+			PrimitivoLabel aux = labelLista.get(contador);
+			lista.addPrimitivoComando(new PrimitivoLabel(aux));
+				
+			for(Comando c: i.getListaComandos().comandos){
+				lista.adicionaTodos(c.geraCodigoPrimitivo());
+			}
+			contador++;
+			lista.addPrimitivoComando(new PrimitivoGoto(new PrimitivoLabel(labelFim)));
+		 
 		return lista;
 	}
 
