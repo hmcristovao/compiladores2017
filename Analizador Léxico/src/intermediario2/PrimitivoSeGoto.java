@@ -14,14 +14,15 @@ public class PrimitivoSeGoto  extends PrimitivoComando {
    }
 	
 	public String geraCodigoDestino() {
-		// gerar o código destino em assembler (JVM do Java - ver material no AVA)
 		String codigoFinal = null;
-		// ...
+		PrimitivoExibicao exp = new PrimitivoExibicao(condicional);
+		codigoFinal = exp.geraCodigoDestino(); // GERAR CODIGO DESTINO DA EXPRESSAO
+		codigoFinal = codigoFinal + "\n iconst_0"; // EMPILHAR 0
+		codigoFinal = codigoFinal + "\n ifeq " + label.geraCodigoDestino();
 		return codigoFinal;
 	}
 	
 	public String toString() {
-		// retornar a concatenação dos atributos da classe, usando toString() para cada um
-		return "";
+		return "Se " + condicional.toString() + "vai para " + label.toString();
 	}
 }

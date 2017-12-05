@@ -5,7 +5,9 @@ import intermediario.*;
 public class PrimitivoExibicao  extends PrimitivoComando {
    private Expressao expressao;
 	
-	// ...
+	public PrimitivoExibicao(Expressao expressao){
+		this.expressao = expressao;
+	}
 	
 	public String geraCodigoDestino() {
 		// gerar o código destino em assembler (JVM do Java - ver material no AVA)
