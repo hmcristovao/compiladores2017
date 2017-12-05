@@ -8,6 +8,9 @@ import semantico.Tipo;
 public class PrimitivoExibicao  extends PrimitivoComando {
    private Expressao expressao;
    
+   public PrimitivoExibicao(Expressao expressao){
+	   this.expressao = expressao;
+   }
    public void setExpressao(Expressao expressao) {
 	   this.expressao = expressao;
    }
