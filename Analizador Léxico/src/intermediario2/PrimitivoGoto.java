@@ -5,16 +5,26 @@ public class PrimitivoGoto  extends PrimitivoComando {
 	
 	// ...
 	
+	
+	public PrimitivoLabel getLabel() {
+		return label;
+	}
+
+	public void setLabel(PrimitivoLabel label) {
+		this.label = label;
+	}
+
+	
 	public String geraCodigoDestino() {
 		// gerar o código destino em assembler (JVM do Java - ver material no AVA)
 		String codigoFinal = null;
-		// ...
-		return codigoFinal;
+		
+		return codigoFinal= "goto "+ getLabel();
 	}
 	
 	public String toString() {
 		// retornar a concatenação dos atributos da classe, usando toString() para cada um
-		return "";
+		return "Foi para o endereço " + getLabel();
 	}
 }
 
