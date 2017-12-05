@@ -31,7 +31,7 @@ public class LacoMultiplo extends Comando{
 	}
 	public String toString() {
 		return "\n\nComando Laco Multiplo: lista de blocos = " + this.bloco + 
-				"- contador = " + this.contador;
+				"- contador = " + this.contador + this.listaComandos;
 	}
 
 
