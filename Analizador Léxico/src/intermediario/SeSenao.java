@@ -61,7 +61,6 @@ public class SeSenao extends Comando{
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
-			PrimitivoSeGoto primitivo = new PrimitivoSeGoto();
 			String labelVerdadeiro  = "labelVerdadeiro";
 			String labelFim = "labelFim";
 			

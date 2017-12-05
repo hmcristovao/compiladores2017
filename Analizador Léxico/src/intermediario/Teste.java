@@ -79,7 +79,9 @@ public class Teste extends Comando {
 			}
 			contador++;
 			lista.addPrimitivoComando(new PrimitivoGoto(new PrimitivoLabel(labelFim)));
-		 
+		}	
+		lista.addPrimitivoComando(new PrimitivoLabel(labelFim));
+		
 		return lista;
 	}
 
