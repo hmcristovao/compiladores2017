@@ -130,6 +130,15 @@ public class Expressao
 		return "expressao infixa: "+this.listaInfixo + " - expressao posfixa: " + this.listaPosfixo;
 	}	
 	
+	public void calculaLimitStack() {
+		for(Item item : this.listaPosfixo) {
+			if(item.getTipo() == Tipo.OPERADOR)
+				this.maxPilha--;
+			else
+				this.maxPilha++;
+		}
+	}
+	
 	public String geraCodigoDestino() {
 
 		String codigoExpressao="\r\n; expressao: " + this.getListaInfixo() + "\r\n";
