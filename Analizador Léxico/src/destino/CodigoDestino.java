@@ -2,9 +2,14 @@ package destino;
 
 
 import java.io.BufferedWriter;
+
+import semantico.*;
+
 import java.io.FileWriter;
 import java.io.IOException;
 
+import apoio.Config;
+import intermediario.Expressao;
 import intermediario2.*;
 
 public class CodigoDestino {
@@ -15,9 +20,9 @@ public class CodigoDestino {
             // ...
 		BufferedWriter arqSaida;
 		try{
-			arqSaida = new BufferedWriter(new FileWriter(nomeArquivoFonte + ".j"));
-			arqSaida.write(".source "+nomeArquivoFonte+".java\r\n");
-            arqSaida.write(".class public "+nomeArquivoFonte+"\r\n");
+			arqSaida = new BufferedWriter(new FileWriter(Config.nomeCodigoDestino + ".j"));
+			arqSaida.write(".source "+Config.nomeCodigoDestino+".java\r\n");
+            arqSaida.write(".class public "+Config.nomeCodigoDestino+"\r\n");
             arqSaida.write(".super java/lang/Object\r\n");
             arqSaida.write(".method public <init>()V\r\n");
             arqSaida.write(".limit stack 1\r\n");
@@ -27,9 +32,9 @@ public class CodigoDestino {
             arqSaida.write("return\r\n");
             arqSaida.write(".end method\r\n\r\n");
             arqSaida.write(".method public static main([Ljava/lang/String;)V\r\n");
-            //arqSaida.write(".limit stack "+(Expressao.getMaxPilha()+4)+"\r\n");  // +4 é devido ao comando de leitura que não usa expressao
-            //arqSaida.write(".limit locals "+(Simbolo.getMarcador()+1)+"\r\n\r\n"); //o +1 se deve ao fato de ter de adicionar o this, todo programa deve possui-lo
-            arqSaida.write(lista.geraCodigoDestino());
+            arqSaida.write(".limit stack "+(Expressao.getMaxPilha())+"\r\n");  
+            arqSaida.write(".limit locals "+(Simbolo.getMarcador())+"\r\n\r\n"); 
+            arqSaida.write(processaListaComandos(lista));
             arqSaida.write("return\r\n");
             arqSaida.write(".end method\r\n");
             arqSaida.close();
@@ -41,6 +46,14 @@ public class CodigoDestino {
             System.exit(1);
         }
     }
+	
+	static String processaListaComandos(PrimitivoListaComandos lista){
+		String saida="";
+		for(PrimitivoComando com: lista.comandos){
+			saida+=com.geraCodigoDestino();
+		}
+		return saida;
+	}
 	
 	
     public String toString() {

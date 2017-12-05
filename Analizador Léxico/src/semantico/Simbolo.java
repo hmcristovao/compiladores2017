@@ -22,6 +22,9 @@ public class Simbolo {
     public int getReferencia() {
           return this.referencia;
     }
+    public static int getMarcador() {
+        return marcador;
+    }
    
     public String toString() {
           return "Nome:"+this.getNome() + " / " + "Tipo:"+Tipo.toStr(this.tipo)  + " / " + "Referencia:"+this.getReferencia() + "\n";
