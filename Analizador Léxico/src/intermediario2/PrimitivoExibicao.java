@@ -25,8 +25,8 @@ public class PrimitivoExibicao extends PrimitivoComando {
 	}
 
 	public String toString() {
-		// retornar a concatenação dos atributos da classe, usando toString() para cada
+		// retornar a concatenaÃ§Ã£o dos atributos da classe, usando toString() para cada
 		// um
-		return "";
+		return "\nPrimitivoExibicao: " + this.expressao.toString();
 	}
 }
