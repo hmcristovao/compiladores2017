@@ -6,6 +6,10 @@ import semantico.*;
 public class PrimitivoEntrada  extends PrimitivoComando {
    private Simbolo variavel;
    
+   public PrimitivoEntrada(Simbolo variavel) {
+		super();
+		this.variavel = variavel;
+		}
    	
 	public PrimitivoEntrada() {
 	}

@@ -14,6 +14,9 @@ public class Tabela {
                   return true;
             }
       }
+      public Simbolo consultaSimbolo(String _chave) {
+          return this.tab.get(_chave);
+      }
       public int consultaReferencia(String _chave) {
             return ((Simbolo)this.tab.get(_chave)).getReferencia();
       }

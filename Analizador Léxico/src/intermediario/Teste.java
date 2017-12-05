@@ -1,6 +1,10 @@
 package intermediario;
 
+
+import intermediario2.PrimitivoGoto;
+import intermediario2.PrimitivoLabel;
 import intermediario2.PrimitivoListaComandos;
+import intermediario2.PrimitivoSeGoto;
 
 import java.util.LinkedList;
 
@@ -39,15 +43,10 @@ public class Teste extends Comando {
 		this.outroCaso = outroCaso;
 	}
 	
-	
-	
 	public String toString() {
 		return "\n\nComando Teste: lista de condicoes = " + this.condicoes +
 				"\n- lista de comandos para outro caso = " + this.outroCaso;
 	}	
-
-	
-	
 
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
@@ -58,7 +57,7 @@ public class Teste extends Comando {
 		String labelFim = "labelCaseFim";
 		Integer contador = 0;
 		for(Condicional i: condicoes){
-			PrimitvoLabel pl = new PrimitvoLabel(label+contador);
+			PrimitivoLabel pl = new PrimitivoLabel(label+contador);
 			labelLista.add(pl);
 			lista.addPrimitivoComando(new PrimitivoSeGoto(i.getExpressao(),pl));
 			contador++;

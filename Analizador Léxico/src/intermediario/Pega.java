@@ -6,6 +6,7 @@ import intermediario2.PrimitivoListaComandos;
 
 import java.util.LinkedList;
 
+import parser.CompiladorHell;
 import semantico.Simbolo;
 import semantico.Tabela;
 
@@ -33,11 +34,10 @@ public class Pega extends Comando {
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
-		PrimitivoComando simbolo;
+		Simbolo simbolo;
 		for(String var : listaVariaveis){
-			simbolo = (PrimitivoComando) Tabela.consultaSimbolo(var);
-			lista.adicionaTodos(lista);
-			//lista.add(simbolo);		
+			simbolo = CompiladorHell.tabela.consultaSimbolo(var);
+			lista.addPrimitivoComando(new PrimitivoEntrada(simbolo));
 		}
 		return lista;
 	}
