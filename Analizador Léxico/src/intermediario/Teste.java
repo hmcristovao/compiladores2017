@@ -51,7 +51,6 @@ public class Teste extends Comando {
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
-		PrimitivoSeGoto primitivo = new PrimitivoSeGoto();
 		LinkedList<PrimitivoLabel> labelLista = new LinkedList<PrimitivoLabel>();
 		String label  = "labelCase";
 		String labelFim = "labelCaseFim";
@@ -71,7 +70,7 @@ public class Teste extends Comando {
 		contador = 0;		
 		for(Condicional i: condicoes){
 			PrimitivoLabel aux = labelLista.get(contador);
-			lista.addPrimitivoComando(new PrimitivoLabel(aux));
+			lista.addPrimitivoComando(aux);
 				
 			for(Comando c: i.getListaComandos().comandos){
 				lista.adicionaTodos(c.geraCodigoPrimitivo());
