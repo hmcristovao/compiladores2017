@@ -837,6 +837,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
   static final public Expressao exp() throws ParseException {
                    Expressao e = new Expressao();
     exp0(e);
+      e.calculaLimitStack();
       {if (true) return e;}
     throw new Error("Missing return statement in function");
   }

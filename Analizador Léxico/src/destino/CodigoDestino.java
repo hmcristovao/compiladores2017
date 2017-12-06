@@ -32,8 +32,8 @@ public class CodigoDestino {
             this.codigoDestino += "return\r\n";
             this.codigoDestino += ".end method\r\n\r\n";
             this.codigoDestino += ".method public static main([Ljava/lang/String;)V\r\n";
-            this.codigoDestino += ".limit stack "+(Expressao.getMaxPilhaGeral())+"\r\n";  
-            this.codigoDestino += ".limit locals "+(Simbolo.getMarcador())+"\r\n\r\n"; 
+            this.codigoDestino += ".limit stack "+(Expressao.getMaxPilhaGeral()+2)+"\r\n";  
+            this.codigoDestino += ".limit locals "+(Simbolo.getMarcador()+2)+"\r\n\r\n"; 
             this.codigoDestino += processaListaComandos(lista);
             this.codigoDestino += "return\r\n";
             this.codigoDestino += ".end method\r\n";

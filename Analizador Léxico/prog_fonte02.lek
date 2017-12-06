@@ -1,7 +1,9 @@
-FLUT numero = 10 //Atribuicao Numerico.
-BOOL logico = true //Atribuicao Logico.
-STRING nome = "Compilador" //Atribuicao String.
+FLUT numero //Atribuicao Numerico.
+BOOL logico //Atribuicao Logico.
 
-PRINTA(numero;logico;nome) //Teste Impressao com Ponto Virgula.
-PRINTA(numero,logico,nome) //Teste Impressao com Virgula.
+numero = 10 // inicializacao da variavel.
+logico = true  // inicializacao da variavel.
+
+PRINTA(numero;logico) //Teste Impressao com Ponto Virgula.
+PRINTA(numero,logico) //Teste Impressao com Virgula.
 

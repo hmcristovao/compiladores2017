@@ -10,15 +10,28 @@ return
 .end method
 
 .method public static main([Ljava/lang/String;)V
-.limit stack 0
-.limit locals 1
+.limit stack 3
+.limit locals 7
 
 
-; expressao: [item, tipo = CTE_STRING, valor = "Hello world!"]
-ldc "Hello world!"
+; expressao: [item, tipo = VAR_NUMERO, valor = numero]
+dload_1
 
-getstatic java/lang/System/out Ljava/io/PrintStream; 
-dload_1 
+invokevirtual java/io/PrintStream/println(D)V 
+
+; expressao: [item, tipo = VAR_BOOLEANO, valor = logico]
+dload_3
+
+invokevirtual java/io/PrintStream/println(D)V 
+
+; expressao: [item, tipo = VAR_NUMERO, valor = numero]
+dload_1
+
+invokevirtual java/io/PrintStream/println(D)V 
+
+; expressao: [item, tipo = VAR_BOOLEANO, valor = logico]
+dload_3
+
 invokevirtual java/io/PrintStream/println(D)V 
 return
 .end method

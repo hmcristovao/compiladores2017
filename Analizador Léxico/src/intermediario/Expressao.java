@@ -125,7 +125,6 @@ public class Expressao
 	}
 	
 	public String geraCodigoDestino() {
-
 		String codigoExpressao="\r\n; expressao: " + this.getListaPosfixo() + "\r\n";
 		for(Item item : this.getListaPosfixo()){
 			if(item.getTipo() == Tipo.CTE_NUMERO){
