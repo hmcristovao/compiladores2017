@@ -11,8 +11,8 @@ public class Expressao
 	private LinkedList <Item> listaInfixo;
 	private LinkedList <Item> listaPosfixo;
 	private static final long serialVersionUID = 1L;
-	private int maxPilha;
-	static private int maxPilhaGeral;
+	private int maxPilha = 0 ;
+	static private int maxPilhaGeral = 0;
 	private Tipo tipoDados;
 	private static Integer contLabel = 0;
 	private static Integer contAnd = 1;
