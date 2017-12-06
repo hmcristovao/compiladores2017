@@ -94,10 +94,9 @@ public class Laco extends Comando {
 		String labelInicio = "LabelInicio";
 		String labelCont = "LabelCont";
 		
-		Tipo t = CompiladorHell.tabela.consultaTipo(varControle);
-		Simbolo s = new Simbolo(varControle, t);
+		Simbolo simbolo = CompiladorHell.tabela.consultaSimbolo(varControle);
 		
-		lista.addPrimitivoComando(new PrimitivoAtribuicao(s, expressaoInicializacao));
+		lista.addPrimitivoComando(new PrimitivoAtribuicao(simbolo, expressaoInicializacao));
 		lista.addPrimitivoComando(new PrimitivoLabel(labelInicio));
 		lista.addPrimitivoComando(
 				new PrimitivoSeGoto(expressaoComparadora, 
@@ -108,7 +107,7 @@ public class Laco extends Comando {
 			lista.adicionaTodos(c.geraCodigoPrimitivo());
 		}
 				
-		lista.addPrimitivoComando(new PrimitivoAtribuicao(s, expressaoIteracao));
+		lista.addPrimitivoComando(new PrimitivoAtribuicao(simbolo, expressaoIteracao));
 		lista.addPrimitivoComando(new PrimitivoGoto(new PrimitivoLabel(labelInicio)));
 		
 		return lista;

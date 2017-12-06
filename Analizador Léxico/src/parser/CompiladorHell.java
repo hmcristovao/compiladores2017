@@ -40,6 +40,12 @@ public class CompiladorHell implements CompiladorHellConstants {
                  codigoDestino.geraCodigoAssembler(listaComandos2aPassagem);
          System.out.println("\u005cn-----\u005cnCodigo destino completo: \u005cn\u005cn" + codigoDestino);
 
+                 // grava o codigo destino no arquivo .j
+         BufferedWriter arqSaida;
+         arqSaida = new BufferedWriter(new FileWriter(Config.nomeCodigoDestino + ".j"));
+         arqSaida.write(codigoDestino.toString());
+         arqSaida.close();
+
       }
       catch(FileNotFoundException e) {
          System.out.println("Erro: arquivo nao encontrado");
@@ -49,6 +55,14 @@ public class CompiladorHell implements CompiladorHellConstants {
       }
       catch(ParseException e) {
          System.out.println("Erro sintatico\u005cn" + e.getMessage());
+      }
+      catch(IOException e){
+                 System.out.println("Problemas na geracao do codigo destino");
+                 System.exit(1);
+          }
+          catch(Exception e) {
+         System.out.println(e.getMessage());
+         System.exit(1);
       }
    }
 
@@ -167,7 +181,7 @@ comandoDeclaracaoVariavel ->
     case TYPENUM:
       jj_consume_token(TYPENUM);
       var = jj_consume_token(VAR);
-                   simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
+                   simb = new Simbolo(var.image, Tipo.VAR_NUMERO, tabela.proximaReferencia());
                    if(CompiladorHell.tabela.isExiste(var.image))
                           AnaliseSemantica.decaracaoRepetida(var);
            else
@@ -193,7 +207,7 @@ comandoDeclaracaoVariavel ->
         }
         jj_consume_token(VIRG);
         var = jj_consume_token(VAR);
-                   simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
+                   simb = new Simbolo(var.image, Tipo.VAR_NUMERO, tabela.proximaReferencia());
                    if(CompiladorHell.tabela.isExiste(var.image))
                           AnaliseSemantica.decaracaoRepetida(var);
            else
@@ -212,7 +226,7 @@ comandoDeclaracaoVariavel ->
     case TYPESTR:
       jj_consume_token(TYPESTR);
       var = jj_consume_token(VAR);
-                   simb = new Simbolo(var.image, Tipo.VAR_STRING);
+                   simb = new Simbolo(var.image, Tipo.VAR_STRING, tabela.proximaReferencia());
                    if(CompiladorHell.tabela.isExiste(var.image))
                           AnaliseSemantica.decaracaoRepetida(var);
            else
@@ -238,7 +252,7 @@ comandoDeclaracaoVariavel ->
         }
         jj_consume_token(VIRG);
         var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, Tipo.VAR_STRING);
+                  simb = new Simbolo(var.image, Tipo.VAR_STRING, tabela.proximaReferencia());
                    if(CompiladorHell.tabela.isExiste(var.image))
                           AnaliseSemantica.decaracaoRepetida(var);
            else
@@ -257,7 +271,7 @@ comandoDeclaracaoVariavel ->
     case TYPEBOOL:
       jj_consume_token(TYPEBOOL);
       var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, Tipo.VAR_BOOLEANO);
+                  simb = new Simbolo(var.image, Tipo.VAR_BOOLEANO, tabela.proximaReferencia());
                CompiladorHell.tabela.inclui(simb);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ATRIB:
@@ -280,7 +294,7 @@ comandoDeclaracaoVariavel ->
         }
         jj_consume_token(VIRG);
         var = jj_consume_token(VAR);
-                  simb = new Simbolo(var.image, Tipo.VAR_BOOLEANO);
+                  simb = new Simbolo(var.image, Tipo.VAR_BOOLEANO, tabela.proximaReferencia());
               CompiladorHell.tabela.inclui(simb);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case ATRIB:
@@ -555,7 +569,7 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
     var = jj_consume_token(VAR);
           if(tokenTipo != null)
           {
-             simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
+             simb = new Simbolo(var.image, Tipo.VAR_NUMERO, tabela.proximaReferencia());
                  if(CompiladorHell.tabela.isExiste(var.image))
                          AnaliseSemantica.decaracaoRepetida(var);
          else
@@ -640,7 +654,7 @@ faixa -> exp <TO> exp
 
           if(tokenTipo!=null)
           {
-                   simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
+                   simb = new Simbolo(var.image,Tipo.VAR_NUMERO, tabela.proximaReferencia());
                    if(CompiladorHell.tabela.isExiste(var.image))
                           AnaliseSemantica.decaracaoRepetida(var);
            else
@@ -662,7 +676,7 @@ faixa -> exp <TO> exp
           laco.incluiBloco(bloco);
           if(tokenTipo!=null)
           {
-                  simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
+                  simb = new Simbolo(var.image,Tipo.VAR_NUMERO, tabela.proximaReferencia());
                   if(CompiladorHell.tabela.isExiste(var.image))
                           AnaliseSemantica.decaracaoRepetida(var);
           else
@@ -742,7 +756,7 @@ faixa -> exp <TO> exp
     var = jj_consume_token(VAR);
                   if(tipo!=null)
                   {
-                    simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
+                    simb = new Simbolo(var.image,Tipo.VAR_NUMERO, tabela.proximaReferencia());
                     if(CompiladorHell.tabela.isExiste(var.image))
                            AnaliseSemantica.decaracaoRepetida(var);
             else
@@ -763,7 +777,7 @@ faixa -> exp <TO> exp
       var = jj_consume_token(VAR);
                         if(tipo!=null)
                         {
-                          simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
+                          simb = new Simbolo(var.image,Tipo.VAR_NUMERO, tabela.proximaReferencia());
                       if(CompiladorHell.tabela.isExiste(var.image))
                              AnaliseSemantica.decaracaoRepetida(var);
               else

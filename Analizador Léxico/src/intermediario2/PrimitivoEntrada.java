@@ -23,7 +23,7 @@ public class PrimitivoEntrada  extends PrimitivoComando {
 	}
 
 	public String geraCodigoDestino() {
-		String codigoFinal = null;
+		String codigoFinal = "";
 		int referencia = CompiladorHell.tabela.consultaReferencia(this.variavel.getNome());
 		Tipo tipo = CompiladorHell.tabela.consultaTipo(this.variavel.getNome());
 

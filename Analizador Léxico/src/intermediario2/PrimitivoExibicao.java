@@ -14,10 +14,10 @@ public class PrimitivoExibicao extends PrimitivoComando {
 	}
 
 	public String geraCodigoDestino() {
-		String codigoFinal = null;
+		String codigoFinal = "";
 
 		codigoFinal += "getstatic java/lang/System/out Ljava/io/PrintStream; \r\n";
-		codigoFinal = this.expressao.geraCodigoDestino();
+		codigoFinal += this.expressao.geraCodigoDestino();
 		codigoFinal += "invokevirtual java/io/PrintStream/println(D)V \r\n";
 
 		return codigoFinal;

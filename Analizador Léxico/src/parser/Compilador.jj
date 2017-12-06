@@ -46,7 +46,13 @@ public class CompiladorHell {
 		 CodigoDestino codigoDestino = new CodigoDestino();
 		 codigoDestino.geraCodigoAssembler(listaComandos2aPassagem);
          System.out.println("\n-----\nCodigo destino completo: \n\n" + codigoDestino);
-         
+
+		 // grava o codigo destino no arquivo .j
+         BufferedWriter arqSaida;
+         arqSaida = new BufferedWriter(new FileWriter(Config.nomeCodigoDestino + ".j"));
+         arqSaida.write(codigoDestino.toString());
+         arqSaida.close();
+            
       }
       catch(FileNotFoundException e) {
          System.out.println("Erro: arquivo nao encontrado");
@@ -56,6 +62,14 @@ public class CompiladorHell {
       }
       catch(ParseException e) {
          System.out.println("Erro sintatico\n" + e.getMessage());
+      }
+      catch(IOException e){
+		 System.out.println("Problemas na geracao do codigo destino");
+		 System.exit(1);
+	  }
+	  catch(Exception e) {
+         System.out.println(e.getMessage());
+         System.exit(1);
       }
    }
 }
@@ -229,7 +243,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
      <TYPENUM>
      var=<VAR>
      {
-		   simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
+		   simb = new Simbolo(var.image, Tipo.VAR_NUMERO, tabela.proximaReferencia()); 
 		   if(CompiladorHell.tabela.isExiste(var.image))
 			  AnaliseSemantica.decaracaoRepetida(var);
            else
@@ -243,7 +257,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
        <VIRG>
        var=<VAR>
        {
-		   simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
+		   simb = new Simbolo(var.image, Tipo.VAR_NUMERO, tabela.proximaReferencia());
 		   if(CompiladorHell.tabela.isExiste(var.image))
 			  AnaliseSemantica.decaracaoRepetida(var);
            else
@@ -258,7 +272,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
      <TYPESTR>
      var=<VAR>
      {
-		   simb = new Simbolo(var.image, Tipo.VAR_STRING);
+		   simb = new Simbolo(var.image, Tipo.VAR_STRING, tabela.proximaReferencia());
 		   if(CompiladorHell.tabela.isExiste(var.image))
 			  AnaliseSemantica.decaracaoRepetida(var);
            else
@@ -272,7 +286,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
        <VIRG>
        var=<VAR>
        {
-		  simb = new Simbolo(var.image, Tipo.VAR_STRING);
+		  simb = new Simbolo(var.image, Tipo.VAR_STRING, tabela.proximaReferencia());
 		   if(CompiladorHell.tabela.isExiste(var.image))
 			  AnaliseSemantica.decaracaoRepetida(var);
            else
@@ -287,7 +301,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
      <TYPEBOOL>
      var=<VAR>
      {
-		  simb = new Simbolo(var.image, Tipo.VAR_BOOLEANO);
+		  simb = new Simbolo(var.image, Tipo.VAR_BOOLEANO, tabela.proximaReferencia());
 	       CompiladorHell.tabela.inclui(simb);
 	 }
      (
@@ -298,7 +312,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
        <VIRG>
        var=<VAR>
        {
-		  simb = new Simbolo(var.image, Tipo.VAR_BOOLEANO);
+		  simb = new Simbolo(var.image, Tipo.VAR_BOOLEANO, tabela.proximaReferencia());
 	      CompiladorHell.tabela.inclui(simb);
 	   }
        (
@@ -524,7 +538,7 @@ Comando comandoLaco () : {Simbolo simb; Token var; Token tokenTipo = null;
     {
 	  if(tokenTipo != null)
 	  {
-	     simb = new Simbolo(var.image, Tipo.VAR_NUMERO);
+	     simb = new Simbolo(var.image, Tipo.VAR_NUMERO, tabela.proximaReferencia());
 		 if(CompiladorHell.tabela.isExiste(var.image))
 			 AnaliseSemantica.decaracaoRepetida(var);
          else
@@ -613,7 +627,7 @@ LacoMultiplo inicioLaco(Token tokenTipo) : {Simbolo simb; Token var;BlocoLacoMul
 	  
 	  if(tokenTipo!=null)
 	  { 
-		   simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
+		   simb = new Simbolo(var.image,Tipo.VAR_NUMERO, tabela.proximaReferencia());
 		   if(CompiladorHell.tabela.isExiste(var.image))
 			  AnaliseSemantica.decaracaoRepetida(var);
            else
@@ -635,7 +649,7 @@ void contLaco(Token tokenTipo, LacoMultiplo laco) : {Simbolo simb; Token var;Blo
 	  laco.incluiBloco(bloco);
 	  if(tokenTipo!=null)
 	  { 
-		  simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
+		  simb = new Simbolo(var.image,Tipo.VAR_NUMERO, tabela.proximaReferencia());
 		  if(CompiladorHell.tabela.isExiste(var.image))
 			  AnaliseSemantica.decaracaoRepetida(var);
           else
@@ -716,7 +730,7 @@ Comando comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;
       {
 		  if(tipo!=null)
 		  {
-		    simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
+		    simb = new Simbolo(var.image,Tipo.VAR_NUMERO, tabela.proximaReferencia());
 		    if(CompiladorHell.tabela.isExiste(var.image))
 			   AnaliseSemantica.decaracaoRepetida(var);
             else
@@ -730,7 +744,7 @@ Comando comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;
         {
 			if(tipo!=null)
 			{
-			  simb = new Simbolo(var.image,Tipo.VAR_NUMERO);
+			  simb = new Simbolo(var.image,Tipo.VAR_NUMERO, tabela.proximaReferencia());
 		      if(CompiladorHell.tabela.isExiste(var.image))
 			     AnaliseSemantica.decaracaoRepetida(var);
               else

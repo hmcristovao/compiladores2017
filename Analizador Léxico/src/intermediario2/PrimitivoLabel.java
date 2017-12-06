@@ -5,9 +5,7 @@ package intermediario2;
 		private String label;
 
 		public String geraCodigoDestino() {
-			String codigoFinal = null;
-
-			return codigoFinal = this.label;
+			return this.label;
 		}
 
 		public PrimitivoLabel(String label) {

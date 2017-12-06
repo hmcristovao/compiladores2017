@@ -3,9 +3,20 @@ import java.util.HashMap;
 
 public class Tabela {
       private HashMap<String,Simbolo> tab;
+      private int marcador; // armazena a ultima referencia incluida na tabela
       public Tabela() {
             this.tab = new HashMap<String,Simbolo>();
+            this.marcador = 1;
       }
+      public int getMarcador() {
+          return this.marcador;
+      }
+      public int proximaReferencia() {
+    	  int referenciaAtual = this.marcador;
+    	  this.marcador += 2;
+    	  return referenciaAtual;
+      }
+      
       public boolean inclui(Simbolo _simb) {
             if(this.tab.containsKey(_simb.getNome()))
                   return false;

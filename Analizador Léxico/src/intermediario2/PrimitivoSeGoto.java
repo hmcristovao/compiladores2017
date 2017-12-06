@@ -13,7 +13,7 @@ public class PrimitivoSeGoto  extends PrimitivoComando {
    }
 	
    public String geraCodigoDestino() {
-		String codigoFinal = null;
+		String codigoFinal = "";
 		PrimitivoExibicao exp = new PrimitivoExibicao(this.condicional);
 		codigoFinal = exp.geraCodigoDestino(); // GERAR CODIGO DESTINO DA EXPRESSAO
 		codigoFinal = codigoFinal + "\n iconst_0"; // EMPILHAR 0

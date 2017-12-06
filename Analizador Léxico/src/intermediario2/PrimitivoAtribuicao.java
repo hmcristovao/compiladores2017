@@ -13,17 +13,14 @@ public class PrimitivoAtribuicao extends PrimitivoComando {
 	}
 	
 	public String geraCodigoDestino() {
-		// gerar o código destino em assembler (JVM do Java - ver material no AVA)
-		String codigoFinal = null;
-		
+		// gerar o codigo destino em assembler (JVM do Java - ver material no AVA)
+		String codigoFinal = "";
 		codigoFinal += expressao.geraCodigoDestino();
 		codigoFinal += "dstore " + variavel.getReferencia() + "\r\n";
-		
 		return codigoFinal;
 	}
 	
 	public String toString() {
-		// retornar a concatenação dos atributos da classe, usando toString() para cada um
-		return this.variavel.toString() + " = " + this.expressao.toString();
+		return "\nComando Atribuicao: variavel que recebe: "+this.variavel.toString() + " - expressao: " + this.expressao.toString();
 	}
 }

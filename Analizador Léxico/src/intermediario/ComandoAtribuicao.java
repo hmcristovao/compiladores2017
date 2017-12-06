@@ -1,5 +1,9 @@
 package intermediario;
 
+import parser.CompiladorHell;
+import semantico.Simbolo;
+import semantico.Tipo;
+import intermediario2.PrimitivoAtribuicao;
 import intermediario2.PrimitivoListaComandos;
 
 public class ComandoAtribuicao extends Comando {
@@ -28,13 +32,14 @@ public class ComandoAtribuicao extends Comando {
 	}
 
 	public String toString() {
-		return "\n\nComando Atribuicao: variavel: " + this.variavel + "- expressao: " + expressao.toString();
+		return "\n\nComando Atribuicao: variavel que recebe: " + this.variavel + "- expressao: " + expressao.toString();
 	}
 	
 	
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
-		/* falta implementar ... */  
+		Simbolo simbolo = CompiladorHell.tabela.consultaSimbolo(variavel);
+		lista.addPrimitivoComando(new PrimitivoAtribuicao(simbolo, expressao));
 		return lista;
 	}
 	

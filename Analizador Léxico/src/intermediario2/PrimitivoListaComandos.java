@@ -6,7 +6,7 @@ public class PrimitivoListaComandos  {
 	public LinkedList<PrimitivoComando> comandos;
 	
 	public PrimitivoListaComandos() {
-		   this.comandos = new LinkedList();
+		   this.comandos = new LinkedList<PrimitivoComando>();
 	}
 	
 	// adiciona uma lista no final

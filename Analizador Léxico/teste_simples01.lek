@@ -1,0 +1,4 @@
+FLUT numero // declaracao varivael numerica.
+numero = 10 // inicializacao da variavel.
+PRINTA(numero) //Teste de exibicao.
+
