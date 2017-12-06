@@ -45,7 +45,7 @@ public class CompiladorHell {
 		 // 3a passagem do Compilador - gera código destino - assembler (JVM do Java)
 		 CodigoDestino codigoDestino = new CodigoDestino();
 		 codigoDestino.geraCodigoAssembler(listaComandos2aPassagem);
-         System.out.println("\n-----\nCodigo destino completo: " + codigoDestino);
+         System.out.println("\n-----\nCodigo destino completo: \n\n" + codigoDestino);
          
       }
       catch(FileNotFoundException e) {

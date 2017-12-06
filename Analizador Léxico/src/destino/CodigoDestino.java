@@ -20,24 +20,28 @@ public class CodigoDestino {
             // ...
 		BufferedWriter arqSaida;
 		try{
-			arqSaida = new BufferedWriter(new FileWriter(Config.nomeCodigoDestino + ".j"));
-			arqSaida.write(".source "+Config.nomeCodigoDestino+".java\r\n");
-            arqSaida.write(".class public "+Config.nomeCodigoDestino+"\r\n");
-            arqSaida.write(".super java/lang/Object\r\n");
-            arqSaida.write(".method public <init>()V\r\n");
-            arqSaida.write(".limit stack 1\r\n");
-            arqSaida.write(".limit locals 1\r\n");
-            arqSaida.write("aload_0\r\n");
-            arqSaida.write("invokespecial java/lang/Object/<init>()V\r\n");
-            arqSaida.write("return\r\n");
-            arqSaida.write(".end method\r\n\r\n");
-            arqSaida.write(".method public static main([Ljava/lang/String;)V\r\n");
-            arqSaida.write(".limit stack "+(Expressao.getMaxPilha())+"\r\n");  
-            arqSaida.write(".limit locals "+(Simbolo.getMarcador())+"\r\n\r\n"); 
-            arqSaida.write(processaListaComandos(lista));
-            arqSaida.write("return\r\n");
-            arqSaida.write(".end method\r\n");
+			
+			this.codigoDestino += ".source "+Config.nomeCodigoDestino+".java\r\n";
+			this.codigoDestino += ".class public "+Config.nomeCodigoDestino+"\r\n";
+			this.codigoDestino += ".super java/lang/Object\r\n";
+            this.codigoDestino += ".method public <init>()V\r\n";
+            this.codigoDestino += ".limit stack 1\r\n";
+            this.codigoDestino += ".limit locals 1\r\n";
+            this.codigoDestino += "aload_0\r\n";
+            this.codigoDestino += "invokespecial java/lang/Object/<init>()V\r\n";
+            this.codigoDestino += "return\r\n";
+            this.codigoDestino += ".end method\r\n\r\n";
+            this.codigoDestino += ".method public static main([Ljava/lang/String;)V\r\n";
+            this.codigoDestino += ".limit stack "+(Expressao.getMaxPilhaGeral())+"\r\n";  
+            this.codigoDestino += ".limit locals "+(Simbolo.getMarcador())+"\r\n\r\n"; 
+            this.codigoDestino += processaListaComandos(lista);
+            this.codigoDestino += "return\r\n";
+            this.codigoDestino += ".end method\r\n";
+            
+            arqSaida = new BufferedWriter(new FileWriter(Config.nomeCodigoDestino + ".j"));
+            arqSaida.write(this.codigoDestino);
             arqSaida.close();
+            
 		}catch(IOException e){
 			System.out.println("Problemas na geracao do codigo destino");
 			System.exit(1);

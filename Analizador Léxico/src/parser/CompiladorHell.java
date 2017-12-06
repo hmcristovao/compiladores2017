@@ -38,7 +38,7 @@ public class CompiladorHell implements CompiladorHellConstants {
                  // 3a passagem do Compilador - gera código destino - assembler (JVM do Java)
                  CodigoDestino codigoDestino = new CodigoDestino();
                  codigoDestino.geraCodigoAssembler(listaComandos2aPassagem);
-         System.out.println("\u005cn-----\u005cnCodigo destino completo: " + codigoDestino);
+         System.out.println("\u005cn-----\u005cnCodigo destino completo: \u005cn\u005cn" + codigoDestino);
 
       }
       catch(FileNotFoundException e) {

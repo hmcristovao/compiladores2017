@@ -33,11 +33,11 @@ public class Expressao
 		this.maxPilha = maxPilha;
 	}
 	
-	public int getMaxPilhaGeral() {
+	public static int getMaxPilhaGeral() {
 		return maxPilhaGeral;
 	}
 
-	public void setMaxPilhaGeral(int maxPilhaGeral) {
+	public static void setMaxPilhaGeral(int maxPilhaGeral) {
 		Expressao.maxPilhaGeral = maxPilhaGeral;
 	}
 
