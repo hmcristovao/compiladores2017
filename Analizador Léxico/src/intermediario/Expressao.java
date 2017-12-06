@@ -11,8 +11,8 @@ public class Expressao
 	private LinkedList <Item> listaInfixo;
 	private LinkedList <Item> listaPosfixo;
 	private static final long serialVersionUID = 1L;
-	private LinkedList <Item> listaExpressao;
 	private int maxPilha;
+	static private int maxPilhaGeral;
 	private Tipo tipoDados;
 	private static Integer contLabel = 0;
 	private static Integer contAnd = 1;
@@ -25,20 +25,20 @@ public class Expressao
 		listaPosfixo = new LinkedList<Item>();
 	}
 	
-	public LinkedList<Item> getListaExpressao() {
-		return listaExpressao;
-	}
-
-	public void setListaExpressao(LinkedList<Item> listaExpressao) {
-		this.listaExpressao = listaExpressao;
-	}
-	
 	public int getMaxPilha() {
 		return this.maxPilha;
 	}
 
 	public void setMaxPilha(int maxPilha) {
 		this.maxPilha = maxPilha;
+	}
+	
+	public int getMaxPilhaGeral() {
+		return maxPilhaGeral;
+	}
+
+	public void setMaxPilhaGeral(int maxPilhaGeral) {
+		Expressao.maxPilhaGeral = maxPilhaGeral;
 	}
 
 	public Tipo getTipoDados() {
@@ -116,15 +116,18 @@ public class Expressao
 		for(Item item : this.listaPosfixo) {
 			if(item.getTipo() == Tipo.OPERADOR)
 				this.maxPilha--;
-			else
+			else {
 				this.maxPilha++;
+				if(this.maxPilha > Expressao.maxPilhaGeral)
+					Expressao.maxPilhaGeral = this.maxPilha;
+			}
 		}
 	}
 	
 	public String geraCodigoDestino() {
 
-		String codigoExpressao="\r\n; expressao: " + this.getListaInfixo() + "\r\n";
-		for(Item item : this.listaExpressao){
+		String codigoExpressao="\r\n; expressao: " + this.getListaPosfixo() + "\r\n";
+		for(Item item : this.getListaPosfixo()){
 			if(item.getTipo() == Tipo.CTE_NUMERO){
 				if(item.getValor().contains(".")){
 					codigoExpressao += "ldc2_w " + item.getValor() + "\r\n";
@@ -132,27 +135,8 @@ public class Expressao
 					codigoExpressao += "ldc2_w " + item.getValor() + ".0\r\n";
 				}
 			}
-
 			else if(item.getTipo() == Tipo.OPERADOR){
 				if((item.getValor().equals("+"))){
-					if((this.getTipoDados() == Tipo.CTE_NUMERO)){
-						codigoExpressao+="dadd\r\n";
-					} else if(this.getTipoDados() == Tipo.CTE_STRING){
-
-						codigoExpressao += "astore_"+(Simbolo.getMarcador()+1) +" \r\n";
-						codigoExpressao += "astore_"+(Simbolo.getMarcador()) +" \r\n";
-						codigoExpressao += "new java/lang/StringBuilder \r\n";
-						codigoExpressao += "dup \r\n";
-						codigoExpressao += "invokespecial java/lang/StringBuilder/<init>()V \r\n";
-						codigoExpressao += "aload_"+(Simbolo.getMarcador()) +" \r\n";
-						codigoExpressao += "invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder \r\n";
-						codigoExpressao += "aload_"+(Simbolo.getMarcador()+1) +" \r\n";
-						codigoExpressao += "invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder \r\n";
-						codigoExpressao += "invokevirtual java/lang/StringBuilder/toString()Ljava/lang/String \r\n";
-
-					}
-				}
-				else if(item.getValor().equals("+")){
 					codigoExpressao+="dadd\r\n";
 				}
 				else if(item.getValor().equals("-")){
