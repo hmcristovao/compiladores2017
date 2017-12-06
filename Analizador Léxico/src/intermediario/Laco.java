@@ -1,6 +1,9 @@
 package intermediario;
 
-import intermediario2.PrimitivoListaComandos;
+import parser.CompiladorHell;
+import semantico.Simbolo;
+import semantico.Tipo;
+import intermediario2.*;
 
 public class Laco extends Comando {
 	
@@ -87,7 +90,27 @@ public class Laco extends Comando {
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
-		/* falta implementar ... */  
+		
+		String labelInicio = "LabelInicio";
+		String labelCont = "LabelCont";
+		
+		Tipo t = CompiladorHell.tabela.consultaTipo(varControle);
+		Simbolo s = new Simbolo(varControle, t);
+		
+		lista.addPrimitivoComando(new PrimitivoAtribuicao(s, expressaoInicializacao));
+		lista.addPrimitivoComando(new PrimitivoLabel(labelInicio));
+		lista.addPrimitivoComando(
+				new PrimitivoSeGoto(expressaoComparadora, 
+						new PrimitivoLabel(labelCont))
+		);
+		
+		for(Comando c: listaComandos.comandos){
+			lista.adicionaTodos(c.geraCodigoPrimitivo());
+		}
+				
+		lista.addPrimitivoComando(new PrimitivoAtribuicao(s, expressaoIteracao));
+		lista.addPrimitivoComando(new PrimitivoGoto(new PrimitivoLabel(labelInicio)));
+		
 		return lista;
 	}
 
