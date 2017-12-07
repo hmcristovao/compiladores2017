@@ -1,0 +1,12 @@
+FLUT numero // declaracao de Variavel.
+
+numero = 7 // inicializacao.
+
+SE(numero == 8)
+{ //.
+	PRINTA("bloco verdadeiro") //.
+}
+SENAO
+{ //.
+	PRINTA("bloco falso") //.
+}

@@ -37,7 +37,7 @@ public class Pega extends Comando {
 		Simbolo simbolo;
 		for(String var : listaVariaveis){
 			simbolo = CompiladorHell.tabela.consultaSimbolo(var);
-			lista.addPrimitivoComando(new PrimitivoEntrada(simbolo));
+			lista.add(new PrimitivoEntrada(simbolo));
 		}
 		return lista;
 	}

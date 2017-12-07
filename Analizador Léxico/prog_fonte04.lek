@@ -1,3 +1,5 @@
+/* Nao funciona: concatenacao de strings nao implementada 
+*/
 STRING nome //Declaracao de Variavel.
 STRING universidade //Declaracao de Variavel.
 STRING matricula, frase //Declaracao de Variavel.

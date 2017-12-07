@@ -1,36 +1,36 @@
-BOOL  flag //Declaracao de Variavel.
-STRING nome //Declaracao de Variavel.
+BOOL  flag // Declaracao de Variavel.
+STRING nome // Declaracao de Variavel.
 FLUT numero, calculo //Declaracao de Variavel.
-PRINTA("DIGITE UM NUMERO: ")//.
-PEGA(numero)//.
-flag=false//.
-calculo = 100-((numero*10)/2)+(5**2)//.
-SE(calculo >= 120)
-{//.
-	flag=true//.
+PRINTA("DIGITE UM NUMERO: ") //.
+PEGA(numero) //.
+flag=false //.
+calculo = 100-((numero*10)/2)+(5**2) //.
+SE(calculo <= 120)
+{ //.
+	flag=true //.
 	nome="negativa" //.
 	SE(numero==0)
-	{//.
+	{ //.
 		flag=false //.
-		PRINTA("Numero=0, necessario encerrar!")//.
+		PRINTA("Numero=0, necessario encerrar!") //.
 	    
 	}
 	SENAO
-	{//.
-		calculo = calculo/numero//.
+	{ //.
+		calculo = calculo/numero //.
 	}
 }
 SENAO
-{//.
+{ //.
 	flag=true //.
 	nome="positiva" //.
 	calculo = calculo/numero //.
 }
 SE(flag==true)
-{//.
-	PRINTA("Resultado: " ++ calculo ++ " resposta " ++ nome)//.
+{ //.
+	PRINTA("Resultado: ", calculo, " resposta: ", nome) //.
 }
 SENAO
-{//.
-	PRINTA("CONCLUSAO INTERROMPIDA!!")//.
+{ //.
+	PRINTA("CONCLUSAO INTERROMPIDA!!") //.
 }    

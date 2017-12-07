@@ -4,6 +4,5 @@ BOOL logico //Atribuicao Logico.
 numero = 10 // inicializacao da variavel.
 logico = true  // inicializacao da variavel.
 
-PRINTA(numero;logico) //Teste Impressao com Ponto Virgula.
-PRINTA(numero,logico) //Teste Impressao com Virgula.
+PRINTA(numero,logico) //Teste exibicao de duas constantes.
 

@@ -1,13 +1,13 @@
-BOOL  flag //Declaracao de Variavel.
+BOOL  flag //Declaracao de variavel logica.
 
-PRINTA("DIGITE true ou false: ")//.
-PEGA(flag)//.
+PRINTA("DIGITE UM VALOR LOGICO (1 OU 0): ") // solicita um valor logico.
+PEGA(flag) // entrada de um valor logico (0 ou 1).
 
 SE(flag == true)
-{//.
-    PRINTA("Verdadeiro")//.
+{ // se o valor digitado for verdadeiro.
+    PRINTA("Verdadeiro") //.
 }
 SENAO
-{//.
-    PRINTA("Falso")//.
+{ // se o valor digitado for falso.
+    PRINTA("Falso") //.
 }

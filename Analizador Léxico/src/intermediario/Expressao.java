@@ -11,20 +11,20 @@ public class Expressao
 	private LinkedList <Item> listaInfixo;
 	private LinkedList <Item> listaPosfixo;
 	private static final long serialVersionUID = 1L;
-	private int maxPilha = 0 ;
+	private int maxPilha = 3 ;
 	static private int maxPilhaGeral = 0;
 	private Tipo tipoDados;
 	private static Integer contLabel = 0;
 	private static Integer contAnd = 1;
 	private static Integer contAnd2 = 1;
 	private static Integer contOr = 1;
-	
+
 	//construtor da classe inicializando duas listas
 	public Expressao() {
 		listaInfixo = new LinkedList<Item>();
 		listaPosfixo = new LinkedList<Item>();
 	}
-	
+
 	public int getMaxPilha() {
 		return this.maxPilha;
 	}
@@ -32,7 +32,7 @@ public class Expressao
 	public void setMaxPilha(int maxPilha) {
 		this.maxPilha = maxPilha;
 	}
-	
+
 	public static int getMaxPilhaGeral() {
 		return maxPilhaGeral;
 	}
@@ -100,18 +100,38 @@ public class Expressao
 	public LinkedList<Item> getListaPosfixo() {
 		return listaPosfixo;
 	}
-	
+
 	public void addInfixo(Item _item){
 		listaInfixo.add(_item);
 	}	
 	public void addPosfixo(Item _item){
 		listaPosfixo.add(_item);
 	}
+
+	public String strExpInfixa() {
+		String saida = "";
+		for(Item item : this.listaInfixo)
+		   saida += item.getValor();	
+		return saida;
+	}
 	
 	public String toString() {
-		return "expressao infixa: "+this.listaInfixo + " - expressao posfixa: " + this.listaPosfixo;
+		return "expressao infixa: "+this.strExpInfixa() + "  - expressao posfixa: " + this.listaPosfixo;
 	}	
-	
+
+	// pega apenas o tipo do primeiro operando
+	public Tipo getTipo() {
+		return this.getListaInfixo().get(0).getTipo();
+	}
+
+	// verifica se o primeiro operando eh string
+	public boolean isString() {
+		if(this.getTipo() == Tipo.VAR_STRING || this.getTipo() == Tipo.CTE_STRING ) 
+			return true;
+		else
+			return false;
+	}
+
 	public void calculaLimitStack() {
 		for(Item item : this.listaPosfixo) {
 			if(item.getTipo() == Tipo.OPERADOR)
@@ -123,15 +143,46 @@ public class Expressao
 			}
 		}
 	}
-	
+
 	public String geraCodigoDestino() {
 		String codigoExpressao="\r\n; " + this.toString() + "\r\n";
+		String nomeDaVariavel;
+		int referenciaDaVariavel;
 		for(Item item : this.getListaPosfixo()){
 			if(item.getTipo() == Tipo.CTE_NUMERO){
 				if(item.getValor().contains(".")){
 					codigoExpressao += "ldc2_w " + item.getValor() + "\r\n";
 				} else {
 					codigoExpressao += "ldc2_w " + item.getValor() + ".0\r\n";
+				}
+			}
+			if(item.getTipo() == Tipo.CTE_BOOLEANO){
+				if(item.getValor().equals("true"))
+					codigoExpressao += "ldc2_w 1.0 \r\n";
+				else 
+					codigoExpressao += "ldc2_w 0.0 \r\n";
+			}
+			else if(item.getTipo() == Tipo.CTE_STRING){
+				codigoExpressao += "ldc " + item.getValor() + "\r\n";
+			}
+			else if(item.getTipo() == Tipo.VAR_BOOLEANO || item.getTipo() == Tipo.VAR_NUMERO){
+				nomeDaVariavel = item.getValor();
+				referenciaDaVariavel = CompiladorHell.tabela.consultaReferencia(nomeDaVariavel);
+				if( referenciaDaVariavel < 4 ){
+					codigoExpressao += "dload_" + referenciaDaVariavel + "\r\n";
+				}
+				else {
+					codigoExpressao += "dload " + referenciaDaVariavel + "\r\n";
+				}
+			}
+			else if(item.getTipo() == Tipo.VAR_STRING){
+				nomeDaVariavel = item.getValor();
+				referenciaDaVariavel = CompiladorHell.tabela.consultaReferencia(nomeDaVariavel);
+				if( referenciaDaVariavel < 4 ){
+					codigoExpressao += "aload_" + referenciaDaVariavel + "\r\n";
+				}
+				else {
+					codigoExpressao += "aload " + referenciaDaVariavel + "\r\n";
 				}
 			}
 			else if(item.getTipo() == Tipo.OPERADOR){
@@ -147,49 +198,35 @@ public class Expressao
 				else if(item.getValor().equals("/")){
 					codigoExpressao+="ddiv\r\n";
 				}
-				
+
 				else if(item.getValor().equals("==")){
 
-					codigoExpressao+="dcmpg\r\n";
+					codigoExpressao+="dcmpg \r\n";
 					//Caso os numeros sejam iguais faz um desvio para o LABEL
 					//e armazena 1 na pilha.
 					codigoExpressao+="ifeq LABEL_0"+contLabel+ "\r\n";
-					codigoExpressao+="dconst_0\r\n";
+					codigoExpressao+="dconst_0 \r\n";
 					codigoExpressao+="goto LABEL_0"+(contLabel+1) +"\r\n";
 					codigoExpressao+= ("LABEL_0"+contLabel + ":\r\n");
-					codigoExpressao+="dconst_1\r\n";
+					codigoExpressao+="dconst_1 \r\n";
 					codigoExpressao+="LABEL_0"+(contLabel+1) + ":\r\n";
 					contLabel+=2;
 
 				}
-				
+
 				else if(item.getValor().equals("<=")){
-					codigoExpressao+="dcmpg\r\n";
+					codigoExpressao+="dcmpg \r\n";
 					//Caso o primeiro numero seja menor ou igual, armazena 1 na pilha.
 					codigoExpressao+="ifgt LABEL_0"+contLabel+ "\r\n";
-					codigoExpressao+="dconst_1\r\n";
+					codigoExpressao+="dconst_1 \r\n";
 					codigoExpressao+="goto LABEL_0"+(contLabel+1) +"\r\n";
-					codigoExpressao+="LABEL_0"+contLabel + ":\r\n";
-					codigoExpressao+="dconst_0\r\n";
-					codigoExpressao+="LABEL_0"+(contLabel+1) + ":\r\n";
+					codigoExpressao+="LABEL_0"+contLabel + ": \r\n";
+					codigoExpressao+="dconst_0 \r\n";
+					codigoExpressao+="LABEL_0"+(contLabel+1) + ": \r\n";
 					contLabel += 2;
 				}
-			}
-			else if(item.getTipo() == Tipo.CTE_STRING){
-				codigoExpressao += "ldc " + item.getValor() + "\r\n";
-			}
-			else if(item.getTipo() == Tipo.VAR_BOOLEANO || item.getTipo() == Tipo.VAR_STRING || item.getTipo() == Tipo.VAR_NUMERO){
-				String nomeDaVariavel = item.getValor();
-				int referenciaDaVariavel = CompiladorHell.tabela.consultaReferencia(nomeDaVariavel);
-                if( referenciaDaVariavel < 4 ){
-                	codigoExpressao += "dload_" + referenciaDaVariavel + "\r\n";
-                }
-                else{
-                	codigoExpressao += "dload " + referenciaDaVariavel + "\r\n";
-                }
 			}
 		}
 		return codigoExpressao + "\r\n";
 	}
-
 }

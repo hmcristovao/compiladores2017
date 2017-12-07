@@ -1,0 +1,4 @@
+STRING str // declaracao varivael string.
+str = "oi" // inicializacao da variavel.
+PRINTA(str) //Teste de exibicao.
+

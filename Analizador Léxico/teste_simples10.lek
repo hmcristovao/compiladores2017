@@ -1,0 +1,9 @@
+TESTE
+{
+	(1 == 2){  // .
+		PRINTA("Primeira") //.
+	} 
+	(3 == 3){  // .
+		PRINTA("Segunda") //.
+	}
+}

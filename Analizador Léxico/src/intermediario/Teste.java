@@ -58,27 +58,27 @@ public class Teste extends Comando {
 		for(Condicional i: condicoes){
 			PrimitivoLabel pl = new PrimitivoLabel(label+contador);
 			labelLista.add(pl);
-			lista.addPrimitivoComando(new PrimitivoSeGoto(i.getExpressao(),pl));
+			lista.add(new PrimitivoSeGoto(i.getExpressao(),pl));
 			contador++;
 		}
 		for(Comando c: outroCaso.comandos){
 			lista.adicionaTodos(c.geraCodigoPrimitivo());
 		}
-		lista.addPrimitivoComando(new PrimitivoGoto(new PrimitivoLabel(labelFim)));
+		lista.add(new PrimitivoGoto(new PrimitivoLabel(labelFim)));
 		
 		//Reiniciando a numeração do label
 		contador = 0;		
 		for(Condicional i: condicoes){
 			PrimitivoLabel aux = labelLista.get(contador);
-			lista.addPrimitivoComando(aux);
+			lista.add(aux);
 				
 			for(Comando c: i.getListaComandos().comandos){
 				lista.adicionaTodos(c.geraCodigoPrimitivo());
 			}
 			contador++;
-			lista.addPrimitivoComando(new PrimitivoGoto(new PrimitivoLabel(labelFim)));
+			lista.add(new PrimitivoGoto(new PrimitivoLabel(labelFim)));
 		}	
-		lista.addPrimitivoComando(new PrimitivoLabel(labelFim));
+		lista.add(new PrimitivoLabel(labelFim));
 		
 		return lista;
 	}

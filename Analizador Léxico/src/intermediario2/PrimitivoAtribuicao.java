@@ -16,11 +16,15 @@ public class PrimitivoAtribuicao extends PrimitivoComando {
 		// gerar o codigo destino em assembler (JVM do Java - ver material no AVA)
 		String codigoFinal = "";
 		codigoFinal += expressao.geraCodigoDestino();
-		codigoFinal += "dstore " + variavel.getReferencia() + "\r\n";
+		if(this.expressao.isString())
+			codigoFinal += "astore ";
+		else
+			codigoFinal += "dstore ";
+		codigoFinal += variavel.getReferencia() + "\r\n";
 		return codigoFinal;
 	}
 	
 	public String toString() {
-		return "\nComando Atribuicao: variavel que recebe: "+this.variavel.toString() + " - expressao: " + this.expressao.toString();
+		return "\n\nComando primitivo ATRIBUICAO: variavel que recebe: "+this.variavel.toString() + " - expressao: " + this.expressao.toString();
 	}
 }

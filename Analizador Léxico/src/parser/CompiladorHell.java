@@ -25,14 +25,14 @@ public class CompiladorHell implements CompiladorHellConstants {
          listaComandos1aPassagem = CompiladorHell.inicio();
          System.out.println("Analise lexica e sintatica sem erros!");
                  System.out.println("\u005cn-----\u005cnTabela de simbolos: "+tabela);
-         System.out.println("\u005cn-----\u005cnLista completa dos comandos apos a 1a passagem do compilador: "
+         System.out.println("\u005cn-----\u005cnLista completa dos comandos apos a 1a passagem do compilador: \u005cn"
                              +listaComandos1aPassagem);
 
 
                  // 2a passagem do Compilador - gera código intermediário mais proximo do assembler
                  PrimitivoListaComandos listaComandos2aPassagem;
                  listaComandos2aPassagem = listaComandos1aPassagem.geraListaPrimitivoComando();
-                 System.out.println("\u005cn-----\u005cnLista completa dos comandos apos a 2a passagem do compilador: "
+                 System.out.println("\u005cn-----\u005cnLista completa dos comandos apos a 2a passagem do compilador: \u005cn\u005cn"
                                     +listaComandos2aPassagem);
 
                  // 3a passagem do Compilador - gera código destino - assembler (JVM do Java)

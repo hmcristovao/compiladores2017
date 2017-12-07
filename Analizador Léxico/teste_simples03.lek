@@ -1,0 +1,6 @@
+FLUT numero //Declaracao de variavel numerica.
+
+PRINTA("DIGITE UM NUMERO: ") // solicita um numero.
+PEGA(numero) // entrada de um numero.
+PRINTA("Numero digitado: ", numero) // exibe a entrada.
+

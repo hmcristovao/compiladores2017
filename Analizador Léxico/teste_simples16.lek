@@ -1,0 +1,7 @@
+LACO(FLUT i = 1; i <= 10; i = i+1)
+{ // .
+   LACO(FLUT j = 1; i <= 10; j = j+1)
+   { // .
+	   PRINTA("laco aninhado [i][j]:", i, j) // .
+   }
+}

@@ -23,13 +23,12 @@ public class PrimitivoGoto  extends PrimitivoComando {
 	
 	public String geraCodigoDestino() {
 		// gerar o código destino em assembler (JVM do Java - ver material no AVA)
-		String codigoFinal = "";
-	    return codigoFinal= "goto " + label.toString();
+	    return "goto " + label.getLabel() + "\r\n";
 	}
 	
 	public String toString() {
 		// retornar a concatenação dos atributos da classe, usando toString() para cada um
-		return "\n\nComando Primitivo GoTo: label: " + label.toString();
+		return "\n\nComando primitivo GOTO: label: " + label.toString();
 	}
 
 }

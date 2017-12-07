@@ -91,24 +91,23 @@ public class Laco extends Comando {
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
 		
-		String labelInicio = "LabelInicio";
-		String labelCont = "LabelCont";
+		PrimitivoLabel labelInicio = new PrimitivoLabel("LabelInicio");
+		PrimitivoLabel labelCont = new PrimitivoLabel("LabelCont");
+		PrimitivoLabel labelFim = new PrimitivoLabel("LabelFim");
 		
 		Simbolo simbolo = CompiladorHell.tabela.consultaSimbolo(varControle);
 		
-		lista.addPrimitivoComando(new PrimitivoAtribuicao(simbolo, expressaoInicializacao));
-		lista.addPrimitivoComando(new PrimitivoLabel(labelInicio));
-		lista.addPrimitivoComando(
-				new PrimitivoSeGoto(expressaoComparadora, 
-						new PrimitivoLabel(labelCont))
-		);
-		
+		lista.add(new PrimitivoAtribuicao(simbolo, expressaoInicializacao));
+		lista.add(labelInicio);
+		lista.add(new PrimitivoSeGoto(expressaoComparadora, labelCont));
+		lista.add(new PrimitivoGoto(labelFim));
+		lista.add(labelCont);
 		for(Comando c: listaComandos.comandos){
 			lista.adicionaTodos(c.geraCodigoPrimitivo());
 		}
-				
-		lista.addPrimitivoComando(new PrimitivoAtribuicao(simbolo, expressaoIteracao));
-		lista.addPrimitivoComando(new PrimitivoGoto(new PrimitivoLabel(labelInicio)));
+		lista.add(new PrimitivoAtribuicao(simbolo, expressaoIteracao));
+		lista.add(new PrimitivoGoto(labelInicio));
+		lista.add(labelFim);
 		
 		return lista;
 	}

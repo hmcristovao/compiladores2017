@@ -1,3 +1,5 @@
+/* Nao funciona: comparacao de strings nao implementada 
+*/
 STRING letra //Declaracao de Variavel.
 
 PRINTA("DIGITE UMA LETRA: ") //.

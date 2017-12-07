@@ -1,0 +1,6 @@
+FLUT primnumero, segnumero, ternumero // Declaracao de um par de variaveis numericas. 
+
+PRINTA("DIGITE TRES NUMEROS: ") // solicita duas entradas.
+PEGA(primnumero, segnumero, ternumero) // entrada de tres numeros.
+PRINTA("Dobro dos numeros digitados: ", primnumero*2, segnumero*2, ternumero*2) // exibe as entradas.
+

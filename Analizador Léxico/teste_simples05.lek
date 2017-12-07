@@ -1,0 +1,5 @@
+BOOL logico //Declaracao de variavel logica.
+
+PRINTA("DIGITE UM LOGICO (1 ou 0): ")// solicita um logico.
+PEGA(logico) // entrada de um logico.
+PRINTA("Valor logico digitado: ", logico) // exibe a entrada.

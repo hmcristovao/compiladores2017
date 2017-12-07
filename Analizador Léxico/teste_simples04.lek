@@ -1,0 +1,5 @@
+STRING s //Declaracao de variavel string.
+
+PRINTA("DIGITE UMA STRING: ") // solicita uma string.
+PEGA(s) // entrada de uma string.
+PRINTA("String digitada: ", s) // exibe a entrada.

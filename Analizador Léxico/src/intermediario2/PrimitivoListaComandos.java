@@ -18,7 +18,7 @@ public class PrimitivoListaComandos  {
     	return this.comandos.toString();
     }
     
-    public void addPrimitivoComando(PrimitivoComando comando){
+    public void add(PrimitivoComando comando){
     	this.comandos.add(comando);
     }
 }

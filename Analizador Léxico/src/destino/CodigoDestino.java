@@ -28,7 +28,7 @@ public class CodigoDestino {
 		this.codigo += "return\r\n";
 		this.codigo += ".end method\r\n\r\n";
 		this.codigo += ".method public static main([Ljava/lang/String;)V\r\n";
-		this.codigo += ".limit stack "+(Expressao.getMaxPilhaGeral()+2)+"\r\n";  
+		this.codigo += ".limit stack "+(Expressao.getMaxPilhaGeral()+4)+"\r\n";  
 		this.codigo += ".limit locals "+(CompiladorHell.tabela.getMarcador()+2)+"\r\n\r\n"; 
 		this.codigo += this.processaListaComandos(lista);
 		this.codigo += "return\r\n";
@@ -39,7 +39,8 @@ public class CodigoDestino {
 		String saida="";
 
 		for(PrimitivoComando com: lista.comandos){
-			saida+=com.geraCodigoDestino();
+			// chamada polimorfica de geraCodigoDestino
+			saida += com.geraCodigoDestino();
 		}
 		return saida;
 	}

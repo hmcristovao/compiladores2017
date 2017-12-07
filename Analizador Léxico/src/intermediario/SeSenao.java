@@ -61,22 +61,23 @@ public class SeSenao extends Comando{
 
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
-			String labelVerdadeiro  = "labelVerdadeiro";
-			String labelFim = "labelFim";
-			
-			lista.addPrimitivoComando(new PrimitivoSeGoto(expSeSenao, new PrimitivoLabel(labelVerdadeiro)));
-			for(Comando c: listaComandosCondicaoFalsa.comandos){
-				lista.adicionaTodos(c.geraCodigoPrimitivo());
-			}
-			
-			lista.addPrimitivoComando(new PrimitivoGoto(new PrimitivoLabel(labelFim)));
-			lista.addPrimitivoComando(new PrimitivoLabel(labelVerdadeiro));
-			
-			for(Comando c: listaComandosCondicaoVerdadeiro.comandos){
-				lista.adicionaTodos(c.geraCodigoPrimitivo());
-			}
-			
-			lista.addPrimitivoComando(new PrimitivoLabel(labelFim));
+		PrimitivoLabel labelVerdadeiro  = new PrimitivoLabel("labelVerdadeiro");
+		PrimitivoLabel labelFim = new PrimitivoLabel("labelFim");
+
+		lista.add(new PrimitivoSeGoto(expSeSenao, labelVerdadeiro));
+		for(Comando c: listaComandosCondicaoFalsa.comandos){
+			// chamada polimorfica de geraCodigoPrimitivo
+			lista.adicionaTodos(c.geraCodigoPrimitivo());
+		}
+
+		lista.add(new PrimitivoGoto(labelFim));
+		lista.add(labelVerdadeiro);
+
+		for(Comando c: listaComandosCondicaoVerdadeiro.comandos){
+			lista.adicionaTodos(c.geraCodigoPrimitivo());
+		}
+
+		lista.add(labelFim);
 		return lista;
 	}
 

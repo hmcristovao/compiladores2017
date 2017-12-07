@@ -1,8 +1,21 @@
-FLUT numero //Declaracao de Variavel.
-STRING nome //Declaracao de Variavel.
-BOOL logico //Declaracao de Variavel.
+FLUT numero //Declaracao de variavel numerica.
+STRING nome //Declaracao de variavel string.
+BOOL logico //Declaracao de variavel logica.
+FLUT numprim, numseg // Declaracao de um par de variaveis numericas. 
 
-PRINTA("DIGITE UM NUMERO: ")//Qualquer coisa.
-PRINTA("DIGITE UM NOME: ")//.
-PRINTA("DEFINA O LOGICO: ")//.
-PEGA(numero,nome,logico)//.
+PRINTA("DIGITE UM NUMERO: ") // solicita um numero.
+PEGA(numero) // entrada de um numero.
+PRINTA("Numero digitado: ", numero) // exibe a entrada.
+
+PRINTA("DIGITE UM NOME: ") // solicita uma string.
+PEGA(nome) // entrada de uma string.
+PRINTA("Nome digitado: ", nome) // exibe a entrada.
+
+PRINTA("DIGITE UM LOGICO (1 ou 0): ")// solicita um logico.
+PEGA(logico) // entrada de um logico.
+PRINTA("Valor logico digitado: ", logico) // exibe a entrada.
+
+PRINTA("DIGITE DOIS NUMEROS: ") // solicita duas entradas.
+PEGA(numprim, numseg) // entrada de dois numeros.
+PRINTA("Par de numeros digitados: ", numprim, numseg) // exibe as entradas.
+

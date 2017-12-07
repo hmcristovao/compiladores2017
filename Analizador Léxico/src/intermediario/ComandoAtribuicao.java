@@ -39,7 +39,7 @@ public class ComandoAtribuicao extends Comando {
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
 		Simbolo simbolo = CompiladorHell.tabela.consultaSimbolo(variavel);
-		lista.addPrimitivoComando(new PrimitivoAtribuicao(simbolo, expressao));
+		lista.add(new PrimitivoAtribuicao(simbolo, expressao));
 		return lista;
 	}
 	

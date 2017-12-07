@@ -5,14 +5,18 @@ PEGA(numero) //.
 
 TESTE
 {
-	(numero > 10){  // primeira condicao.
-		PRINTA("Entrada eh maior que 10") //.
+	(numero <= 10){  // primeira condicao.
+		PRINTA("Entrada eh menor ou igual a 10") //.
 	} 
-	(numero < 10){  // segunda condicao.
-		PRINTA("Entrada eh menor que 10") //.
+	(numero == 11){  // segunda condicao.
+		PRINTA("Entrada eh igual a 11") //.
 	}
-	(numero == 10){  // terceira condicao.
-		PRINTA("Entrada eh igual a 10") //.
+	(numero == 12){  // terceira condicao.
+		PRINTA("Entrada eh igual a 12") //.
 	} 
+	OUTROCASO {  // quarta condicao.
+		PRINTA("Entrada eh maior ou igual a 13") //.
+	} 
+	
 }
 

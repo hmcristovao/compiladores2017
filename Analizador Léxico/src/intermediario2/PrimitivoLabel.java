@@ -4,14 +4,10 @@ package intermediario2;
 		static int contador = 0;
 		private String label;
 
-		public String geraCodigoDestino() {
-			return this.label;
-		}
-
-		public PrimitivoLabel(String label) {
+		public PrimitivoLabel(String _label) {
 			super();
 			PrimitivoLabel.contador++;
-			this.label = label + "_"+ PrimitivoLabel.contador;
+			this.label = _label + "_"+ PrimitivoLabel.contador;
 		}
 
 		public String getLabel() {
@@ -21,8 +17,13 @@ package intermediario2;
 		public void setLabel(String label) {
 			this.label = label;
 		}
+		
+		public String geraCodigoDestino() {
+			// gerar o código destino em assembler (JVM do Java - ver material no AVA)
+		    return this.label + ": \r\n";
+		}
 
 		public String toString() {
-			return "\n\nPrimitivoComando PrimitivoLabel: " + this.label;
+			return "\n\nComando primitivo LABEL: " + this.label;
 		}
 }

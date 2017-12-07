@@ -1,0 +1,7 @@
+FLUT cont //.
+cont = 1 //.
+LACO(FLUT i = 1; i <= 10; i = i+1)
+{ // .
+    cont = cont * 2 //.
+	PRINTA("valores:", i, cont) // .
+}

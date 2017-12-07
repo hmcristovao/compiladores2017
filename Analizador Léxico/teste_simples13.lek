@@ -1,0 +1,6 @@
+LACO(FLUT i = 0; i <= 10; i = i+1)
+{ // laco simples para repetir 11 vezes.
+
+	PRINTA("teste de laco") // exibe constante string.
+
+}

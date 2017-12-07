@@ -14,14 +14,14 @@ public class PrimitivoSeGoto  extends PrimitivoComando {
 	
    public String geraCodigoDestino() {
 		String codigoFinal = "";
-		PrimitivoExibicao exp = new PrimitivoExibicao(this.condicional);
-		codigoFinal = exp.geraCodigoDestino(); // GERAR CODIGO DESTINO DA EXPRESSAO
-		codigoFinal = codigoFinal + "\n iconst_0"; // EMPILHAR 0
-		codigoFinal = codigoFinal + "\n ifeq " + this.label.geraCodigoDestino();
+		codigoFinal = condicional.geraCodigoDestino(); // GERAR CODIGO DESTINO DA EXPRESSAO
+		codigoFinal = codigoFinal + "dconst_1 \n"; // EMPILHAR 0
+		codigoFinal = codigoFinal + "dcmpg \n"; // EMPILHAR 0
+		codigoFinal = codigoFinal + "ifeq " + this.label.getLabel() + "\n";
 		return codigoFinal;
 	}
 	
 	public String toString() {
-		return "Se: " + this.condicional.toString() + "vai para: " + this.label.toString();
+		return "Comando primitivo SEGOTO: condicional: " + this.condicional.toString() + " - label: " + this.label.toString();
 	}
 }

@@ -47,6 +47,6 @@ public class PrimitivoEntrada  extends PrimitivoComando {
 	}
 	
 	public String toString() {
-		return "\nPrimitivoEntrada:"+" variavel: "+this.variavel.toString();
+		return "\n\nComando primitivo ENTRADA: "+" variavel: "+this.variavel.toString();
 	}
 }

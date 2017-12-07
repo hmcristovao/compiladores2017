@@ -1,3 +1,5 @@
+/* Nao funciona: operadores logicos nao implementados 
+*/
 BOOL portageral, portaum, portadois, portatres, portaquatro  //Atribuicao Logico.
 
 portaum = true //.

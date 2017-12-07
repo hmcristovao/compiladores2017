@@ -1,0 +1,8 @@
+SE(2>1)
+{ //.
+	PRINTA("bloco verdadeiro") //.
+}
+SENAO
+{ //.
+	PRINTA("bloco falso") //.
+}

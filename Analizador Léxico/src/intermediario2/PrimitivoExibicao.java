@@ -19,7 +19,7 @@ public class PrimitivoExibicao extends PrimitivoComando {
 
 		codigoFinal += "getstatic java/lang/System/out Ljava/io/PrintStream; \r\n";
 		codigoFinal += this.expressao.geraCodigoDestino();
-		if(this.expressao.getListaInfixo().get(0).getTipo() == Tipo.VAR_STRING)
+		if(this.expressao.isString())
 			codigoFinal += "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V \r\n";
 		else
 			codigoFinal += "invokevirtual java/io/PrintStream/println(D)V \r\n";
@@ -30,6 +30,6 @@ public class PrimitivoExibicao extends PrimitivoComando {
 	public String toString() {
 		// retornar a concatenação dos atributos da classe, usando toString() para cada
 		// um
-		return "\nPrimitivoExibicao: " + this.expressao.toString();
+		return "\n\nComando primitivo EXIBICAO: " + this.expressao.toString();
 	}
 }
