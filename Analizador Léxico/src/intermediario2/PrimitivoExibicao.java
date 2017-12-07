@@ -1,6 +1,7 @@
 package intermediario2;
 
 import intermediario.*;
+import semantico.Tipo;
 
 public class PrimitivoExibicao extends PrimitivoComando {
 	private Expressao expressao;
@@ -18,7 +19,10 @@ public class PrimitivoExibicao extends PrimitivoComando {
 
 		codigoFinal += "getstatic java/lang/System/out Ljava/io/PrintStream; \r\n";
 		codigoFinal += this.expressao.geraCodigoDestino();
-		codigoFinal += "invokevirtual java/io/PrintStream/println(D)V \r\n";
+		if(this.expressao.getListaInfixo().get(0).getTipo() == Tipo.VAR_STRING)
+			codigoFinal += "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V \r\n";
+		else
+			codigoFinal += "invokevirtual java/io/PrintStream/println(D)V \r\n";
 
 		return codigoFinal;
 	}
