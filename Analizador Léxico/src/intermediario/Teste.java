@@ -49,7 +49,10 @@ public class Teste extends Comando {
 	}	
 
 
-	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+/* Nao esta funcionando: erro na execucao, em label inexistente
+ 
+  	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+ 
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
 		LinkedList<PrimitivoLabel> labelLista = new LinkedList<PrimitivoLabel>();
 		String label  = "labelCase";
@@ -82,7 +85,32 @@ public class Teste extends Comando {
 		
 		return lista;
 	}
-
+*/
 	
+	public PrimitivoListaComandos geraCodigoPrimitivo() {  
+		PrimitivoListaComandos lista = new PrimitivoListaComandos();
+		PrimitivoLabel labelFimTeste = new PrimitivoLabel("labelFimTeste");
+		for(Condicional condicao: condicoes){
+			PrimitivoLabel labelCondicaoVerdadeira  = new PrimitivoLabel("labelCondicaoVerdadeira");
+			lista.add(new PrimitivoSeGoto(condicao.getExpressao(), labelCondicaoVerdadeira));
+			PrimitivoLabel labelProximoTeste = new PrimitivoLabel("labelProximoTeste");
+			lista.add(new PrimitivoGoto(labelProximoTeste));
+			lista.add(labelCondicaoVerdadeira);
+			for(Comando comando: condicao.getListaComandos().comandos){
+				// chamada polimorfica de geraCodigoPrimitivo
+				lista.adicionaTodos(comando.geraCodigoPrimitivo());
+			}
+			lista.add(new PrimitivoGoto(labelFimTeste));
+			lista.add(labelProximoTeste);
+		}
+		// adiciona os comandou do OUTROCASO
+		for(Comando comando: this.outroCaso.comandos){
+			// chamada polimorfica de geraCodigoPrimitivo
+			lista.adicionaTodos(comando.geraCodigoPrimitivo());
+		}
+		lista.add(labelFimTeste);
+		return lista;
+	}
+
 
 }

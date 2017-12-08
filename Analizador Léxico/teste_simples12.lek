@@ -1,24 +1,39 @@
-criar condicionais aninhadas
-...
+FLUT opcao, a, b, resultado //.
 
-
-FLUT numero //Declaracao de Variavel.
-
-PRINTA("DIGITE UM NUMERO DE 1 A 3: ") //.
-PEGA(numero) //.
+PRINTA("Escolha uma opcao: (1)soma (2)multiplicacao") //.
+PEGA(opcao) //.
 
 TESTE
 {
-	(numero == 1){  // primeira condicao.
-		PRINTA("Numero um digitado") //.
-	} 
-	(numero == 2){  // segunda condicao.
-		PRINTA("Numero dois digitado") //.
-	}
-	(numero == 3){  // terceira condicao.
-		PRINTA("Numero tres digitado") //.
-	} 
-	OUTROCASO {  // quarta condicao.
-		PRINTA("Entrada incorreta!") //.
+	(opcao == 1) {  // soma.
+        PRINTA("Digite os dois operandos da soma") //.
+        PEGA(a, b) //.
+        PRINTA("Qual o resultado da soma?") //.
+        PEGA(resultado) //.
+        SE(resultado == a + b)
+        { //.
+	        PRINTA("Resultado da soma correto!") //.
+        }
+        SENAO
+        { //.
+	        PRINTA("Resultado da soma errado!") //.
+        }
+    } 
+	(opcao == 2) {  // multiplicacao.
+        PRINTA("Digite os dois operandos da multiplicacao") //.
+        PEGA(a, b) //.
+        PRINTA("Qual o resultado da multiplicacao?") //.
+        PEGA(resultado) //.
+        SE(resultado == a * b)
+        { //.
+	        PRINTA("Resultado da multiplicacao correto!") //.
+        }
+        SENAO
+        { //.
+	        PRINTA("Resultado da multiplicacao errado!") //.
+        }
+    } 
+	OUTROCASO {  // opcao incorreta.
+		PRINTA("Opcao incorreta!") //.
 	} 
 }

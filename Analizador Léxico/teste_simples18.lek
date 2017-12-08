@@ -1,0 +1,9 @@
+/* Laco duplamente aninhado
+*/
+LACO(FLUT i = 1; i <= 10; i = i+1)
+{ // .
+   LACO(FLUT j = 1; j <= 10; j = j+1)
+   { // .
+	   PRINTA("[i][j]:", i, j) // .
+   }
+}

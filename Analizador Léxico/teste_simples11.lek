@@ -6,13 +6,13 @@ PEGA(numero) //.
 TESTE
 {
 	(numero == 1){  // primeira condicao.
-		PRINTA("Numero um digitado") //.
+		PRINTA("Numero UM digitado") //.
 	} 
 	(numero == 2){  // segunda condicao.
-		PRINTA("Numero dois digitado") //.
+		PRINTA("Numero DOIS digitado") //.
 	}
 	(numero == 3){  // terceira condicao.
-		PRINTA("Numero tres digitado") //.
+		PRINTA("Numero TRES digitado") //.
 	} 
 	OUTROCASO {  // quarta condicao.
 		PRINTA("Entrada incorreta!") //.

@@ -1,7 +1,16 @@
-LACO(FLUT i = 1; i <= 10; i = i+1)
+/* aninhamento de laco com condicional
+*/
+LACO(FLUT i = 1; i <= 20; i = i+1)
 { // .
-   LACO(FLUT j = 1; i <= 10; j = j+1)
-   { // .
-	   PRINTA("laco aninhado [i][j]:", i, j) // .
-   }
+	PRINTA("--------------------") // .
+	PRINTA("i = ", i) // .
+	
+	SE(i <= 10)
+	{ //.
+		PRINTA("menor ou igual a 10") //.
+	}
+	SENAO
+	{ //.
+		PRINTA("maior do que 10") //.
+	}
 }

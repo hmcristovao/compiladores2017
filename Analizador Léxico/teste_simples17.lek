@@ -1,0 +1,49 @@
+/* aninhamento de laco com condicional
+   JOGO DE ADVINHA
+*/
+FLUT numeromagico, escolha //.
+BOOL acertou //.
+
+numeromagico = 7 // um numero aleatorio de 1 a 10. 
+acertou = false //.
+
+LACO(FLUT i = 1; acertou == false; i = i+1)
+{ // .
+	PRINTA("-------------------------------") // .
+	PRINTA("Tentativa:", i) // .
+	PRINTA("Tente advinhar o numero magico (1 a 10)") // .
+	PEGA(escolha) // .
+	
+	SE(escolha == numeromagico)
+	{ //.
+		PRINTA("Parabens, voce acertou!!!") //.
+		acertou = true //.
+	}
+	SENAO
+	{ //.
+	   SE(escolha <= numeromagico)
+	   { //.
+		   PRINTA("Errou! O numero magico eh maior") //.
+       }
+	   SENAO
+	   { //.
+		   PRINTA("Errou! O numero magico eh menor") //.
+	   }
+	}
+}
+i = i - 1 //.
+TESTE
+{
+	(i == 1){  //.
+		PRINTA("Completamente cagado!!!") //.
+	} 
+	(i == 2){  //.
+		PRINTA("Sortudo!!!") //.
+	}
+	(i <= 4){  //.
+		PRINTA("Nada de mais.") //.
+	} 
+	OUTROCASO {  //.
+		PRINTA("ixi ... va estudar busca binaria!") //.
+	} 
+}
