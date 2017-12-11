@@ -40,4 +40,21 @@ public class Tabela {
       public String toString() {
             return this.tab.toString();
       }
+      
+      public boolean isInicializada(String _var) {
+  		return ((Simbolo)this.tab.get(_var)).getInicializada();
+  	}
+  	
+  	public void setInicializada(String _chave){
+  		((Simbolo)this.tab.get(_chave)).setInicializada(true);
+  	}
+  	
+  	public void warning(){ 
+  		System.out.println("\n");
+  		for(String _chave : this.tab.keySet()){
+  			if(!this.tab.get(_chave).getInicializada()){ //Verifica se a variavel foi declarada e nao foi inicializada
+  				System.out.println("Warning: variavel " + this.tab.get(_chave).getNome() + " foi declarada e nao foi inicializada.");
+  			}
+  		}
+  	}
 }

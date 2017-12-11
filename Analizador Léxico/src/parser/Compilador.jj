@@ -35,7 +35,7 @@ public class CompiladorHell {
          System.out.println("\n-----\nLista completa dos comandos apos a 1a passagem do compilador: \n"
                              +listaComandos1aPassagem);
 
-
+		 tabela.warning();
 		 // 2a passagem do Compilador - gera código intermediário mais proximo do assembler
 		 PrimitivoListaComandos listaComandos2aPassagem;
 		 listaComandos2aPassagem = listaComandos1aPassagem.geraListaPrimitivoComando();
@@ -335,6 +335,7 @@ Comando comandoAtribuicao() : {ComandoAtribuicao atrib; Token var; Expressao exp
     expa = exp()
     {
       atrib = new ComandoAtribuicao(var.image, expa);
+      tabela.setInicializada(var.image);
     }
     <COMENT>
     {

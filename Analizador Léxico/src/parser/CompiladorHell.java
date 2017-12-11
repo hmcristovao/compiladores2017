@@ -28,7 +28,7 @@ public class CompiladorHell implements CompiladorHellConstants {
          System.out.println("\u005cn-----\u005cnLista completa dos comandos apos a 1a passagem do compilador: \u005cn"
                              +listaComandos1aPassagem);
 
-
+                 tabela.warning();
                  // 2a passagem do Compilador - gera código intermediário mais proximo do assembler
                  PrimitivoListaComandos listaComandos2aPassagem;
                  listaComandos2aPassagem = listaComandos1aPassagem.geraListaPrimitivoComando();
@@ -325,6 +325,7 @@ exp               ->  expLogica | expAritmetica | expString
     jj_consume_token(ATRIB);
     expa = exp();
       atrib = new ComandoAtribuicao(var.image, expa);
+      tabela.setInicializada(var.image);
     jj_consume_token(COMENT);
         {if (true) return atrib;}
     throw new Error("Missing return statement in function");
