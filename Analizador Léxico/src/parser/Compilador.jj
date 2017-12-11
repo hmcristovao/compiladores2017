@@ -27,7 +27,7 @@ public class CompiladorHell {
       try {
          analisador = new CompiladorHell(new FileInputStream(Config.nomeArquivoFonte));
 
-		 // 1a passagem do Compilador - gera c�digo intermedi�rio
+		 // 1a passagem do Compilador - gera código intermediário
          ListaComandos listaComandos1aPassagem;
          listaComandos1aPassagem = CompiladorHell.inicio();
          System.out.println("Analise lexica e sintatica sem erros!");
@@ -36,13 +36,13 @@ public class CompiladorHell {
                              +listaComandos1aPassagem);
 
 
-		 // 2a passagem do Compilador - gera c�digo intermedi�rio mais proximo do assembler
+		 // 2a passagem do Compilador - gera código intermediário mais proximo do assembler
 		 PrimitivoListaComandos listaComandos2aPassagem;
 		 listaComandos2aPassagem = listaComandos1aPassagem.geraListaPrimitivoComando();
 		 System.out.println("\n-----\nLista completa dos comandos apos a 2a passagem do compilador: \n\n"
 		                    +listaComandos2aPassagem);
           
-		 // 3a passagem do Compilador - gera c�digo destino - assembler (JVM do Java)
+		 // 3a passagem do Compilador - gera código destino - assembler (JVM do Java)
 		 CodigoDestino codigoDestino = new CodigoDestino();
 		 codigoDestino.geraCodigoAssembler(listaComandos2aPassagem);
          System.out.println("\n-----\nCodigo destino completo: \n\n" + codigoDestino);
@@ -84,7 +84,7 @@ SKIP :
 SKIP : { "/*" : comentarioGeral }
 <comentarioGeral> SKIP: { "*/" : DEFAULT | <~[]> }
 
-TOKEN : /* OPERADORES ARITM�TICOS */
+TOKEN : /* OPERADORES ARITMï¿½TICOS */
 {
   < ADD : "+" >
 | < SUB : "-" >
@@ -188,13 +188,15 @@ ListaComandos inicio() : { ListaComandos lista; }
 ListaComandos listaComandos() : { Comando com; ListaComandos lista = new ListaComandos(); } {
 	(
 	  com = comando()
-	  {	     if(com != null) // a declaracao de variaveis nao eh um comando: nao deve ser adicionada na lista
+	  {
+	     if(com != null) // a declaracao de variaveis nao eh um comando: nao deve ser adicionada na lista
 	     {  
 	        lista.add(com);
 	     }
 	  }
 	)*
-	{	   return lista;
+	{
+	   return lista;
     }
 }
 Comando comando() : {Comando com = null;}
@@ -219,7 +221,9 @@ Comando comando() : {Comando com = null;}
 	  com = comandoLacoMatrix()
    )
 
-   {     return com;   }
+   {
+     return com;
+   }
 }
 
 /*
@@ -784,13 +788,16 @@ faixa -> exp <TO> exp
 ArrayList<Expressao> faixa(): {ArrayList<Expressao> listaExpressoes = new ArrayList<Expressao>();
                                Expressao e;}
 {
-   e = exp()  { listaExpressoes.add(e); }   <TO>
+   e = exp()  { listaExpressoes.add(e); }
+   <TO>
    e = exp() { listaExpressoes.add(e); }
    (
       <STEP>
       e = exp() { listaExpressoes.add(e); }
    )?
-   {      return listaExpressoes;   }
+   {
+      return listaExpressoes;
+   }
 }
 
 /*
@@ -812,6 +819,8 @@ Expressao exp() : {Expressao e = new Expressao();}
     exp0(e)
     {
       e.calculaLimitStack();
+      e.otimizaNeutroSomaSubExpressao();
+      e.otimizaNOT();
       return e;
     }    
 }
@@ -1042,7 +1051,8 @@ void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
       
     |
       t=<ADD>
-      { tConcatenada = t.image; }      t=<NUM>
+      { tConcatenada = t.image; }
+      t=<NUM>
       {
          tConcatenada = tConcatenada + t.image; 
          item = new Item(Tipo.CTE_NUMERO, tConcatenada);
@@ -1101,4 +1111,3 @@ void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
         e.addInfixo(item);
       } 
  }
-

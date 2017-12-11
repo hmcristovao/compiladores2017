@@ -229,4 +229,52 @@ public class Expressao
 		}
 		return codigoExpressao + "\r\n";
 	}
+	
+	// 0 2 + -> 2
+	//posNeutro = 0;
+	//i = 2
+	public void otimizaNeutroSomaSubExpressao(){
+		int posNeutro = 0;
+		int numOps = 0;
+		int i = 0;
+		
+		// Mantem o laço enquanto encontrar algum elemento 0
+		while(posNeutro != -1){
+			posNeutro = -1;
+			// Percorre a lista e resolve o primeiro elemento 0 que encontrar
+			for(Item item : this.listaPosfixo) {
+				//System.out.print(item.getValor() + " ");
+				if (item.getTipo() == Tipo.CTE_NUMERO){
+					if (item.getValor().equals("0")){
+						posNeutro = i;
+					}
+				}
+				else if (item.getTipo() == Tipo.OPERADOR){
+					numOps++;
+					if ((item.getValor().equals("+") || item.getValor().equals("-")) && posNeutro != -1){
+						// verifica se é uma sub-expressao de 3 termos
+						if ((i - posNeutro) <= 2){
+							this.listaPosfixo.remove(posNeutro);
+							this.listaPosfixo.remove(--i);
+							numOps--;
+							break;
+						}
+						// caso a sub-expressao tenha mais de 3 termos
+						else if (this.listaPosfixo.get(i - numOps*2).getValor().equals("0") || this.listaPosfixo.get(i - 1).getValor().equals("0")){
+							this.listaPosfixo.remove(posNeutro);
+							this.listaPosfixo.remove(--i);
+							numOps--;
+							break;
+						}
+					}
+				}
+				i++;
+			}
+			i = 0;
+			numOps = 0;
+			//System.out.println();
+		}
+		
+	}
+	
 }
