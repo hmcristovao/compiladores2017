@@ -260,7 +260,7 @@ public class Expressao
 							break;
 						}
 						// caso a sub-expressao tenha mais de 3 termos
-						else if (this.listaPosfixo.get(i - numOps*2).getValor().equals("0") || this.listaPosfixo.get(i - 1).getValor().equals("0")){
+						else if ((i - numOps*2) == posNeutro || (i - 1) == posNeutro){
 							this.listaPosfixo.remove(posNeutro);
 							this.listaPosfixo.remove(--i);
 							numOps--;
