@@ -581,6 +581,7 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
     jj_consume_token(ATRIB);
     expressaoAuxiliar = exp();
     jj_consume_token(PT_VIRG);
+        tabela.setInicializada(var.image);
         laco.setExpressaoInicializacao(expressaoAuxiliar);
     expressaoAuxiliar = exp();
         laco.setExpressaoComparadora(expressaoAuxiliar);

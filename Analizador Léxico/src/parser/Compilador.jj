@@ -550,6 +550,7 @@ Comando comandoLaco () : {Simbolo simb; Token var; Token tokenTipo = null;
     }
     <ATRIB> expressaoAuxiliar = exp() <PT_VIRG>
     {
+      	tabela.setInicializada(var.image);
       	laco.setExpressaoInicializacao(expressaoAuxiliar);
   	} 
     expressaoAuxiliar = exp()
