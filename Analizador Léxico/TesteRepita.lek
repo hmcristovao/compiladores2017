@@ -1,0 +1,8 @@
+FLUT n//.
+n=5//.
+REPITA (n)
+{ // laco simples para repetir 11 vezes.
+
+	PRINTA("teste de repita") // exibe constante string.
+
+}

@@ -118,6 +118,7 @@ TOKEN : /* PALAVRAS RESERVADAS */
   < IF : "SE" >
 | < ELSE : "SENAO" >
 | < FOR : "LACO" >
+| < REPEAT: "REPITA" >
 | < IN : "PEGA" >
 | < OUT : "PRINTA" >
 | < TEST : "TESTE" >
@@ -177,6 +178,7 @@ comando       ->
 	|comandoLaco()
 	|comandoLacoMultiplo()
 	|comandoLacoMatrix()
+	|repita()
 */
 ListaComandos inicio() : { ListaComandos lista; }
 {
@@ -214,6 +216,8 @@ Comando comando() : {Comando com = null;}
 	|
 	  com = comandoLaco()
 	|
+	  com = comandoRepita()
+    | 
 	  com = comandoLacoMultiplo()
 	|
 	  com = comandoLacoMatrix()
@@ -511,6 +515,37 @@ Condicional blocoCondicional():{Expressao e; ListaComandos listaCom;
 	  
 }
 
+/*comandoRepita- > <REPEAT> <AP> <VAR> <FP>
+               <ACH> <COMENT> listaComandos <FCH>
+*/               
+Comando comandoRepita () : { Simbolo simb; Token var; Token tokenTipo = null;
+								Repita repita = new Repita();
+                          ListaComandos listaAuxiliar = new ListaComandos();}
+ {
+      <REPEAT>
+       try {
+		<AP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "abre parenteses");
+		return null;	
+	}
+     var=<VAR>
+      try {
+		<FP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
+        return null;		                                   
+	}
+    <ACH> <COMENT>
+    listaAuxiliar = listaComandos() <FCH>
+    {
+      	repita.setListaComandos(listaAuxiliar);
+    }
+    { return repita; }
+}
+
 /*
 comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
                exp <PT_VIRG>
@@ -518,6 +553,7 @@ comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
                comandoAtribuicao <FP>
                <ACH> <COMENT> listaComandos <FCH>
 */
+
 Comando comandoLaco () : {Simbolo simb; Token var; Token tokenTipo = null;
                           Laco laco = new Laco();
                           Expressao expressaoAuxiliar = new Expressao();
