@@ -387,9 +387,9 @@ Comando comandoPrinta ():{ComandoPrinta printa; Expressao expa;}
 }
 
 /*
-comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
+comandoPega -> <IN><AP>((<STRING>(<VIRG><VAR>)+)|<VAR>(<VIRG><VAR>)*)<FP><COMENT>
 */
-Comando comandoPega (): {Token var; Pega pega = new Pega();}
+Comando comandoPega (): {Token msg=null; Token var; Pega pega = new Pega();}
 {
 	<IN>
 	try {
@@ -399,26 +399,44 @@ Comando comandoPega (): {Token var; Pega pega = new Pega();}
 		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
 		return null;
 	}
-	var = <VAR>
-	{pega.adicionaVariavel(var.image);}
-	{
-      if (!tabela.isExiste(var.image)) {
-			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
-				                var.beginLine + ", coluna " + var.beginColumn);
-		    System.exit(1);
-      }
-    }
-	(
-	  <VIRG> var = <VAR>
-	  {pega.adicionaVariavel(var.image);}
-	  {
-      	if (!tabela.isExiste(var.image)) {
-			System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
-				               var.beginLine + ", coluna " + var.beginColumn);
-		    System.exit(1);
-      	}
-   	  }
-	)*
+	(	  (		msg=<STRING>
+		{pega.setMenssagem(msg.image);}
+			(
+			  <VIRG> var = <VAR>
+			  {pega.adicionaVariavel(var.image);}
+			  {
+		      	if (!tabela.isExiste(var.image)) {
+					System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
+						               var.beginLine + ", coluna " + var.beginColumn);
+				    System.exit(1);
+		      	}
+		   	  }
+			)+
+		)
+	|
+		(
+			var = <VAR>
+			{pega.adicionaVariavel(var.image);}
+			{
+		      if (!tabela.isExiste(var.image)) {
+					System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
+						                var.beginLine + ", coluna " + var.beginColumn);
+				    System.exit(1);
+		      }
+		    }
+			(
+			  <VIRG> var = <VAR>
+			  {pega.adicionaVariavel(var.image);}
+			  {
+		      	if (!tabela.isExiste(var.image)) {
+					System.out.println("Variavel nao declarada: \"" + var.image + "\" na linha " +
+						               var.beginLine + ", coluna " + var.beginColumn);
+				    System.exit(1);
+		      	}
+		   	  }
+			)*
+		)
+	)
 	try {
 		<FP>
 	}

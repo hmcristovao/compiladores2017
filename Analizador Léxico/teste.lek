@@ -1,1 +1,4 @@
-HELLO //.
+FLUT n, a//.
+PEGA("Testando msg escrota: ", n, a)//.
+PRINTA(n)//.
+PRINTA(a)//.
