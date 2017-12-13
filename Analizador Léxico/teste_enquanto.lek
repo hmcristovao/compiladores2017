@@ -1,0 +1,7 @@
+FLUT i = 1 //.
+
+ENQUANTO(i < 10)
+{//.
+	i = i + 1//.
+	PRINTA(i)//.
+}
