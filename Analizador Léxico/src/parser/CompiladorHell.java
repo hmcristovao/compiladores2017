@@ -100,6 +100,7 @@ comando       ->
       case TEST:
       case FORMULTIPLE:
       case FORMATRIX:
+      case HELLO:
       case TYPENUM:
       case TYPESTR:
       case TYPEBOOL:
@@ -151,6 +152,9 @@ comando       ->
       break;
     case FORMATRIX:
       com = comandoLacoMatrix();
+      break;
+    case HELLO:
+      com = comandoHello();
       break;
     default:
       jj_la1[1] = jj_gen;
@@ -1190,6 +1194,17 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     }
   }
 
+ /*
+comandoHello -> <HELLO><COMENT>
+*/
+  static final public Comando comandoHello() throws ParseException {
+                         ComandoHello hello=new ComandoHello();
+    jj_consume_token(HELLO);
+    jj_consume_token(COMENT);
+          {if (true) return hello;}
+    throw new Error("Missing return statement in function");
+  }
+
   static private boolean jj_initialized_once = false;
   /** Generated Token Manager. */
   static public CompiladorHellTokenManager token_source;
@@ -1211,7 +1226,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       jj_la1_0 = new int[] {0x7a000000,0x7a000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000000,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x400000,0x200000,0x1000000,0x800000,0x1f8000,0x1f8000,0x300,0x300,0xc00,0xc00,0x1000,0x300,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x47006,0x47006,0x800,0x20,0x800,0x800,0x20,0x800,0x800,0x20,0x800,0x7000,0x60,0x60,0x20,0x0,0x80,0x1,0x0,0x1000,0x1000,0x60,0x10,0x1000,0x20,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x78080,};
+      jj_la1_1 = new int[] {0x8e026,0x8e026,0x1000,0x40,0x1000,0x1000,0x40,0x1000,0x1000,0x40,0x1000,0xe000,0xc0,0xc0,0x40,0x0,0x100,0x1,0x0,0x2000,0x2000,0xc0,0x10,0x2000,0x40,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf0100,};
    }
 
   /** Constructor with InputStream. */
@@ -1349,7 +1364,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[52];
+    boolean[] la1tokens = new boolean[53];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -1366,7 +1381,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         }
       }
     }
-    for (int i = 0; i < 52; i++) {
+    for (int i = 0; i < 53; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
