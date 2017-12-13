@@ -1,0 +1,8 @@
+FLUT i//.
+i=1//.
+REPETIR
+{//.
+	i = i+1//.
+}ATE(i==10)//.
+
+PRINTA(i)//.
