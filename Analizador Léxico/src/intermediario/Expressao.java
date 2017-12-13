@@ -230,7 +230,7 @@ public class Expressao
 		return codigoExpressao + "\r\n";
 	}
 	
-	public LinkedList<Item> getExpressaoOtimizada(){
+	public void getExpressaoOtimizada(){
 		LinkedList<Item> llTemp = new LinkedList<Item>();
 		Item iTemp;
 		for (int i = 0; i < this.listaPosfixo.size(); i++) {
@@ -238,38 +238,45 @@ public class Expressao
 			
 			if(iTemp.getTipo() == Tipo.OPERADOR && (iTemp.getValor().equals("*") || iTemp.getValor().equals("/"))) {
 				if(iTemp.getValor().equals("*")) {
-					if(this.listaPosfixo.get(i-1).equals("0")){
+					if(this.listaPosfixo.get(i-1).getValor().equals("0")){
 						if(this.listaPosfixo.get(i-2).getTipo() == Tipo.CTE_NUMERO || this.listaPosfixo.get(i-2).getTipo() == Tipo.VAR_NUMERO) {
 							llTemp.removeLast();
 							llTemp.removeLast();
 							llTemp.add(new Item(Tipo.CTE_NUMERO, "0"));
 						}
 					}
-					else if(this.listaPosfixo.get(i-2).equals("0")) {
+					else if(this.listaPosfixo.get(i-2).getValor().equals("0")) {
 						llTemp.removeLast();
 					}
-					else if(this.listaPosfixo.get(i-1).equals("1")) {
+					else if(this.listaPosfixo.get(i-1).getValor().equals("1")) {
 						llTemp.removeLast();
 					}
-					else if(this.listaPosfixo.get(i-2).equals("1")) {
+					else if(this.listaPosfixo.get(i-2).getValor().equals("1")) {
 						llTemp.removeLast();
 						llTemp.removeLast();
 						llTemp.add(this.listaPosfixo.get(i-1));
 					}
+					else
+						llTemp.add(iTemp);
 				}
 				else if(iTemp.getValor().equals("/")) {
-					if(this.listaPosfixo.get(i-2).equals("0")) {
+					if(this.listaPosfixo.get(i-2).getValor().equals("0")) {
 						llTemp.removeLast();
 					}
-					else if(this.listaPosfixo.get(i-1).equals("1")) {
+					else if(this.listaPosfixo.get(i-1).getValor().equals("1")) {
 						llTemp.removeLast();
 					}
+					else
+						llTemp.add(iTemp);
 				}
 			}
 			else
 				llTemp.add(iTemp);
 		}
 		
-		return llTemp;
+		if(this.listaPosfixo.size() > llTemp.size()) {
+			setListaPosfixo(llTemp);
+			getExpressaoOtimizada();
+		}
 	}
 }
