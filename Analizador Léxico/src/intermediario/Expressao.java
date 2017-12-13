@@ -229,6 +229,7 @@ public class Expressao
 		}
 		return codigoExpressao + "\r\n";
 	}
+	
 	public void otimizaConstantesMulDiv() {
 		float num1, num2;
 		Item auxItem;
@@ -241,27 +242,29 @@ public class Expressao
 					num2 = Float.parseFloat(listaPosfixo.get(i+1).getValor());
 					
 					if(listaPosfixo.get(i+2).getTipo() == Tipo.OPERADOR){
-						if(listaPosfixo.get(i+1).getTipo().equals("*")){
+						
+						if(listaPosfixo.get(i+2).getValor().equals("*")){
 							num1 = num1 * num2;
 							auxItem = new Item(Tipo.CTE_NUMERO, Float.toString(num1));
 							listaPosfixo.set(i, auxItem);
 							listaPosfixo.remove(i+1);
 							listaPosfixo.remove(i+1);
-							i=0;
+							i=-1;
 						}
-						else if(listaPosfixo.get(i+1).getTipo().equals("/")){
+						else if(listaPosfixo.get(i+2).getValor().equals("/")){
 							num1 = num1 / num2;
 							auxItem = new Item(Tipo.CTE_NUMERO, Float.toString(num1));
 							listaPosfixo.set(i, auxItem);
 							listaPosfixo.remove(i+1);
 							listaPosfixo.remove(i+1);
-							i=0;
+							i=-1;
 						}
 						else
 							i += 2;
 					}
 				}	
 			}
-		}	
+		}
+		
 	}
 }

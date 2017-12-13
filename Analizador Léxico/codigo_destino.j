@@ -14,15 +14,11 @@ return
 .limit locals 7
 
 
-; expressao infixa: 1+2+(2*5)*7  - expressao posfixa: [item, tipo = CTE_NUMERO, valor = 1, item, tipo = CTE_NUMERO, valor = 2, item, tipo = OPERADOR, valor = +, item, tipo = CTE_NUMERO, valor = 2, item, tipo = CTE_NUMERO, valor = 5, item, tipo = OPERADOR, valor = *, item, tipo = CTE_NUMERO, valor = 7, item, tipo = OPERADOR, valor = *, item, tipo = OPERADOR, valor = +]
+; expressao infixa: 1+2+(2*5)*7  - expressao posfixa: [item, tipo = CTE_NUMERO, valor = 1, item, tipo = CTE_NUMERO, valor = 2, item, tipo = OPERADOR, valor = +, item, tipo = CTE_NUMERO, valor = 70.0, item, tipo = OPERADOR, valor = +]
 ldc2_w 1.0
 ldc2_w 2.0
 dadd
-ldc2_w 2.0
-ldc2_w 5.0
-dmul
-ldc2_w 7.0
-dmul
+ldc2_w 70.0
 dadd
 
 dstore 1
@@ -33,11 +29,9 @@ dload_1
 
 invokevirtual java/io/PrintStream/println(D)V 
 
-; expressao infixa: ((numeroum+50*100)/2)*3  - expressao posfixa: [item, tipo = VAR_NUMERO, valor = numeroum, item, tipo = CTE_NUMERO, valor = 50, item, tipo = CTE_NUMERO, valor = 100, item, tipo = OPERADOR, valor = *, item, tipo = OPERADOR, valor = +, item, tipo = CTE_NUMERO, valor = 2, item, tipo = OPERADOR, valor = /, item, tipo = CTE_NUMERO, valor = 3, item, tipo = OPERADOR, valor = *]
+; expressao infixa: ((numeroum+50*100)/2)*3  - expressao posfixa: [item, tipo = VAR_NUMERO, valor = numeroum, item, tipo = CTE_NUMERO, valor = 5000.0, item, tipo = OPERADOR, valor = +, item, tipo = CTE_NUMERO, valor = 2, item, tipo = OPERADOR, valor = /, item, tipo = CTE_NUMERO, valor = 3, item, tipo = OPERADOR, valor = *]
 dload_1
-ldc2_w 50.0
-ldc2_w 100.0
-dmul
+ldc2_w 5000.0
 dadd
 ldc2_w 2.0
 ddiv
