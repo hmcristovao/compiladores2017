@@ -79,6 +79,7 @@ comando       ->
 	|comandoLaco()
 	|comandoLacoMultiplo()
 	|comandoLacoMatrix()
+	|comandoRepeteAte()
 */
   static final public ListaComandos inicio() throws ParseException {
                            ListaComandos lista;
@@ -100,6 +101,7 @@ comando       ->
       case TEST:
       case FORMULTIPLE:
       case FORMATRIX:
+      case REPEAT:
       case TYPENUM:
       case TYPESTR:
       case TYPEBOOL:
@@ -151,6 +153,9 @@ comando       ->
       break;
     case FORMATRIX:
       com = comandoLacoMatrix();
+      break;
+    case REPEAT:
+      com = comandoRepeteAte();
       break;
     default:
       jj_la1[1] = jj_gen;
@@ -809,6 +814,42 @@ faixa -> exp <TO> exp
   }
 
 /*
+comandoRepeteAte - > <REPEAT> 
+					<ACH> <COMENT>
+					listaComandos <FCH>
+					<UNTIL><AP> exp <FP><COMENT>
+*/
+  static final public Comando comandoRepeteAte() throws ParseException {
+                               RepetirAte repeatUntil = new RepetirAte();
+                                  Expressao expressaoAuxiliar = new Expressao();
+                                  ListaComandos listaAuxiliar = new ListaComandos();
+    jj_consume_token(REPEAT);
+    jj_consume_token(ACH);
+    jj_consume_token(COMENT);
+    listaAuxiliar = listaComandos();
+    jj_consume_token(FCH);
+        repeatUntil.setListaComandos(listaAuxiliar);
+    jj_consume_token(UNTIL);
+    try {
+      jj_consume_token(AP);
+    } catch (ParseException e) {
+                RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
+                {if (true) return null;}
+    }
+    expressaoAuxiliar = exp();
+        repeatUntil.setExpressaoVerdadeira(expressaoAuxiliar);
+    try {
+      jj_consume_token(FP);
+    } catch (ParseException e) {
+                RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
+        {if (true) return null;}
+    }
+    jj_consume_token(COMENT);
+      {if (true) return repeatUntil;}
+    throw new Error("Missing return statement in function");
+  }
+
+/*
 faixa -> exp <TO> exp
         (<STEP> exp)?
 */
@@ -1210,7 +1251,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       jj_la1_0 = new int[] {0x7a000000,0x7a000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000000,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x400000,0x200000,0x1000000,0x800000,0x1f8000,0x1f8000,0x300,0x300,0xc00,0xc00,0x1000,0x300,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x47006,0x47006,0x800,0x20,0x800,0x800,0x20,0x800,0x800,0x20,0x800,0x7000,0x60,0x60,0x20,0x0,0x80,0x1,0x0,0x1000,0x1000,0x60,0x10,0x1000,0x20,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x78080,};
+      jj_la1_1 = new int[] {0x11c026,0x11c026,0x2000,0x80,0x2000,0x2000,0x80,0x2000,0x2000,0x80,0x2000,0x1c000,0x180,0x180,0x80,0x0,0x200,0x1,0x0,0x4000,0x4000,0x180,0x10,0x4000,0x80,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1e0200,};
    }
 
   /** Constructor with InputStream. */
@@ -1348,7 +1389,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[52];
+    boolean[] la1tokens = new boolean[54];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -1365,7 +1406,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         }
       }
     }
-    for (int i = 0; i < 52; i++) {
+    for (int i = 0; i < 54; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

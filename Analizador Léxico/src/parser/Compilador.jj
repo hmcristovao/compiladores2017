@@ -127,6 +127,8 @@ TOKEN : /* PALAVRAS RESERVADAS */
 | < FORMATRIX : "LACOMATRIX" >
 | < TO : "A" >
 | < STEP : "PASSO" >
+| < REPEAT : "REPETIR" >
+| < UNTIL : "ATE" >
 }
 
 TOKEN : /* SIMBOLOS */
@@ -177,6 +179,7 @@ comando       ->
 	|comandoLaco()
 	|comandoLacoMultiplo()
 	|comandoLacoMatrix()
+	|comandoRepeteAte()
 */
 ListaComandos inicio() : { ListaComandos lista; }
 {
@@ -217,6 +220,8 @@ Comando comando() : {Comando com = null;}
 	  com = comandoLacoMultiplo()
 	|
 	  com = comandoLacoMatrix()
+	|
+	  com =  comandoRepeteAte()
    )
 
    {     return com;   }
@@ -776,6 +781,49 @@ Comando comandoLacoMatrix() : {Simbolo simb; Token var; Token tipo = null;
       <FCH>
       { return lacoMatrix; }
 }
+
+/*
+comandoRepeteAte - > <REPEAT> 
+					<ACH> <COMENT>
+					listaComandos <FCH>
+					<UNTIL><AP> exp <FP><COMENT>
+*/
+
+Comando comandoRepeteAte() : { RepetirAte repeatUntil = new RepetirAte();
+                          	  Expressao expressaoAuxiliar = new Expressao();
+                          	  ListaComandos listaAuxiliar = new ListaComandos();}
+{
+	<REPEAT>
+	<ACH ><COMENT >
+	listaAuxiliar = listaComandos() <FCH>
+	{
+      	repeatUntil.setListaComandos(listaAuxiliar);
+    }
+    <UNTIL>
+	
+	try {
+		<AP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "abre parenteses");
+		return null;	
+	}
+	expressaoAuxiliar = exp()
+	{
+      	repeatUntil.setExpressaoVerdadeira(expressaoAuxiliar);
+    }
+    try {
+		<FP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.COMENT, "fecha parenteses");
+        return null;		                                   
+	}
+	
+    <COMENT>
+    { return repeatUntil; }
+}
+
 
 /*
 faixa -> exp <TO> exp
