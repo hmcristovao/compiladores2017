@@ -4,6 +4,7 @@ public class Simbolo {
     private String nome;      // nome da variavel
     private Tipo tipo;
     private int referencia;   // refencia usada na geracao do codigo destino
+    private boolean inicializado = false;
     
     public Simbolo(String _nome, Tipo _tipo, int _referencia) { 
           this.nome = _nome;
@@ -20,7 +21,14 @@ public class Simbolo {
           return this.referencia;
     }
 
-    public String toString() {
+    public boolean isInicializado() {
+		return inicializado;
+	}
+    
+    public void setInicializado(boolean inicializado) {
+		this.inicializado = inicializado;
+	}
+	public String toString() {
           return "Nome:"+this.getNome() + " / " + "Tipo:"+Tipo.toStr(this.tipo)  + " / " + "Referencia:"+this.getReferencia() + "\n";
     }
 }

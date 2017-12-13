@@ -252,6 +252,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
      (
        <ATRIB>
        <NUM>
+       CompiladorHell.tabela.incializaSimbolo(var.image);
      )?
      (
        <VIRG>
@@ -266,6 +267,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
        (
          <ATRIB>
          <NUM>
+         CompiladorHell.tabela.incializaSimbolo(var.image);
        )?
       )*
    | 
@@ -281,6 +283,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
      (
        <ATRIB>
        <STRING>
+       CompiladorHell.tabela.incializaSimbolo(var.image);
      )?
      (
        <VIRG>
@@ -295,6 +298,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
        (
          <ATRIB>
          <STRING>
+         CompiladorHell.tabela.incializaSimbolo(var.image);
        )?
      )*
    | 
@@ -307,6 +311,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
      (
        <ATRIB>
        <BOOL>
+       CompiladorHell.tabela.incializaSimbolo(var.image);
      )?
      (
        <VIRG>
@@ -318,6 +323,7 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
        (
          <ATRIB>
          <BOOL>
+         CompiladorHell.tabela.incializaSimbolo(var.image);
        )?
      )*
    )
@@ -405,6 +411,7 @@ Comando comandoPega (): {Token var; Pega pega = new Pega();}
 		    System.exit(1);
       }
     }
+    CompiladorHell.tabela.incializaSimbolo(var.image);
 	(
 	  <VIRG> var = <VAR>
 	  {pega.adicionaVariavel(var.image);}
@@ -415,6 +422,7 @@ Comando comandoPega (): {Token var; Pega pega = new Pega();}
 		    System.exit(1);
       	}
    	  }
+   	  CompiladorHell.tabela.incializaSimbolo(var.image);
 	)*
 	try {
 		<FP>

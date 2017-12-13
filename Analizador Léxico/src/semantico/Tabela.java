@@ -25,6 +25,11 @@ public class Tabela {
                   return true;
             }
       }
+      
+      public void incializaSimbolo(String _chave) {
+    	  consultaSimbolo(_chave).setInicializado(true);
+      }
+      
       public Simbolo consultaSimbolo(String _chave) {
           return this.tab.get(_chave);
       }
