@@ -10,6 +10,7 @@ public class Expressao
 	// atributos tais como: lista de itens, expressao infixa etc
 	private LinkedList <Item> listaInfixo;
 	private LinkedList <Item> listaPosfixo;
+	private boolean expInicializada = true;
 	private static final long serialVersionUID = 1L;
 	private int maxPilha = 3 ;
 	static private int maxPilhaGeral = 0;
@@ -25,6 +26,13 @@ public class Expressao
 		listaPosfixo = new LinkedList<Item>();
 	}
 
+	public boolean isExpInicializada() {
+		return this.expInicializada;
+	}
+
+	public void setExptInicializada(boolean inicializada) {
+		this.expInicializada = inicializada;
+	}
 	public int getMaxPilha() {
 		return this.maxPilha;
 	}

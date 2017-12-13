@@ -190,6 +190,7 @@ comandoDeclaracaoVariavel ->
       case ATRIB:
         jj_consume_token(ATRIB);
         jj_consume_token(NUM);
+         CompiladorHell.tabela.incializaSimbolo(var.image);
         break;
       default:
         jj_la1[2] = jj_gen;
@@ -216,6 +217,7 @@ comandoDeclaracaoVariavel ->
         case ATRIB:
           jj_consume_token(ATRIB);
           jj_consume_token(NUM);
+                CompiladorHell.tabela.incializaSimbolo(var.image);
           break;
         default:
           jj_la1[4] = jj_gen;
@@ -235,6 +237,7 @@ comandoDeclaracaoVariavel ->
       case ATRIB:
         jj_consume_token(ATRIB);
         jj_consume_token(STRING);
+           CompiladorHell.tabela.incializaSimbolo(var.image);
         break;
       default:
         jj_la1[5] = jj_gen;
@@ -261,6 +264,7 @@ comandoDeclaracaoVariavel ->
         case ATRIB:
           jj_consume_token(ATRIB);
           jj_consume_token(STRING);
+                CompiladorHell.tabela.incializaSimbolo(var.image);
           break;
         default:
           jj_la1[7] = jj_gen;
@@ -277,6 +281,7 @@ comandoDeclaracaoVariavel ->
       case ATRIB:
         jj_consume_token(ATRIB);
         jj_consume_token(BOOL);
+          CompiladorHell.tabela.incializaSimbolo(var.image);
         break;
       default:
         jj_la1[8] = jj_gen;
@@ -300,6 +305,7 @@ comandoDeclaracaoVariavel ->
         case ATRIB:
           jj_consume_token(ATRIB);
           jj_consume_token(BOOL);
+                CompiladorHell.tabela.incializaSimbolo(var.image);
           break;
         default:
           jj_la1[10] = jj_gen;
@@ -324,6 +330,9 @@ exp               ->  expLogica | expAritmetica | expString
     var = jj_consume_token(VAR);
     jj_consume_token(ATRIB);
     expa = exp();
+      if(expa.isExpInicializada()) {
+                 CompiladorHell.tabela.incializaSimbolo(var.image);
+      }
       atrib = new ComandoAtribuicao(var.image, expa);
     jj_consume_token(COMENT);
         {if (true) return atrib;}
@@ -401,6 +410,7 @@ comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
                                                 var.beginLine + ", coluna " + var.beginColumn);
                     System.exit(1);
       }
+        CompiladorHell.tabela.incializaSimbolo(var.image);
     label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -419,6 +429,7 @@ comandoPega -> <IN><AP><VAR>(<VIRG><VAR>)*<FP><COMENT>
                                                var.beginLine + ", coluna " + var.beginColumn);
                     System.exit(1);
         }
+                CompiladorHell.tabela.incializaSimbolo(var.image);
     }
     try {
       jj_consume_token(FP);
@@ -1156,10 +1167,17 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
                                                 t.beginLine + ", coluna " + t.beginColumn);
                          System.exit(1);
           }
-          tipo = tabela.consultaTipo(t.image);
-          item = new Item(tipo,t.image);
-          e.addPosfixo(item);
-          e.addInfixo(item);
+          if(tabela.consultaSimbolo(t.image).isInicializado()) {
+                          tipo = tabela.consultaTipo(t.image);
+                  item = new Item(tipo,t.image);
+                  e.addPosfixo(item);
+                  e.addInfixo(item);
+          }else {
+                          e.setExptInicializada(false);
+              System.out.println("Erro: Vari\u00e1vel n\u00e3o inicializada sendo utilizada numa express\u00e3o: \u005c"" + t.image + "\u005c" na linha " +
+                                                                  t.beginLine + ", coluna " + t.beginColumn);
+                          System.exit(1);
+          }
       break;
     case BOOL:
       t = jj_consume_token(BOOL);

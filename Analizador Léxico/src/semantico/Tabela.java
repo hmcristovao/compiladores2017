@@ -27,7 +27,7 @@ public class Tabela {
       }
       
       public void incializaSimbolo(String _chave) {
-    	  consultaSimbolo(_chave).setInicializado(true);
+    	  this.consultaSimbolo(_chave).setInicializado(true);
       }
       
       public Simbolo consultaSimbolo(String _chave) {

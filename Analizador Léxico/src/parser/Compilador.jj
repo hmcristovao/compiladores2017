@@ -252,7 +252,9 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
      (
        <ATRIB>
        <NUM>
-       CompiladorHell.tabela.incializaSimbolo(var.image);
+       {
+         CompiladorHell.tabela.incializaSimbolo(var.image);
+       }
      )?
      (
        <VIRG>
@@ -267,7 +269,9 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
        (
          <ATRIB>
          <NUM>
-         CompiladorHell.tabela.incializaSimbolo(var.image);
+         { 
+         	CompiladorHell.tabela.incializaSimbolo(var.image);
+         }
        )?
       )*
    | 
@@ -283,7 +287,9 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
      (
        <ATRIB>
        <STRING>
-       CompiladorHell.tabela.incializaSimbolo(var.image);
+       { 
+       	   CompiladorHell.tabela.incializaSimbolo(var.image);
+       }
      )?
      (
        <VIRG>
@@ -298,7 +304,9 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
        (
          <ATRIB>
          <STRING>
-         CompiladorHell.tabela.incializaSimbolo(var.image);
+         { 
+         	CompiladorHell.tabela.incializaSimbolo(var.image);
+         }
        )?
      )*
    | 
@@ -311,7 +319,9 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
      (
        <ATRIB>
        <BOOL>
-       CompiladorHell.tabela.incializaSimbolo(var.image);
+       { 
+       	  CompiladorHell.tabela.incializaSimbolo(var.image);
+       }
      )?
      (
        <VIRG>
@@ -323,7 +333,9 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
        (
          <ATRIB>
          <BOOL>
-         CompiladorHell.tabela.incializaSimbolo(var.image);
+         { 
+         	CompiladorHell.tabela.incializaSimbolo(var.image);
+         }
        )?
      )*
    )
@@ -340,6 +352,9 @@ Comando comandoAtribuicao() : {ComandoAtribuicao atrib; Token var; Expressao exp
     <ATRIB>
     expa = exp()
     {
+      if(expa.isExpInicializada()) {
+		 CompiladorHell.tabela.incializaSimbolo(var.image);
+      }
       atrib = new ComandoAtribuicao(var.image, expa);
     }
     <COMENT>
@@ -411,7 +426,9 @@ Comando comandoPega (): {Token var; Pega pega = new Pega();}
 		    System.exit(1);
       }
     }
-    CompiladorHell.tabela.incializaSimbolo(var.image);
+    { 
+    	CompiladorHell.tabela.incializaSimbolo(var.image);
+   	}
 	(
 	  <VIRG> var = <VAR>
 	  {pega.adicionaVariavel(var.image);}
@@ -422,7 +439,9 @@ Comando comandoPega (): {Token var; Pega pega = new Pega();}
 		    System.exit(1);
       	}
    	  }
-   	  CompiladorHell.tabela.incializaSimbolo(var.image);
+   	  { 
+   	  	CompiladorHell.tabela.incializaSimbolo(var.image);
+   	 }
 	)*
 	try {
 		<FP>
@@ -1076,10 +1095,17 @@ void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
 				                t.beginLine + ", coluna " + t.beginColumn);
 			 System.exit(1);
           }
-          tipo = tabela.consultaTipo(t.image);
-          item = new Item(tipo,t.image);
-          e.addPosfixo(item);
-          e.addInfixo(item);
+          if(tabela.consultaSimbolo(t.image).isInicializado()) {
+			  tipo = tabela.consultaTipo(t.image);
+	          item = new Item(tipo,t.image);
+	          e.addPosfixo(item);
+	          e.addInfixo(item);
+      	  }else {
+			  e.setExptInicializada(false);
+      	      System.out.println("Erro: Variável não inicializada sendo utilizada numa expressão: \"" + t.image + "\" na linha " +
+			  					  t.beginLine + ", coluna " + t.beginColumn);
+			  System.exit(1);
+      	  }          
       }
     |
       t=<BOOL>

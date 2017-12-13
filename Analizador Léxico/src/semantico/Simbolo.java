@@ -22,7 +22,7 @@ public class Simbolo {
     }
 
     public boolean isInicializado() {
-		return inicializado;
+		return this.inicializado;
 	}
     
     public void setInicializado(boolean inicializado) {
