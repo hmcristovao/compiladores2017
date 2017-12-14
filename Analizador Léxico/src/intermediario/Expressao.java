@@ -167,13 +167,45 @@ public class Expressao
 			}
 			else if(item.getTipo() == Tipo.VAR_BOOLEANO || item.getTipo() == Tipo.VAR_NUMERO){
 				nomeDaVariavel = item.getValor();
-				referenciaDaVariavel = CompiladorHell.tabela.consultaReferencia(nomeDaVariavel);
-				if( referenciaDaVariavel < 4 ){
-					codigoExpressao += "dload_" + referenciaDaVariavel + "\r\n";
+				if(item.getTipo() == Tipo.VAR_NUMERO){
+					if(nomeDaVariavel.startsWith("-")){
+						referenciaDaVariavel = CompiladorHell.tabela.consultaReferencia(nomeDaVariavel.substring(1));
+						if( referenciaDaVariavel < 4 ){
+							codigoExpressao += "dload_" + referenciaDaVariavel + "\r\n";
+						}
+						else {
+							codigoExpressao += "dload " + referenciaDaVariavel + "\r\n";
+						}
+						codigoExpressao += "ldc2_w -1.0 \r\n";
+						codigoExpressao += "dmul\r\n";
+						codigoExpressao += "dstore " + CompiladorHell.tabela.getMarcador() + "\r\n";
+						if( CompiladorHell.tabela.getMarcador() < 4 ){
+							codigoExpressao += "dload_" + CompiladorHell.tabela.getMarcador() + "\r\n";
+						}
+						else {
+							codigoExpressao += "dload " + CompiladorHell.tabela.getMarcador() + "\r\n";
+						}
+					}
+					else{
+						referenciaDaVariavel = CompiladorHell.tabela.consultaReferencia(nomeDaVariavel);
+						if( referenciaDaVariavel < 4 ){
+							codigoExpressao += "dload_" + referenciaDaVariavel + "\r\n";
+						}
+						else {
+							codigoExpressao += "dload " + referenciaDaVariavel + "\r\n";
+						}
+					}
 				}
-				else {
-					codigoExpressao += "dload " + referenciaDaVariavel + "\r\n";
-				}
+			
+				else{
+					referenciaDaVariavel = CompiladorHell.tabela.consultaReferencia(nomeDaVariavel);
+					if( referenciaDaVariavel < 4 ){
+						codigoExpressao += "dload_" + referenciaDaVariavel + "\r\n";
+					}
+					else {
+						codigoExpressao += "dload " + referenciaDaVariavel + "\r\n";
+					}
+				}			   
 			}
 			else if(item.getTipo() == Tipo.VAR_STRING){
 				nomeDaVariavel = item.getValor();
@@ -229,4 +261,6 @@ public class Expressao
 		}
 		return codigoExpressao + "\r\n";
 	}
+
+	
 }

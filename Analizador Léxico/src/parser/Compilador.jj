@@ -811,6 +811,7 @@ Expressao exp() : {Expressao e = new Expressao();}
 {
     exp0(e)
     {
+     // e.multiplica(item);
       e.calculaLimitStack();
       return e;
     }    
@@ -1031,8 +1032,12 @@ void expPot(Expressao e) : {Item item; Token t;}
 	  }  
 	)?
 }
+
+//expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> |<SUB><SUB><NUM>| <ADD><ADD><NUM> | <VAR> | <BOOL> | <STRING> 
+      //           | <AP> exp <FP>
 void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
 {
+ 
       t = <NUM>
       {
          item = new Item(Tipo.CTE_NUMERO, t.image);
@@ -1051,6 +1056,7 @@ void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
       }
       
     |
+    LOOKAHEAD(2)
       t=<SUB>
       { tConcatenada = t.image; }
       t=<NUM>
@@ -1072,6 +1078,18 @@ void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
           item = new Item(tipo,t.image);
           e.addPosfixo(item);
           e.addInfixo(item);
+      }
+    |
+    LOOKAHEAD(2)
+      t=<SUB>
+		{ tConcatenada = t.image; }
+      t=<VAR>  
+      {
+	     tConcatenada = tConcatenada + t.image; 
+		 tipo = tabela.consultaTipo(t.image);	
+         item = new Item(tipo, tConcatenada);
+         e.addPosfixo(item);
+         e.addInfixo(item);
       }
     |
       t=<BOOL>

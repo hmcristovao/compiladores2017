@@ -1,8 +1,8 @@
-FLUT numeroum //Declaracao de Variavel.
-FLUT numerodois //Declaracao de Variavel.
+FLUT b//Declaracao de Variavel.
+FLUT a//.
+a = 2//.
+b =  3 + -a + a//.
 
-numeroum =  1 + 2 //Atribuicao com expressao numerica pequena.
-PRINTA(numeroum) //Impressao.
+PRINTA(b) //.
 
-numerodois = ( (numeroum + 50 * 100) / 2 ) * 3  //Atribuicao com expressao numerica maior.
-PRINTA(numerodois) //Impressao.
+

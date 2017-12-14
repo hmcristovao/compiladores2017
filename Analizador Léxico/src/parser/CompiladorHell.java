@@ -851,6 +851,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
   static final public Expressao exp() throws ParseException {
                    Expressao e = new Expressao();
     exp0(e);
+     // e.multiplica(item);
       e.calculaLimitStack();
       {if (true) return e;}
     throw new Error("Missing return statement in function");
@@ -1122,6 +1123,8 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     }
   }
 
+//expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> |<SUB><SUB><NUM>| <ADD><ADD><NUM> | <VAR> | <BOOL> | <STRING> 
+      //           | <AP> exp <FP>
   static final public void expToken(Expressao e) throws ParseException {
                              Item item; Token t; String tConcatenada;Tipo tipo;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1140,17 +1143,20 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
          e.addPosfixo(item);
          e.addInfixo(item);
       break;
-    case SUB:
-      t = jj_consume_token(SUB);
+    default:
+      jj_la1[38] = jj_gen;
+      if (jj_2_1(2)) {
+        t = jj_consume_token(SUB);
         tConcatenada = t.image;
-      t = jj_consume_token(NUM);
+        t = jj_consume_token(NUM);
          tConcatenada = tConcatenada + t.image;
          item = new Item(Tipo.CTE_NUMERO, tConcatenada);
          e.addPosfixo(item);
          e.addInfixo(item);
-      break;
-    case VAR:
-      t = jj_consume_token(VAR);
+      } else {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case VAR:
+          t = jj_consume_token(VAR);
               if (!tabela.isExiste(t.image)) {
                          System.out.println("Variavel nao declarada: \u005c"" + t.image + "\u005c" na linha " +
                                                 t.beginLine + ", coluna " + t.beginColumn);
@@ -1160,33 +1166,76 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
           item = new Item(tipo,t.image);
           e.addPosfixo(item);
           e.addInfixo(item);
-      break;
-    case BOOL:
-      t = jj_consume_token(BOOL);
+          break;
+        default:
+          jj_la1[39] = jj_gen;
+          if (jj_2_2(2)) {
+            t = jj_consume_token(SUB);
+                  tConcatenada = t.image;
+            t = jj_consume_token(VAR);
+             tConcatenada = tConcatenada + t.image;
+                 tipo = tabela.consultaTipo(t.image);
+         item = new Item(tipo, tConcatenada);
+         e.addPosfixo(item);
+         e.addInfixo(item);
+          } else {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+            case BOOL:
+              t = jj_consume_token(BOOL);
         item = new Item(Tipo.CTE_BOOLEANO, t.image);
         e.addPosfixo(item);
         e.addInfixo(item);
-      break;
-    case STRING:
-      t = jj_consume_token(STRING);
+              break;
+            case STRING:
+              t = jj_consume_token(STRING);
         item = new Item(Tipo.CTE_STRING, t.image);
         e.addPosfixo(item);
         e.addInfixo(item);
-      break;
-    case AP:
-      t = jj_consume_token(AP);
+              break;
+            case AP:
+              t = jj_consume_token(AP);
         item = new Item(Tipo.PARENTESES, t.image);
         e.addInfixo(item);
-      exp0(e);
-      t = jj_consume_token(FP);
+              exp0(e);
+              t = jj_consume_token(FP);
         item = new Item(Tipo.PARENTESES, t.image);
         e.addInfixo(item);
-      break;
-    default:
-      jj_la1[38] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+              break;
+            default:
+              jj_la1[40] = jj_gen;
+              jj_consume_token(-1);
+              throw new ParseException();
+            }
+          }
+        }
+      }
     }
+  }
+
+  static private boolean jj_2_1(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_1(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(0, xla); }
+  }
+
+  static private boolean jj_2_2(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_2(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(1, xla); }
+  }
+
+  static private boolean jj_3_2() {
+    if (jj_scan_token(SUB)) return true;
+    if (jj_scan_token(VAR)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_1() {
+    if (jj_scan_token(SUB)) return true;
+    if (jj_scan_token(NUM)) return true;
+    return false;
   }
 
   static private boolean jj_initialized_once = false;
@@ -1198,8 +1247,10 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
   /** Next token. */
   static public Token jj_nt;
   static private int jj_ntk;
+  static private Token jj_scanpos, jj_lastpos;
+  static private int jj_la;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[39];
+  static final private int[] jj_la1 = new int[41];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -1207,11 +1258,14 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x7a000000,0x7a000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000000,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x400000,0x200000,0x1000000,0x800000,0x1f8000,0x1f8000,0x300,0x300,0xc00,0xc00,0x1000,0x300,};
+      jj_la1_0 = new int[] {0x7a000000,0x7a000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000000,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x400000,0x200000,0x1000000,0x800000,0x1f8000,0x1f8000,0x300,0x300,0xc00,0xc00,0x1000,0x100,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x47006,0x47006,0x800,0x20,0x800,0x800,0x20,0x800,0x800,0x20,0x800,0x7000,0x60,0x60,0x20,0x0,0x80,0x1,0x0,0x1000,0x1000,0x60,0x10,0x1000,0x20,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x78080,};
+      jj_la1_1 = new int[] {0x47006,0x47006,0x800,0x20,0x800,0x800,0x20,0x800,0x800,0x20,0x800,0x7000,0x60,0x60,0x20,0x0,0x80,0x1,0x0,0x1000,0x1000,0x60,0x10,0x1000,0x20,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8000,0x40000,0x30080,};
    }
+  static final private JJCalls[] jj_2_rtns = new JJCalls[2];
+  static private boolean jj_rescan = false;
+  static private int jj_gc = 0;
 
   /** Constructor with InputStream. */
   public CompiladorHell(java.io.InputStream stream) {
@@ -1231,7 +1285,8 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 41; i++) jj_la1[i] = -1;
+    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Reinitialise. */
@@ -1245,7 +1300,8 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 41; i++) jj_la1[i] = -1;
+    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Constructor. */
@@ -1262,7 +1318,8 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 41; i++) jj_la1[i] = -1;
+    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Reinitialise. */
@@ -1272,7 +1329,8 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 41; i++) jj_la1[i] = -1;
+    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Constructor with generated Token Manager. */
@@ -1288,7 +1346,8 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 41; i++) jj_la1[i] = -1;
+    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   /** Reinitialise. */
@@ -1297,7 +1356,8 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 41; i++) jj_la1[i] = -1;
+    for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -1307,11 +1367,44 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     jj_ntk = -1;
     if (token.kind == kind) {
       jj_gen++;
+      if (++jj_gc > 100) {
+        jj_gc = 0;
+        for (int i = 0; i < jj_2_rtns.length; i++) {
+          JJCalls c = jj_2_rtns[i];
+          while (c != null) {
+            if (c.gen < jj_gen) c.first = null;
+            c = c.next;
+          }
+        }
+      }
       return token;
     }
     token = oldToken;
     jj_kind = kind;
     throw generateParseException();
+  }
+
+  static private final class LookaheadSuccess extends java.lang.Error { }
+  static final private LookaheadSuccess jj_ls = new LookaheadSuccess();
+  static private boolean jj_scan_token(int kind) {
+    if (jj_scanpos == jj_lastpos) {
+      jj_la--;
+      if (jj_scanpos.next == null) {
+        jj_lastpos = jj_scanpos = jj_scanpos.next = token_source.getNextToken();
+      } else {
+        jj_lastpos = jj_scanpos = jj_scanpos.next;
+      }
+    } else {
+      jj_scanpos = jj_scanpos.next;
+    }
+    if (jj_rescan) {
+      int i = 0; Token tok = token;
+      while (tok != null && tok != jj_scanpos) { i++; tok = tok.next; }
+      if (tok != null) jj_add_error_token(kind, i);
+    }
+    if (jj_scanpos.kind != kind) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) throw jj_ls;
+    return false;
   }
 
 
@@ -1344,6 +1437,33 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
   static private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
   static private int[] jj_expentry;
   static private int jj_kind = -1;
+  static private int[] jj_lasttokens = new int[100];
+  static private int jj_endpos;
+
+  static private void jj_add_error_token(int kind, int pos) {
+    if (pos >= 100) return;
+    if (pos == jj_endpos + 1) {
+      jj_lasttokens[jj_endpos++] = kind;
+    } else if (jj_endpos != 0) {
+      jj_expentry = new int[jj_endpos];
+      for (int i = 0; i < jj_endpos; i++) {
+        jj_expentry[i] = jj_lasttokens[i];
+      }
+      jj_entries_loop: for (java.util.Iterator<?> it = jj_expentries.iterator(); it.hasNext();) {
+        int[] oldentry = (int[])(it.next());
+        if (oldentry.length == jj_expentry.length) {
+          for (int i = 0; i < jj_expentry.length; i++) {
+            if (oldentry[i] != jj_expentry[i]) {
+              continue jj_entries_loop;
+            }
+          }
+          jj_expentries.add(jj_expentry);
+          break jj_entries_loop;
+        }
+      }
+      if (pos != 0) jj_lasttokens[(jj_endpos = pos) - 1] = kind;
+    }
+  }
 
   /** Generate ParseException. */
   static public ParseException generateParseException() {
@@ -1353,7 +1473,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 39; i++) {
+    for (int i = 0; i < 41; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -1372,6 +1492,9 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         jj_expentries.add(jj_expentry);
       }
     }
+    jj_endpos = 0;
+    jj_rescan_token();
+    jj_add_error_token(0, 0);
     int[][] exptokseq = new int[jj_expentries.size()][];
     for (int i = 0; i < jj_expentries.size(); i++) {
       exptokseq[i] = jj_expentries.get(i);
@@ -1385,6 +1508,42 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
 
   /** Disable tracing. */
   static final public void disable_tracing() {
+  }
+
+  static private void jj_rescan_token() {
+    jj_rescan = true;
+    for (int i = 0; i < 2; i++) {
+    try {
+      JJCalls p = jj_2_rtns[i];
+      do {
+        if (p.gen > jj_gen) {
+          jj_la = p.arg; jj_lastpos = jj_scanpos = p.first;
+          switch (i) {
+            case 0: jj_3_1(); break;
+            case 1: jj_3_2(); break;
+          }
+        }
+        p = p.next;
+      } while (p != null);
+      } catch(LookaheadSuccess ls) { }
+    }
+    jj_rescan = false;
+  }
+
+  static private void jj_save(int index, int xla) {
+    JJCalls p = jj_2_rtns[index];
+    while (p.gen > jj_gen) {
+      if (p.next == null) { p = p.next = new JJCalls(); break; }
+      p = p.next;
+    }
+    p.gen = jj_gen + xla - jj_la; p.first = token; p.arg = xla;
+  }
+
+  static final class JJCalls {
+    int gen;
+    Token first;
+    int arg;
+    JJCalls next;
   }
 
 }
