@@ -238,7 +238,8 @@ comandoDeclaracaoVariavel ->
 */
 
 Comando comandoDeclaracaoVariavel() : {Simbolo simb; Token var;
-								    ComandoAtribuicao atrib = null; Expressao expa;}
+								    ComandoAtribuicao atrib = null; Expressao expa;
+								    ComandoDeclaracaoVariavel listaVar=null;}
 {
    (
      <TYPENUM>
@@ -255,6 +256,7 @@ Comando comandoDeclaracaoVariavel() : {Simbolo simb; Token var;
        	expa = exp()
        	{ 
        		atrib = new ComandoAtribuicao(var.image, expa);
+       		listaVar = new ComandoDeclaracaoVariavel(atrib);
       	} 
      )?
      (
@@ -272,6 +274,7 @@ Comando comandoDeclaracaoVariavel() : {Simbolo simb; Token var;
        	expa = exp()
        	{ 
        		atrib = new ComandoAtribuicao(var.image, expa);
+       		listaVar.addAtrib(atrib);
       	} 
        )?
       )*
@@ -290,6 +293,7 @@ Comando comandoDeclaracaoVariavel() : {Simbolo simb; Token var;
        	expa = exp()
        	{ 
        		atrib = new ComandoAtribuicao(var.image, expa);
+       		listaVar = new ComandoDeclaracaoVariavel(atrib);
       	} 
      )?
      (
@@ -307,6 +311,7 @@ Comando comandoDeclaracaoVariavel() : {Simbolo simb; Token var;
        	expa = exp()
        	{ 
        		atrib = new ComandoAtribuicao(var.image, expa);
+       		listaVar.addAtrib(atrib);
       	} 
        )?
      )*
@@ -322,6 +327,7 @@ Comando comandoDeclaracaoVariavel() : {Simbolo simb; Token var;
        	expa = exp()
        	{ 
        		atrib = new ComandoAtribuicao(var.image, expa);
+       		listaVar = new ComandoDeclaracaoVariavel(atrib);
       	} 
      )?
      (
@@ -336,13 +342,14 @@ Comando comandoDeclaracaoVariavel() : {Simbolo simb; Token var;
        	expa = exp()
        	{ 
        		atrib = new ComandoAtribuicao(var.image, expa);
+       		listaVar.addAtrib(atrib);
       	} 
        )?
      )*
    )
    <COMENT>
    {
-	return atrib;
+	return listaVar;
    }
 }
 

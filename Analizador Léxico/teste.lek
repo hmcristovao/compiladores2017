@@ -1,7 +1,5 @@
-FLUT a=2,b//.
+FLUT a=2,b=3//.
 BOOL flag=true//.
-
-b = 3//.
 
 PRINTA(a,b)//.
 PRINTA(flag)//.
