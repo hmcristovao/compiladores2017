@@ -1,8 +1,5 @@
-SE(2>1)
-{ //.
-	PRINTA("bloco verdadeiro") //.
-}
-SENAO
-{ //.
-	PRINTA("bloco falso") //.
-}
+FLUT numeroum //Declaracao de Variavel.
+FLUT numerodois //Declaracao de Variavel.
+
+numeroum =  1+2/0 //Atribuicao com expressao numerica pequena.
+numerodois= numeroum //.

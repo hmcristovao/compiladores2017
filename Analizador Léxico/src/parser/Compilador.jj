@@ -807,11 +807,19 @@ expPot        -> expToken ( <POT> expPot )?
 expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING> 
                  | <AP> exp <FP>
 */
-Expressao exp() : {Expressao e = new Expressao();}
+Expressao exp() : {Expressao e = new Expressao(); LinkedList <Item> listaItem;}
 {
     exp0(e)
     {
       e.calculaLimitStack();
+      listaItem = e.getListaPosfixo();
+      for( Item item : listaItem ) {
+        Object o = item;
+        if( item.getValor().equals("/") && listaItem.get(listaItem.lastIndexOf(item) - 1).getValor().equals("0") ) {
+			System.out.println("Erro : Divisao por zero");
+			System.exit(1);
+        }
+      }
       return e;
     }    
 }

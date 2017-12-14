@@ -849,9 +849,17 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
                  | <AP> exp <FP>
 */
   static final public Expressao exp() throws ParseException {
-                   Expressao e = new Expressao();
+                   Expressao e = new Expressao(); LinkedList <Item> listaItem;
     exp0(e);
       e.calculaLimitStack();
+      listaItem = e.getListaPosfixo();
+      for( Item item : listaItem ) {
+        Object o = item;
+        if( item.getValor().equals("/") && listaItem.get(listaItem.lastIndexOf(item) - 1).getValor().equals("0") ) {
+                        System.out.println("Erro : Divisao por zero");
+                        System.exit(1);
+        }
+      }
       {if (true) return e;}
     throw new Error("Missing return statement in function");
   }
