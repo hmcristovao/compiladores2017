@@ -58,16 +58,6 @@ public class IfLoop extends Comando {
 		this.listaComandos = listaComandos;
 	}
 	
-    public void criarLoop(Expressao expressaoLoop){
-    	Item item = new Item(Tipo.CTE_NUMERO,"0"); 
-    	expressaoLoop.addPosfixo(item);
-    	item.setTipo(Tipo.VAR_NUMERO);
-    	item.setValor(varControladora);
-    	expressaoLoop.addPosfixo(item);
-    	item.setTipo(Tipo.OPERADOR);
-    	item.setValor("==");
-    	expressaoLoop.addPosfixo(item);
-	}
     
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();

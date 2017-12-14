@@ -1,9 +1,7 @@
 FLUT a//.
 
 a = 5//.
-
-IFLOOP(a == 5,a)
+IFLOOP(a <= 5,a)
 {//.
 	PRINTA(a)//.
-	a = a + 1//.
 }

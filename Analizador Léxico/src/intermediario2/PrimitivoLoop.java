@@ -36,7 +36,7 @@ public class PrimitivoLoop  extends PrimitivoComando {
 			}
 			codigoFinal+="ldc2_w 0.0\r\n";
 			codigoFinal+="dsub\r\n";
-			codigoFinal+="dstore "+CompiladorHell.tabela.getMarcador()+"\r\n";
+			codigoFinal+="dstore "+CompiladorHell.tabela.getMarcador()+"\r\n";	//getMarcador trabalha com o var sempre no topo da pilha
 		}
 		
 		if(cont == 1){
