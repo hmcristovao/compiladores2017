@@ -1,8 +1,9 @@
-SE(2>1)
-{ //.
-	PRINTA("bloco verdadeiro") //.
-}
-SENAO
-{ //.
-	PRINTA("bloco falso") //.
+FLUT a//.
+
+a = 5//.
+
+IFLOOP(a == 5,a)
+{//.
+	PRINTA(a)//.
+	a = a + 1//.
 }

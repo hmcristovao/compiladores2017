@@ -1,8 +1,7 @@
 FLUT numero //Atribuicao Numerico.
 BOOL logico //Atribuicao Logico.
 
-numero = 10 // inicializacao da variavel.
 logico = true  // inicializacao da variavel.
 
-PRINTA(numero,logico) //Teste exibicao de duas constantes.
+PRINTA(logico) //Teste exibicao de duas constantes.
 

@@ -127,6 +127,7 @@ TOKEN : /* PALAVRAS RESERVADAS */
 | < FORMATRIX : "LACOMATRIX" >
 | < TO : "A" >
 | < STEP : "PASSO" >
+| < IFLOOP : "IFLOOP" >
 }
 
 TOKEN : /* SIMBOLOS */
@@ -217,6 +218,8 @@ Comando comando() : {Comando com = null;}
 	  com = comandoLacoMultiplo()
 	|
 	  com = comandoLacoMatrix()
+	|
+	  com = comandoIfLoop() 
    )
 
    {     return com;   }
@@ -511,6 +514,55 @@ Condicional blocoCondicional():{Expressao e; ListaComandos listaCom;
 	{ return cond; }
 	  
 }
+
+/*
+comandoIfLoop -> <IFLOOP> <AP> exp
+			   <VIRG><VAR><FP>
+               <ACH> <COMENT> listaComandos <FCH>
+*/
+
+Comando comandoIfLoop () : {Token var;
+                            IfLoop loop = new IfLoop();
+                            Expressao expressaoAuxiliar = new Expressao();
+                            ListaComandos listaAuxiliar = new ListaComandos();}
+{
+	<IFLOOP>
+    try {
+		<AP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "abre parenteses");
+		return null;	
+	}
+
+	expressaoAuxiliar = exp()
+    {
+      	loop.setExpressaoComparadora(expressaoAuxiliar);
+    }
+    
+	<VIRG>
+    var = <VAR>
+   {
+		loop.setVarControladora(var.image);
+   }
+		  
+    try {
+		<FP>
+	}
+	catch(ParseException e) {
+		RecuperacaoErro.recuperaErroPanico(CompiladorHellConstants.ACH, "fecha parenteses");
+        return null;		                                   
+	}
+    <ACH> <COMENT>
+    listaAuxiliar = listaComandos() <FCH>
+    {
+      	loop.setListaComandos(listaAuxiliar);
+    }
+    { return loop; }
+
+  
+} 
+
 
 /*
 comandoLaco -> <FOR> <AP> (<TYPENUM>)? <VAR><ATRIB>
