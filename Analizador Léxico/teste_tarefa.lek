@@ -1,0 +1,16 @@
+FLUT a=1,b,c=3//.
+
+b = 2//.
+
+PRINTA("teste de variavel")//.
+PRINTA(a,b,c)//.
+
+PRINTA("teste do diferente")//.
+SE(2!=2)
+{ //.
+	PRINTA("bloco verdadeiro") //.
+}
+SENAO
+{ //.
+	PRINTA("bloco falso") //.
+}j
