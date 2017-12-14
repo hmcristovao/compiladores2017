@@ -23,6 +23,8 @@ public class CompiladorHell implements CompiladorHellConstants {
                  // 1a passagem do Compilador - gera código intermediário
          ListaComandos listaComandos1aPassagem;
          listaComandos1aPassagem = CompiladorHell.inicio();
+         //System.out.println("\n-----\nTabela de simbolos: "+tabela);
+         AnaliseSemantica.variavelNaoUtilizada();
          System.out.println("Analise lexica e sintatica sem erros!");
                  System.out.println("\u005cn-----\u005cnTabela de simbolos: "+tabela);
          System.out.println("\u005cn-----\u005cnLista completa dos comandos apos a 1a passagem do compilador: \u005cn"
@@ -325,6 +327,7 @@ exp               ->  expLogica | expAritmetica | expString
     jj_consume_token(ATRIB);
     expa = exp();
       atrib = new ComandoAtribuicao(var.image, expa);
+      tabela.setUsed(var.image);
     jj_consume_token(COMENT);
         {if (true) return atrib;}
     throw new Error("Missing return statement in function");
@@ -648,10 +651,6 @@ faixa -> exp <TO> exp
   static final public LacoMultiplo inicioLaco(Token tokenTipo) throws ParseException {
                                             Simbolo simb; Token var;BlocoLacoMultiplo bloco;
     var = jj_consume_token(VAR);
-          LacoMultiplo laco = new LacoMultiplo();
-          bloco = new BlocoLacoMultiplo(var.image);
-          laco.incluiBloco(bloco);
-
           if(tokenTipo!=null)
           {
                    simb = new Simbolo(var.image,Tipo.VAR_NUMERO, tabela.proximaReferencia());
@@ -660,6 +659,9 @@ faixa -> exp <TO> exp
            else
                   CompiladorHell.tabela.inclui(simb);
       }
+      LacoMultiplo laco = new LacoMultiplo();
+          bloco = new BlocoLacoMultiplo(var.image);
+          laco.incluiBloco(bloco);
     contLaco(tokenTipo,laco);
     faixaLacoMultiplo(laco);
           {if (true) return laco;}
@@ -672,8 +674,6 @@ faixa -> exp <TO> exp
     case VIRG:
       jj_consume_token(VIRG);
       var = jj_consume_token(VAR);
-          bloco = new BlocoLacoMultiplo(var.image);
-          laco.incluiBloco(bloco);
           if(tokenTipo!=null)
           {
                   simb = new Simbolo(var.image,Tipo.VAR_NUMERO, tabela.proximaReferencia());
@@ -682,6 +682,8 @@ faixa -> exp <TO> exp
           else
                   CompiladorHell.tabela.inclui(simb);
       }
+      bloco = new BlocoLacoMultiplo(var.image);
+          laco.incluiBloco(bloco);
       contLaco(tokenTipo,laco);
       faixaLacoMultiplo(laco);
       jj_consume_token(VIRG);
@@ -1107,7 +1109,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
 
   static final public void expPot(Expressao e) throws ParseException {
                             Item item; Token t;
-    expToken(e);
+    expConcat(e);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case POT:
       t = jj_consume_token(POT);
@@ -1118,6 +1120,23 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       break;
     default:
       jj_la1[37] = jj_gen;
+      ;
+    }
+  }
+
+  static final public void expConcat(Expressao e) throws ParseException {
+                               Item item; Token t;
+    expToken(e);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case CONCAT:
+      t = jj_consume_token(CONCAT);
+                item = new Item(Tipo.OPERADOR, t.image);
+                e.addPosfixo(item);
+            e.addInfixo(item);
+      expConcat(e);
+      break;
+    default:
+      jj_la1[38] = jj_gen;
       ;
     }
   }
@@ -1156,6 +1175,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
                                                 t.beginLine + ", coluna " + t.beginColumn);
                          System.exit(1);
           }
+          tabela.setUsed(t.image);
           tipo = tabela.consultaTipo(t.image);
           item = new Item(tipo,t.image);
           e.addPosfixo(item);
@@ -1169,9 +1189,31 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       break;
     case STRING:
       t = jj_consume_token(STRING);
-        item = new Item(Tipo.CTE_STRING, t.image);
-        e.addPosfixo(item);
-        e.addInfixo(item);
+        /*otimizacao de codigo para concatenar constantes de strings*/
+                LinkedList <Item> aux = e.getListaInfixo();
+                LinkedList <Item> auxPos = e.getListaPosfixo();
+
+
+                if(aux.size() >=2)
+                {
+                  Item recipe = aux.get( aux.size()-2 );
+                  Item operador = aux.get( aux.size()-1 );
+
+                  if (recipe.getTipo()== Tipo.CTE_STRING && operador.getValor()=="++"){
+                    //concatena as duas strings
+                    String str = recipe.getValor().substring(0,recipe.getValor().length()-1)+t.image.substring(1,t.image.length());
+                aux.get( aux.size()-2 ).setValor(str);
+                //aux.get( aux.size()-2 ).setValor(recipe.getValor().substring(0,recipe.getValor().length()-1)+t.image.substring(1,t.image.length()));
+                //remove o operador
+                aux.removeLast();
+                auxPos.removeLast();
+          }
+            }
+        else{
+          item = new Item(Tipo.CTE_STRING, t.image);
+              e.addPosfixo(item);
+              e.addInfixo(item);
+            }
       break;
     case AP:
       t = jj_consume_token(AP);
@@ -1183,7 +1225,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
         e.addInfixo(item);
       break;
     default:
-      jj_la1[38] = jj_gen;
+      jj_la1[39] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1199,7 +1241,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[39];
+  static final private int[] jj_la1 = new int[40];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -1207,10 +1249,10 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x7a000000,0x7a000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000000,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x400000,0x200000,0x1000000,0x800000,0x1f8000,0x1f8000,0x300,0x300,0xc00,0xc00,0x1000,0x300,};
+      jj_la1_0 = new int[] {0x7a000000,0x7a000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000000,0x0,0x0,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x400000,0x200000,0x1000000,0x800000,0x1f8000,0x1f8000,0x300,0x300,0xc00,0xc00,0x1000,0x4000,0x300,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x47006,0x47006,0x800,0x20,0x800,0x800,0x20,0x800,0x800,0x20,0x800,0x7000,0x60,0x60,0x20,0x0,0x80,0x1,0x0,0x1000,0x1000,0x60,0x10,0x1000,0x20,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x78080,};
+      jj_la1_1 = new int[] {0x47006,0x47006,0x800,0x20,0x800,0x800,0x20,0x800,0x800,0x20,0x800,0x7000,0x60,0x60,0x20,0x0,0x80,0x1,0x0,0x1000,0x1000,0x60,0x10,0x1000,0x20,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x78080,};
    }
 
   /** Constructor with InputStream. */
@@ -1231,7 +1273,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -1245,7 +1287,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -1262,7 +1304,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -1272,7 +1314,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -1288,7 +1330,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -1297,7 +1339,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -1353,7 +1395,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 39; i++) {
+    for (int i = 0; i < 40; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

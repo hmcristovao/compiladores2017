@@ -1,8 +1,7 @@
 package intermediario;
 
-import parser.CompiladorHell;
-import semantico.Simbolo;
-import semantico.Tipo;
+import parser.*;
+import semantico.*;
 import intermediario2.PrimitivoAtribuicao;
 import intermediario2.PrimitivoListaComandos;
 

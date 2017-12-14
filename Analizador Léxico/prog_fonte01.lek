@@ -1,1 +1,2 @@
-PRINTA("Hello world!") // primeiro programa. 
+STRING teste,aux, ping//.
+teste = "AAAA" ++ "BBBBB"++"CCCCCCCC" //.  

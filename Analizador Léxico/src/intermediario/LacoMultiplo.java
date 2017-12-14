@@ -2,6 +2,8 @@ package intermediario;
 
 import intermediario2.PrimitivoListaComandos;
 
+import parser.CompiladorHell;
+
 import java.util.LinkedList;
 
 // erro: nao esta armazenando a lista de comandos aqui e nem na classe BlocoLacoMultiplo
@@ -18,6 +20,7 @@ public class LacoMultiplo extends Comando{
 	}
 	public void incluiBloco(BlocoLacoMultiplo novoBloco){
 		this.bloco.addLast(novoBloco);
+		CompiladorHell.tabela.setUsed(novoBloco.getVariavel());
 	}
 	public void addFaixa (Expressao _expFrom,Expressao _expTo,Expressao _expStep){
 		this.bloco.get(contador).addFaixa(_expFrom, _expTo, _expStep);

@@ -1,6 +1,7 @@
 package intermediario;
 
 import intermediario2.PrimitivoListaComandos;
+import parser.CompiladorHell;
 
 import java.util.ArrayList;
 
@@ -35,6 +36,7 @@ public class LacoMatrix extends Comando {
 	}
 	public void setVariaveisControle(String varControle) {
 		this.variaveisControle.add(varControle);
+		CompiladorHell.tabela.setUsed(varControle);
 	}
 	public Expressao getExpressaoInicial() {
 		return expressaoInicial;

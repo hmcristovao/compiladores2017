@@ -30,6 +30,8 @@ public class CompiladorHell {
 		 // 1a passagem do Compilador - gera código intermediário
          ListaComandos listaComandos1aPassagem;
          listaComandos1aPassagem = CompiladorHell.inicio();
+         //System.out.println("\n-----\nTabela de simbolos: "+tabela);
+         AnaliseSemantica.variavelNaoUtilizada();
          System.out.println("Analise lexica e sintatica sem erros!");
 		 System.out.println("\n-----\nTabela de simbolos: "+tabela);
          System.out.println("\n-----\nLista completa dos comandos apos a 1a passagem do compilador: \n"
@@ -182,6 +184,7 @@ ListaComandos inicio() : { ListaComandos lista; }
 {
 	lista = listaComandos() <EOF>
 	{
+	  
 	   return lista;
     }	
 }
@@ -335,6 +338,7 @@ Comando comandoAtribuicao() : {ComandoAtribuicao atrib; Token var; Expressao exp
     expa = exp()
     {
       atrib = new ComandoAtribuicao(var.image, expa);
+      tabela.setUsed(var.image);
     }
     <COMENT>
     {
@@ -621,9 +625,7 @@ LacoMultiplo inicioLaco(Token tokenTipo) : {Simbolo simb; Token var;BlocoLacoMul
   	
 	var=<VAR>
 	{
-	  LacoMultiplo laco = new LacoMultiplo();
-	  bloco = new BlocoLacoMultiplo(var.image);
-	  laco.incluiBloco(bloco);
+	  
 	  
 	  if(tokenTipo!=null)
 	  { 
@@ -633,6 +635,9 @@ LacoMultiplo inicioLaco(Token tokenTipo) : {Simbolo simb; Token var;BlocoLacoMul
            else
           	  CompiladorHell.tabela.inclui(simb);
       }
+      LacoMultiplo laco = new LacoMultiplo();
+	  bloco = new BlocoLacoMultiplo(var.image);
+	  laco.incluiBloco(bloco);
     }
 	contLaco(tokenTipo,laco) faixaLacoMultiplo(laco)
 
@@ -645,8 +650,7 @@ void contLaco(Token tokenTipo, LacoMultiplo laco) : {Simbolo simb; Token var;Blo
 	<VIRG>
 	var=<VAR>
 	{
-	  bloco = new BlocoLacoMultiplo(var.image);
-	  laco.incluiBloco(bloco);
+	  
 	  if(tokenTipo!=null)
 	  { 
 		  simb = new Simbolo(var.image,Tipo.VAR_NUMERO, tabela.proximaReferencia());
@@ -655,6 +659,8 @@ void contLaco(Token tokenTipo, LacoMultiplo laco) : {Simbolo simb; Token var;Blo
           else
           	  CompiladorHell.tabela.inclui(simb);
       }
+      bloco = new BlocoLacoMultiplo(var.image);
+	  laco.incluiBloco(bloco);
     }
 	contLaco(tokenTipo,laco) faixaLacoMultiplo(laco)<VIRG>
 	|
@@ -1018,7 +1024,7 @@ void expMult(Expressao e) : {Item item; Token t;}
 }
 void expPot(Expressao e) : {Item item; Token t;}
 {
-	expToken(e)
+	expConcat(e)
 	(
 	  t=<POT>
 	  {  
@@ -1029,6 +1035,21 @@ void expPot(Expressao e) : {Item item; Token t;}
 	  {  
             e.addPosfixo(item);
 	  }  
+	)?
+}
+void expConcat(Expressao e) : {Item item; Token t;}
+{
+	expToken(e)
+	(
+	  t=<CONCAT>
+	  {  
+	        item = new Item(Tipo.OPERADOR, t.image);
+	        e.addPosfixo(item);
+            e.addInfixo(item);
+            
+            
+	  } 
+	  expConcat(e) 
 	)?
 }
 void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
@@ -1044,7 +1065,7 @@ void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
       t=<ADD>
       { tConcatenada = t.image; }      t=<NUM>
       {
-         tConcatenada = tConcatenada + t.image; 
+         tConcatenada = tConcatenada + t.image;
          item = new Item(Tipo.CTE_NUMERO, tConcatenada);
          e.addPosfixo(item);
          e.addInfixo(item);
@@ -1068,6 +1089,7 @@ void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
 				                t.beginLine + ", coluna " + t.beginColumn);
 			 System.exit(1);
           }
+          tabela.setUsed(t.image);
           tipo = tabela.consultaTipo(t.image);
           item = new Item(tipo,t.image);
           e.addPosfixo(item);
@@ -1083,9 +1105,32 @@ void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
     |
       t=<STRING>
       {
-        item = new Item(Tipo.CTE_STRING, t.image);
-        e.addPosfixo(item);
-        e.addInfixo(item);
+        /*otimizacao de codigo para concatenar constantes de strings*/
+		LinkedList <Item> aux = e.getListaInfixo();
+		LinkedList <Item> auxPos = e.getListaPosfixo();
+		
+		
+		if(aux.size() >=2)
+		{
+		  Item recipe = aux.get( aux.size()-2 );
+		  Item operador = aux.get( aux.size()-1 );
+		  
+		  if (recipe.getTipo()== Tipo.CTE_STRING && operador.getValor()=="++"){
+		    //concatena as duas strings
+		    String str = recipe.getValor().substring(0,recipe.getValor().length()-1)+t.image.substring(1,t.image.length());
+          	aux.get( aux.size()-2 ).setValor(str);
+          	//aux.get( aux.size()-2 ).setValor(recipe.getValor().substring(0,recipe.getValor().length()-1)+t.image.substring(1,t.image.length()));
+          	//remove o operador
+          	aux.removeLast();
+          	auxPos.removeLast();
+          }
+	    }
+        else{
+          item = new Item(Tipo.CTE_STRING, t.image);
+	      e.addPosfixo(item);
+	      e.addInfixo(item);
+	    }
+	    
       }
     |
       t=<AP>

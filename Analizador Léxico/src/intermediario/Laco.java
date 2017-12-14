@@ -50,6 +50,7 @@ public class Laco extends Comando {
 
 	public void setVarControle(String varControle) {
 		this.varControle = varControle;
+		CompiladorHell.tabela.setUsed(varControle);
 	}
 
 	public Expressao getExpressaoInicializacao() {

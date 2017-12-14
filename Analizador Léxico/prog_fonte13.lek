@@ -1,3 +1,4 @@
+FLUT teste //.
 LACO(FLUT i = 0; i <= 10; i = i+1)
 {//.
 	PRINTA(i) //.

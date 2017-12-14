@@ -1,6 +1,6 @@
 /* Nao funciona: LACOMATRIX nao implementado 
 */
-FLUT numeroum, numerodois, numerotres //Declaracao de Variavel.
+FLUT numeroum, numerodois, numerotres, seucu //Declaracao de Variavel.
 
 LACOMATRIX(FLUT i,j,k; 1 A (10*3)**2  PASSO (10/5))
 {// .
