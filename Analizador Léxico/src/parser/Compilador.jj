@@ -237,7 +237,7 @@ comandoDeclaracaoVariavel ->
     <COMENT>	
 */
 
-void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
+void comandoDeclaracaoVariavel() : {Simbolo simb; Token var; Token val;}
 {
    (
      <TYPENUM>
@@ -812,7 +812,7 @@ Expressao exp() : {Expressao e = new Expressao();}
     exp0(e)
     {
       e.calculaLimitStack();
-      e.otimizaConstantesMulDiv();      
+      e.otimizaConstantesMulDiv();
       return e;
     }    
 }

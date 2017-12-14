@@ -233,9 +233,12 @@ public class Expressao
 	public void otimizaConstantesMulDiv() {
 		float num1, num2;
 		Item auxItem;
+		int i;
 		
-		for(int i=0; i<listaPosfixo.size(); i++){
+		for(i=0; i<listaPosfixo.size(); i++){
 			if(listaPosfixo.get(i).getTipo() == Tipo.CTE_NUMERO){
+				if(listaPosfixo.size() == 1)
+					break;
 				
 				if(listaPosfixo.get(i+1).getTipo() == Tipo.CTE_NUMERO){
 					num1 = Float.parseFloat(listaPosfixo.get(i).getValor());
@@ -264,7 +267,9 @@ public class Expressao
 					}
 				}	
 			}
+			
 		}
+		
 		
 	}
 }
