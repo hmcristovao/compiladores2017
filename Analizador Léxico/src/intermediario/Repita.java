@@ -2,7 +2,7 @@ package intermediario;
 
 import parser.CompiladorHell;
 import semantico.Simbolo;
-import semantico.Tipo;
+
 import intermediario2.*;
 
 public class Repita extends Comando {
@@ -29,9 +29,6 @@ public class Repita extends Comando {
 	}
 
 
-
-
-
 	public String getVarControle() {
 		return varControle;
 	}
@@ -51,16 +48,17 @@ public class Repita extends Comando {
 	}
 
 
-
-
 	public PrimitivoListaComandos geraCodigoPrimitivo() {  
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
 		
-		PrimitivoLabel labelInicio = new PrimitivoLabel("LabelInicio");
+		PrimitivoLabel labelInicio = new PrimitivoLabel("LabelInicioRepita");
 		PrimitivoLabel labelCont = new PrimitivoLabel("LabelCont");
 		PrimitivoLabel labelFim = new PrimitivoLabel("LabelFim");
 		
+		Simbolo simbolo = CompiladorHell.tabela.consultaSimbolo(varControle);
+		
 		lista.add(labelInicio);
+		lista.add(new PrimitivoRepita(simbolo, labelInicio, labelCont, labelFim));
 		lista.add(labelCont);
 		for(Comando c: listaComandos.comandos){
 			lista.adicionaTodos(c.geraCodigoPrimitivo());
@@ -70,8 +68,5 @@ public class Repita extends Comando {
 		
 		return lista;
 	}
-
-	
-
 
 }

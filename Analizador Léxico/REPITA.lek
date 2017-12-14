@@ -3,4 +3,4 @@ n=5//.
 REPITA(n)
 {//
 PRINTA(n)//.
-}.
+}

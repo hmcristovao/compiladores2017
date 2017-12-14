@@ -1,8 +1,8 @@
 FLUT n//.
-n=5//.
+n=3//.
 REPITA (n)
-{ // laco simples para repetir 11 vezes.
+{ // comando repita para repetir n vezes.
 
-	PRINTA("teste de repita") // exibe constante string.
+	PRINTA("Teste do Comando Repita") // testando o comando.
 
 }

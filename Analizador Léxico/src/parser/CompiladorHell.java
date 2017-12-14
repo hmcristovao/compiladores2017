@@ -559,6 +559,7 @@ blocoCondicional -> <AP> exp <FP> <COMENT>
                 {if (true) return null;}
     }
     var = jj_consume_token(VAR);
+      repita.setVarControle(var.image);
     try {
       jj_consume_token(FP);
     } catch (ParseException e) {

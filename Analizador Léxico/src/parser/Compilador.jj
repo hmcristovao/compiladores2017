@@ -531,6 +531,8 @@ Comando comandoRepita () : { Simbolo simb; Token var; Token tokenTipo = null;
 		return null;	
 	}
      var=<VAR>
+    { repita.setVarControle(var.image);
+  }
       try {
 		<FP>
 	}

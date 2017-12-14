@@ -14,19 +14,29 @@ return
 .limit locals 5
 
 
-; expressao infixa: 5  - expressao posfixa: [item, tipo = CTE_NUMERO, valor = 5]
-ldc2_w 5.0
+; expressao infixa: 3  - expressao posfixa: [item, tipo = CTE_NUMERO, valor = 3]
+ldc2_w 3.0
 
 dstore 1
-LabelInicio_1: 
+LabelInicioRepita_1: 
+LabelInicioRepita_1: 
+dload 1 
+dconst_1 
+dsub 
+dstore 1
+dload 1 
+dconst_0 
+dcmpg 
+iflt LabelFim_3 
+goto LabelCont_2 
 LabelCont_2: 
 getstatic java/lang/System/out Ljava/io/PrintStream; 
 
-; expressao infixa: "teste de repita"  - expressao posfixa: [item, tipo = CTE_STRING, valor = "teste de repita"]
-ldc "teste de repita"
+; expressao infixa: "Teste do Comando Repita"  - expressao posfixa: [item, tipo = CTE_STRING, valor = "Teste do Comando Repita"]
+ldc "Teste do Comando Repita"
 
 invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V 
-goto LabelInicio_1
+goto LabelInicioRepita_1
 LabelFim_3: 
 return
 .end method
