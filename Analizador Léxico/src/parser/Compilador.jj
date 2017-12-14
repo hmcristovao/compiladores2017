@@ -328,14 +328,27 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
 comandoAtribuicao ->  <VAR><ATRIB> exp <COMENT>
 exp               ->  expLogica | expAritmetica | expString
 */
-Comando comandoAtribuicao() : {ComandoAtribuicao atrib; Token var; Expressao expa;}
+Comando comandoAtribuicao() : {ComandoAtribuicao atrib; Token var; Expressao expa; Tipo tipoVar; Tipo tipoExp;}
 {
     var=<VAR>
     <ATRIB>
     expa = exp()
     {
-      atrib = new ComandoAtribuicao(var.image, expa);
-    }
+	  atrib = new ComandoAtribuicao(var.image, expa);
+	  tipoVar = CompiladorHell.tabela.consultaTipo(var.image);
+      tipoExp = expa.getListaPosfixo().getLast().getTipo();
+      if((tipoVar == Tipo.VAR_STRING && tipoExp == Tipo.CTE_STRING) ||
+         (tipoVar == Tipo.VAR_STRING && tipoExp == Tipo.VAR_STRING) ||
+      	 (tipoVar == Tipo.VAR_BOOLEANO && tipoExp == Tipo.CTE_BOOLEANO) ||
+      	 (tipoVar == Tipo.VAR_BOOLEANO && tipoExp == Tipo.VAR_BOOLEANO) ||
+         (tipoVar == Tipo.VAR_NUMERO && tipoExp == Tipo.CTE_NUMERO) ||
+         (tipoVar == Tipo.VAR_NUMERO && tipoExp == Tipo.VAR_NUMERO)){//ok
+        } else { 
+				System.out.println("Incompatibilidade de tipo na atribuição na linha " + var.beginLine + ", coluna " + var.beginColumn);
+				System.exit(1);
+			  }
+	  		
+  	}
     <COMENT>
     {
 	return atrib;
@@ -812,6 +825,7 @@ Expressao exp() : {Expressao e = new Expressao();}
     exp0(e)
     {
       e.calculaLimitStack();
+	//fazer aqui a detecção do zero		
       return e;
     }    
 }
@@ -1031,7 +1045,7 @@ void expPot(Expressao e) : {Item item; Token t;}
 	  }  
 	)?
 }
-void expToken(Expressao e) :{Item item; Token t; String tConcatenada;Tipo tipo;}
+void expToken(Expressao e) :{Item item; Token t; String tConcatenada; Tipo tipo;}
 {
       t = <NUM>
       {

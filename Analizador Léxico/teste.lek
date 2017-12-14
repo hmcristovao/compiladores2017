@@ -1,8 +1,7 @@
-SE(2>1)
-{ //.
-	PRINTA("bloco verdadeiro") //.
-}
-SENAO
-{ //.
-	PRINTA("bloco falso") //.
-}
+FLUT numero //Atribuicao Numerico.
+BOOL logico //Atribuicao Logico.
+
+numero = 10 // inicializacao da variavel.
+logico = numero  // inicializacao da variavel.
+
+PRINTA(numero,logico) //Teste exibicao de duas constantes.

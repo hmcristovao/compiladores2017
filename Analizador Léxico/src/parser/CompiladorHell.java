@@ -320,11 +320,23 @@ comandoAtribuicao ->  <VAR><ATRIB> exp <COMENT>
 exp               ->  expLogica | expAritmetica | expString
 */
   static final public Comando comandoAtribuicao() throws ParseException {
-                               ComandoAtribuicao atrib; Token var; Expressao expa;
+                               ComandoAtribuicao atrib; Token var; Expressao expa; Tipo tipoVar; Tipo tipoExp;
     var = jj_consume_token(VAR);
     jj_consume_token(ATRIB);
     expa = exp();
-      atrib = new ComandoAtribuicao(var.image, expa);
+          atrib = new ComandoAtribuicao(var.image, expa);
+          tipoVar = CompiladorHell.tabela.consultaTipo(var.image);
+      tipoExp = expa.getListaPosfixo().getLast().getTipo();
+      if((tipoVar == Tipo.VAR_STRING && tipoExp == Tipo.CTE_STRING) ||
+         (tipoVar == Tipo.VAR_STRING && tipoExp == Tipo.VAR_STRING) ||
+         (tipoVar == Tipo.VAR_BOOLEANO && tipoExp == Tipo.CTE_BOOLEANO) ||
+         (tipoVar == Tipo.VAR_BOOLEANO && tipoExp == Tipo.VAR_BOOLEANO) ||
+         (tipoVar == Tipo.VAR_NUMERO && tipoExp == Tipo.CTE_NUMERO) ||
+         (tipoVar == Tipo.VAR_NUMERO && tipoExp == Tipo.VAR_NUMERO)){//ok
+        } else {
+                                System.out.println("Incompatibilidade de tipo na atribui\u00e7\u00e3o na linha " + var.beginLine + ", coluna " + var.beginColumn);
+                                System.exit(1);
+                          }
     jj_consume_token(COMENT);
         {if (true) return atrib;}
     throw new Error("Missing return statement in function");
@@ -852,6 +864,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
                    Expressao e = new Expressao();
     exp0(e);
       e.calculaLimitStack();
+        //fazer aqui a detecção do zero		
       {if (true) return e;}
     throw new Error("Missing return statement in function");
   }
@@ -1123,7 +1136,7 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
   }
 
   static final public void expToken(Expressao e) throws ParseException {
-                             Item item; Token t; String tConcatenada;Tipo tipo;
+                             Item item; Token t; String tConcatenada; Tipo tipo;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NUM:
       t = jj_consume_token(NUM);
