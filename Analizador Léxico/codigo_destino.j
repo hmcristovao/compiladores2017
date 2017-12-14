@@ -14,8 +14,9 @@ return
 .limit locals 9
 
 
-; expressao infixa: "AAAABBBBBCCCCCCCC"  - expressao posfixa: [item, tipo = CTE_STRING, valor = "AAAABBBBBCCCCCCCC"]
+; expressao infixa: "AAAABBBBBCCCCCCCC"++aux  - expressao posfixa: [item, tipo = CTE_STRING, valor = "AAAABBBBBCCCCCCCC", item, tipo = OPERADOR, valor = ++, item, tipo = VAR_STRING, valor = aux]
 ldc "AAAABBBBBCCCCCCCC"
+aload_3
 
 astore 1
 return

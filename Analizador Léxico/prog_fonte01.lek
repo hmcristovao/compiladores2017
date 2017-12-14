@@ -1,2 +1,2 @@
-STRING teste,aux, ping//.
-teste = "AAAA" ++ "BBBBB"++"CCCCCCCC" //.  
+STRING teste,aux, ping="oi"//.
+teste = "AAAA" ++ "BBBBB"++"CCCCCCCC"++aux//.  
