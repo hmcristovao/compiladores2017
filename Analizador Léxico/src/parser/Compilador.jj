@@ -200,7 +200,7 @@ ListaComandos listaComandos() : { Comando com; ListaComandos lista = new ListaCo
 Comando comando() : {Comando com = null;}
 {
    (
-	  comandoDeclaracaoVariavel()
+	  com = comandoDeclaracaoVariavel()
     |
       com = comandoAtribuicao()
     |
@@ -237,7 +237,8 @@ comandoDeclaracaoVariavel ->
     <COMENT>	
 */
 
-void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
+Comando comandoDeclaracaoVariavel() : {Simbolo simb; Token var;
+								    ComandoAtribuicao atrib = null; Expressao expa;}
 {
    (
      <TYPENUM>
@@ -251,7 +252,10 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
 	 }
      (
        <ATRIB>
-       <NUM>
+       	expa = exp()
+       	{ 
+       		atrib = new ComandoAtribuicao(var.image, expa);
+      	} 
      )?
      (
        <VIRG>
@@ -264,8 +268,11 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
           	  CompiladorHell.tabela.inclui(simb);
 	   }
        (
-         <ATRIB>
-         <NUM>
+        <ATRIB>
+       	expa = exp()
+       	{ 
+       		atrib = new ComandoAtribuicao(var.image, expa);
+      	} 
        )?
       )*
    | 
@@ -280,7 +287,10 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
 	 }
      (
        <ATRIB>
-       <STRING>
+       	expa = exp()
+       	{ 
+       		atrib = new ComandoAtribuicao(var.image, expa);
+      	} 
      )?
      (
        <VIRG>
@@ -294,7 +304,10 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
 	   }
        (
          <ATRIB>
-         <STRING>
+       	expa = exp()
+       	{ 
+       		atrib = new ComandoAtribuicao(var.image, expa);
+      	} 
        )?
      )*
    | 
@@ -306,7 +319,10 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
 	 }
      (
        <ATRIB>
-       <BOOL>
+       	expa = exp()
+       	{ 
+       		atrib = new ComandoAtribuicao(var.image, expa);
+      	} 
      )?
      (
        <VIRG>
@@ -317,11 +333,17 @@ void comandoDeclaracaoVariavel() : {Simbolo simb; Token var;}
 	   }
        (
          <ATRIB>
-         <BOOL>
+       	expa = exp()
+       	{ 
+       		atrib = new ComandoAtribuicao(var.image, expa);
+      	} 
        )?
      )*
    )
    <COMENT>
+   {
+	return atrib;
+   }
 }
 
 /*

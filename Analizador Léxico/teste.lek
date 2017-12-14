@@ -1,4 +1,12 @@
-SE(2>1)
+FLUT a=2,b//.
+BOOL flag=true//.
+
+b = 3//.
+
+PRINTA(a,b)//.
+PRINTA(flag)//.
+
+SE(2!=2)
 { //.
 	PRINTA("bloco verdadeiro") //.
 }

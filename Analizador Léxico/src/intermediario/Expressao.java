@@ -225,6 +225,18 @@ public class Expressao
 					codigoExpressao+="LABEL_0"+(contLabel+1) + ": \r\n";
 					contLabel += 2;
 				}
+				
+				else if(item.getValor().equals("!=")){
+					codigoExpressao+="dcmpg \r\n";
+					//Caso o segundo numero seja diferente, armazena 1 na pilha.
+					codigoExpressao+="ifeq LABEL_0"+contLabel+ "\r\n";
+					codigoExpressao+="dconst_1 \r\n";
+					codigoExpressao+="goto LABEL_0"+(contLabel+1) +"\r\n";
+					codigoExpressao+="LABEL_0"+contLabel + ": \r\n";
+					codigoExpressao+="dconst_0 \r\n";
+					codigoExpressao+="LABEL_0"+(contLabel+1) + ": \r\n";
+					contLabel += 2;
+				}
 			}
 		}
 		return codigoExpressao + "\r\n";
