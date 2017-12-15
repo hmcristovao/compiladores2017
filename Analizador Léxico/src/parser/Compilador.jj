@@ -812,6 +812,8 @@ Expressao exp() : {Expressao e = new Expressao();}
     exp0(e)
     {
       e.calculaLimitStack();
+      e.otimizaConstantes();
+      e.otimizaRelacionalIgual();
       return e;
     }    
 }

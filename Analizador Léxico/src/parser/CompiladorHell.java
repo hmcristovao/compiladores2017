@@ -852,6 +852,8 @@ expToken      -> <NUM> | <ADD><NUM> | <SUB><NUM> | <VAR> | <BOOL> | <STRING>
                    Expressao e = new Expressao();
     exp0(e);
       e.calculaLimitStack();
+      e.otimizaConstantes();
+      e.otimizaRelacionalIgual();
       {if (true) return e;}
     throw new Error("Missing return statement in function");
   }

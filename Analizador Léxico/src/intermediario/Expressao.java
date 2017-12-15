@@ -229,4 +229,69 @@ public class Expressao
 		}
 		return codigoExpressao + "\r\n";
 	}
+
+	public void otimizaRelacionalIgual(){
+		if(this.listaPosfixo.size() >= 3){
+			for(int i = 0; i < this.listaPosfixo.size(); i++){
+				if(this.listaPosfixo.get(i).getTipo() == Tipo.CTE_NUMERO){
+					if(this.listaPosfixo.get(i + 1).getTipo() == Tipo.CTE_NUMERO){
+						if(this.listaPosfixo.get(i + 2).getTipo() == Tipo.OPERADOR
+								&& this.listaPosfixo.get(i + 2).getValor().equals("==")){
+							float n1 = Float.parseFloat(this.listaPosfixo.get(i).getValor());
+							float n2 = Float.parseFloat(this.listaPosfixo.get(i + 1).getValor());
+							
+							this.listaPosfixo.remove(i + 1);
+							this.listaPosfixo.remove(i + 1);
+							String exp = "true";
+							if(n1 != n2){
+								exp = "false";
+							}
+	
+							Item novoItem = new Item(Tipo.CTE_BOOLEANO, exp);
+							this.listaPosfixo.set(i, novoItem);
+							
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public void otimizaConstantes(){
+		//percorrendo a lista de posfixo otimizando as constantes
+		int qtdSaltos = 0;
+		if(this.listaPosfixo.size() >= 3){
+			for(int i = 0; i < this.listaPosfixo.size(); i++){
+				if(this.listaPosfixo.get(i).getTipo() == Tipo.CTE_NUMERO){
+					qtdSaltos++;
+					if(this.listaPosfixo.get(i + 1).getTipo() == Tipo.CTE_NUMERO){
+						if(this.listaPosfixo.get(i + 2).getTipo() == Tipo.OPERADOR){
+							
+							if(this.listaPosfixo.get(i + 2).getValor().equals("+") ||
+								this.listaPosfixo.get(i + 2).getValor().equals("-")){
+								
+								
+								float termo1 = Float.parseFloat(this.listaPosfixo.get(i).getValor());
+								float termo2 = Float.parseFloat(this.listaPosfixo.get(i + 1).getValor());
+								if(this.listaPosfixo.get(i + 2).getValor().equals("-")){
+									termo2 *= -1;
+								}
+								termo1 += termo2;
+								
+								Item novoItem = new Item(Tipo.CTE_NUMERO, String.valueOf(termo1));
+								this.listaPosfixo.set(i, novoItem);
+								
+								this.listaPosfixo.remove(i + 1);
+								this.listaPosfixo.remove(i + 1);
+								i = (qtdSaltos - 1);
+								qtdSaltos = 0;
+							}
+						}
+					}else{
+						qtdSaltos = 0;
+					}
+				}
+			}
+		}	
+	}
 }

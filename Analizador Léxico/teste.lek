@@ -1,8 +1,15 @@
-SE(2>1)
+SE(2 == 2)
 { //.
-	PRINTA("bloco verdadeiro") //.
+	PRINTA("sao iguais") //.
 }
 SENAO
 { //.
-	PRINTA("bloco falso") //.
+   SE(2 == 3)
+   { //.
+	   PRINTA("sao iguais") //.
+   }
+   SENAO
+   { //.
+	   PRINTA("sao diferentes") //.
+   }
 }
