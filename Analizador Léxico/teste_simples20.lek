@@ -1,0 +1,15 @@
+/* Teste XOR */
+
+FLUT numberone, numbertwo//Declaracao de duas variaveis numericas.
+
+numberone = 1//.
+numbertwo = 2//.
+
+SE ((numberone == 1) XO (numbertwo == 3))
+{//.
+	PRINTA ("VERDADEIRO")//.
+}
+SENAO
+{//.
+	PRINTA("FALSO")//.
+}

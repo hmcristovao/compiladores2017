@@ -225,6 +225,19 @@ public class Expressao
 					codigoExpressao+="LABEL_0"+(contLabel+1) + ": \r\n";
 					contLabel += 2;
 				}
+				
+				/* CRIAÇÃO DO CÓDIGO PARA O XOR */
+				else if(item.getValor().equals("XO")){
+					codigoExpressao+="dcmpg \r\n";
+					//Caso os objetos sejam diferentes ele armazena 1 na pilha.
+					codigoExpressao+="ifeq LABEL_0"+contLabel+ "\r\n";
+					codigoExpressao+="dconst_1 \r\n";
+					codigoExpressao+="goto LABEL_0"+(contLabel+1) +"\r\n";
+					codigoExpressao+="LABEL_0"+contLabel + ": \r\n";
+					codigoExpressao+="dconst_0 \r\n";
+					codigoExpressao+="LABEL_0"+(contLabel+1) + ": \r\n";
+					contLabel += 2;
+				}
 			}
 		}
 		return codigoExpressao + "\r\n";

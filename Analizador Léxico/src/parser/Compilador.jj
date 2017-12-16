@@ -111,6 +111,7 @@ TOKEN : /* OPERADORES LOGICOS E RELACIONAIS */
 | < OR : "O" >
 | < NOT : "N" >
 | < ANDS : "EE" >
+| < XOR : "XO" > /* CRIAÇÃO TOKEN PARA O XOR */
 }
 
 TOKEN : /* PALAVRAS RESERVADAS */
@@ -815,6 +816,7 @@ Expressao exp() : {Expressao e = new Expressao();}
       return e;
     }    
 }
+
 void exp0(Expressao e) : { Item item; Token t;}
 {  
     expOr(e)
@@ -831,21 +833,39 @@ void exp0(Expressao e) : { Item item; Token t;}
     )*
   
 }
-void expOr(Expressao e) : {Item item; Token t;}
+
+void expOr(Expressao e) : {Item item; Token t;} /* CRIACAO DA PRECEDÊNCIA DO XOR */
 {
-    expAnd(e)
+    expXor(e)
     (
       t=<OR>
       {  
         item = new Item(Tipo.OPERADOR, t.image);
         e.addInfixo(item);
       }
-      expAnd(e)
+      expXor(e)
       {  
         e.addPosfixo(item);
       }
     )*
 }
+
+void expXor(Expressao e) : { Item item; Token t;} /* CRIAÇÃO DA EXPRESSÃO XOR */
+{
+	expAnd(e)
+	(
+	  t= <XOR>
+	  {
+	    item = new Item(Tipo.OPERADOR, t.image);
+        e.addInfixo(item);
+      }
+      expAnd(e)
+      {
+        e.addPosfixo(item);
+      }
+    )*
+}
+
 void expAnd(Expressao e) : {Item item; Token t;}
 {
     expAnds(e)
