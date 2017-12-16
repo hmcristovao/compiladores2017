@@ -348,7 +348,7 @@ comandoPrinta -> <OUT> <AP>
                  exp ((<VIRG>|<PT_VIRG>) exp)*
                  <FP> <COMENT>
 */
-Comando comandoPrinta ():{ComandoPrinta printa; Expressao expa;}
+Comando comandoPrinta ():{ComandoPrinta printa; Expressao expa,temp;Item item;String str = str ="\"\\n\"";;}
 {
 	<OUT>
 	try {
@@ -364,13 +364,40 @@ Comando comandoPrinta ():{ComandoPrinta printa; Expressao expa;}
 	}
 	(
 	  	(
-			<VIRG> | <PT_VIRG>
+			<VIRG>
+			{
+			  str ="\" \"";
+			}
+			|
+			<PT_VIRG>
+			{
+			  str ="\"\\n\"";
+			}
 		)
 		expa = exp()
 		{
+		  item  =  new Item (Tipo.CTE_STRING,str);
+		  temp = new Expressao();
+		  temp.addInfixo(item);
+		  temp.addPosfixo(item);
+		  temp.setTipoDados(Tipo.CTE_STRING);
+		  temp.calculaLimitStack();
+		  printa.addExpressao(temp);
 		  printa.addExpressao(expa);
 		}
 	)*
+	{
+	  str ="\"\\n\"";
+	  temp =  new Expressao();
+	  item  =  new Item (Tipo.CTE_STRING,str);
+	  
+	  temp.addInfixo(item);
+	  temp.addPosfixo(item);
+	  temp.setTipoDados(Tipo.CTE_STRING);
+	  temp.calculaLimitStack();
+	  printa.addExpressao(temp);
+	  
+	}
 	try {
 		<FP>
 	}

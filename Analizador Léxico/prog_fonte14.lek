@@ -1,5 +1,12 @@
-/* Nao funciona: LACOMULTIPLO nao implementado 
-*/
+LACOMULTIPLO (FLUT i,j,k; 1 A 10  PASSO 1,1 A 5 PASSO 1,10 A 100 PASSO (1/2))
+{// laco com 3 niveis de aninhamento.
+	PRINTA(i,j,k) //.
+}
+
+
+
+
+/*
 FLUT numero // Declaracao de Variavel.
 
 LACOMULTIPLO (FLUT i,j,k; 1 A (10*3)**2  PASSO (10/5), 1 A 5 PASSO 1, 2 A 100 PASSO 2**2)
@@ -7,4 +14,4 @@ LACOMULTIPLO (FLUT i,j,k; 1 A (10*3)**2  PASSO (10/5), 1 A 5 PASSO 1, 2 A 100 PA
 	numero = ((numero*i)/j)-k//.
 }
 PRINTA(numero)//.
-
+*/

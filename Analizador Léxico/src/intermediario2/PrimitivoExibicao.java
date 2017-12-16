@@ -19,10 +19,11 @@ public class PrimitivoExibicao extends PrimitivoComando {
 
 		codigoFinal += "getstatic java/lang/System/out Ljava/io/PrintStream; \r\n";
 		codigoFinal += this.expressao.geraCodigoDestino();
-		if(this.expressao.isString())
-			codigoFinal += "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V \r\n";
+		if(this.expressao.isString()){
+			codigoFinal += "invokevirtual java/io/PrintStream/print(Ljava/lang/String;)V \r\n";
+		}
 		else
-			codigoFinal += "invokevirtual java/io/PrintStream/println(D)V \r\n";
+			codigoFinal += "invokevirtual java/io/PrintStream/print(D)V \r\n";
 
 		return codigoFinal;
 	}

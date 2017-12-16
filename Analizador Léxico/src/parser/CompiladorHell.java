@@ -336,7 +336,7 @@ comandoPrinta -> <OUT> <AP>
                  <FP> <COMENT>
 */
   static final public Comando comandoPrinta() throws ParseException {
-                          ComandoPrinta printa; Expressao expa;
+                          ComandoPrinta printa; Expressao expa,temp;Item item;String str = str ="\u005c"\u005c\u005cn\u005c"";;
     jj_consume_token(OUT);
     try {
       jj_consume_token(AP);
@@ -360,9 +360,11 @@ comandoPrinta -> <OUT> <AP>
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case VIRG:
         jj_consume_token(VIRG);
+                          str ="\u005c" \u005c"";
         break;
       case PT_VIRG:
         jj_consume_token(PT_VIRG);
+                          str ="\u005c"\u005c\u005cn\u005c"";
         break;
       default:
         jj_la1[13] = jj_gen;
@@ -370,8 +372,24 @@ comandoPrinta -> <OUT> <AP>
         throw new ParseException();
       }
       expa = exp();
+                  item  =  new Item (Tipo.CTE_STRING,str);
+                  temp = new Expressao();
+                  temp.addInfixo(item);
+                  temp.addPosfixo(item);
+                  temp.setTipoDados(Tipo.CTE_STRING);
+                  temp.calculaLimitStack();
+                  printa.addExpressao(temp);
                   printa.addExpressao(expa);
     }
+          str ="\u005c"\u005c\u005cn\u005c"";
+          temp =  new Expressao();
+          item  =  new Item (Tipo.CTE_STRING,str);
+
+          temp.addInfixo(item);
+          temp.addPosfixo(item);
+          temp.setTipoDados(Tipo.CTE_STRING);
+          temp.calculaLimitStack();
+          printa.addExpressao(temp);
     try {
       jj_consume_token(FP);
     } catch (ParseException e) {
