@@ -1,1 +1,20 @@
-PRINTA("Hello world!") // primeiro programa. 
+FLUT numero = 4//.
+
+SELECT(numero){//.
+	
+	OPTION 1{//.
+		PRINTA("OPTION 1") //.
+	}
+	OPTION 2{//.
+		PRINTA("OPTION 1") //.
+	}
+	OPTION 3{//.
+		PRINTA("OPTION 1") //.
+	}
+	OPTION 4{//.
+		PRINTA("OPTION 1") //.
+	}
+	PADRAO{//.
+		PRINTA("OPTION 1") //.
+	}
+}

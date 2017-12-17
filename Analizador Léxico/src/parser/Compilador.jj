@@ -120,6 +120,9 @@ TOKEN : /* PALAVRAS RESERVADAS */
 | < FOR : "LACO" >
 | < IN : "PEGA" >
 | < OUT : "PRINTA" >
+| < SELECT : "SELECT" >
+| < OPTION : "OPTION" >
+| < PADRAO : "PADRAO" >
 | < TEST : "TESTE" >
 | < BREAK : "SAIDA" >
 | < OTHERWISE : "OUTROCASO" >
@@ -209,6 +212,8 @@ Comando comando() : {Comando com = null;}
       com = comandoPega()
 	|
 	  com = comandoSe()
+	|
+	  com = comandoSelect()
 	|
 	  com = comandoTeste()
 	|
@@ -462,6 +467,55 @@ SeSenao comandoSe() : {SeSenao seSenao = new SeSenao(); Expressao expSeSenao;
 { return seSenao;}
 
 }
+
+/*
+comandoSelect -> <SELECT><AP> <VAR> <FP>
+             <ACH><COMENT>
+             	(<OPTION><NUM><ACH><COMENT>listaComandos<FCH>)*
+             	(<PADRAO><ACH>listaComandos<FCH>)?            	  				
+             <FCH>
+*/
+
+Comando comandoSelect() : {ComandoSelect Select = new ComandoSelect();Token var,num;
+                       	   Item item;ListaComandos listaComandos;}
+{
+  	<SELECT><AP>
+	var=<VAR>
+	{
+	  System.out.println(var.image);
+	  Select.setVariavel(var.image);
+	}
+	<FP>
+	<ACH><COMENT>
+  	(
+  	  	<OPTION>
+  	  	num=<NUM><ACH><COMENT>
+  	  	{
+			item = new Item(Tipo.CTE_NUMERO, num.image);
+			listaComandos = listaComandos();
+			Select.setOption(item,listaComandos);
+			System.out.println(item.toString());
+   	  	}
+		<FCH>
+	)*
+	(
+	  <PADRAO>
+	  <ACH><COMENT>
+	  {
+			item = null;
+			listaComandos = listaComandos();
+			Select.setOption(item,listaComandos);
+   	  }
+	  <FCH>
+	)?
+	<FCH>
+	{
+		System.out.println(Select.toString());
+	  	return Select;
+	}
+
+}
+
 
 /*
 comandoTeste() -> <TEST><ACH> (	blocoCondicional )+
