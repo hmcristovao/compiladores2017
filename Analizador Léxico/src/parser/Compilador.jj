@@ -482,7 +482,6 @@ Comando comandoSelect() : {ComandoSelect Select = new ComandoSelect();Token var,
   	<SELECT><AP>
 	var=<VAR>
 	{
-	  System.out.println(var.image);
 	  Select.setVariavel(var.image);
 	}
 	<FP>
@@ -493,8 +492,8 @@ Comando comandoSelect() : {ComandoSelect Select = new ComandoSelect();Token var,
   	  	{
 			item = new Item(Tipo.CTE_NUMERO, num.image);
 			listaComandos = listaComandos();
-			Select.setOption(item,listaComandos);
-			System.out.println(item.toString());
+			Select.addItem(item);
+			Select.addListaComandos(listaComandos);
    	  	}
 		<FCH>
 	)*
@@ -502,15 +501,13 @@ Comando comandoSelect() : {ComandoSelect Select = new ComandoSelect();Token var,
 	  <PADRAO>
 	  <ACH><COMENT>
 	  {
-			item = null;
 			listaComandos = listaComandos();
-			Select.setOption(item,listaComandos);
+			Select.setPadrao(listaComandos);
    	  }
 	  <FCH>
 	)?
 	<FCH>
 	{
-		System.out.println(Select.toString());
 	  	return Select;
 	}
 

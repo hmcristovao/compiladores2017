@@ -486,7 +486,6 @@ comandoSelect -> <SELECT><AP> <VAR> <FP>
     jj_consume_token(SELECT);
     jj_consume_token(AP);
     var = jj_consume_token(VAR);
-          System.out.println(var.image);
           Select.setVariavel(var.image);
     jj_consume_token(FP);
     jj_consume_token(ACH);
@@ -507,8 +506,8 @@ comandoSelect -> <SELECT><AP> <VAR> <FP>
       jj_consume_token(COMENT);
                         item = new Item(Tipo.CTE_NUMERO, num.image);
                         listaComandos = listaComandos();
-                        Select.setOption(item,listaComandos);
-                        System.out.println(item.toString());
+                        Select.addItem(item);
+                        Select.addListaComandos(listaComandos);
       jj_consume_token(FCH);
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -516,9 +515,8 @@ comandoSelect -> <SELECT><AP> <VAR> <FP>
       jj_consume_token(PADRAO);
       jj_consume_token(ACH);
       jj_consume_token(COMENT);
-                        item = null;
                         listaComandos = listaComandos();
-                        Select.setOption(item,listaComandos);
+                        Select.setPadrao(listaComandos);
       jj_consume_token(FCH);
       break;
     default:
@@ -526,7 +524,6 @@ comandoSelect -> <SELECT><AP> <VAR> <FP>
       ;
     }
     jj_consume_token(FCH);
-                System.out.println(Select.toString());
                 {if (true) return Select;}
     throw new Error("Missing return statement in function");
   }
