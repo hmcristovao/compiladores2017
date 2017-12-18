@@ -74,7 +74,7 @@ public class ComandoSelect extends Comando {
 		PrimitivoListaComandos lista = new PrimitivoListaComandos();
 		ListaComandos command = new ListaComandos();
 		command = conversao(this.itens.get(0),this.listasComando.get(0),padrao);
-		for (int i = 0 ; i < this.itens.size(); i++) {
+		for (int i = 1 ; i < this.itens.size(); i++) {
 			command = conversao(this.itens.get(i),this.listasComando.get(i),command);
 		}
 		lista = command.geraListaPrimitivoComando();

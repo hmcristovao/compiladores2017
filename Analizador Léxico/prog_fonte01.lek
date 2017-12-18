@@ -1,21 +1,39 @@
 FLUT numero//.
-
-numero = 5//.
+PRINTA("Digite um numero de 1 a 10")//.
+PEGA(numero)//.
 SELECT(numero){//.
 	
 	OPTION 1{//.
-		PRINTA("OPTION 1") //.
+		PRINTA("Você digitou 1") //.
 	}
 	OPTION 2{//.
-		PRINTA("OPTION 2") //.
+		PRINTA("Você digitou 2") //.
 	}
 	OPTION 3{//.
-		PRINTA("OPTION 3") //.
+		PRINTA("Você digitou 3") //.
 	}
 	OPTION 4{//.
-		PRINTA("OPTION 4") //.
+		PRINTA("Você digitou 4") //.
+	}
+	OPTION 5{//.
+		PRINTA("Você digitou 5") //.
+	}
+	OPTION 6{//.
+		PRINTA("Você digitou 6") //.
+	}
+	OPTION 7{//.
+		PRINTA("Você digitou 7") //.
+	}
+	OPTION 8{//.
+		PRINTA("Você digitou 8") //.
+	}
+	OPTION 9{//.
+		PRINTA("Você digitou 9") //.
+	}
+	OPTION 10{//.
+		PRINTA("Você digitou 10") //.
 	}
 	PADRAO{//.
-		PRINTA("OPTION Default") //.
+		PRINTA("Calma lá, eu pedi pra você digitar um numero entre 1 e 10, e vc digita: ",numero,"Tá de sacanagem, né??") //.
 	}
 }
